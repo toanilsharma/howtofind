@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformer Sizing for Industry - Whiteboard Tutorial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --board-bg: #f8f9fa;
+            --draw-color: #1a1a1a;
+            --primary-blue: #0056b3;
+            --danger-red: #dc3545;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --info-purple: #6f42c1;
+            --font-main: 'Kalam', cursive;
+            --font-alt: 'Architects Daughter', cursive;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: var(--font-main);
+        }
+
+        #whiteboard-container {
+            position: relative;
+            width: 95vw;
+            max-width: 1600px;
+            aspect-ratio: 16 / 9;
+        }
+
+        #whiteboard {
+            width: 100%;
+            height: 100%;
+            background-color: var(--board-bg);
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 20px solid #8b7355;
+            border-bottom-width: 60px;
+        }
+
+        #animation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .anim-element {
+            opacity: 0;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .text-anim {
+            font-family: var(--font-main);
+        }
+
+        #controls {
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        #play-btn {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 15px 40px;
+            cursor: pointer;
+            border: 3px solid var(--primary-blue);
+            background-color: #fff;
+            color: var(--primary-blue);
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #play-btn:hover { 
+            background-color: var(--primary-blue); 
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        #play-btn:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.6;
+            transform: scale(1);
+        }
+
+        #voiceover-display {
+            position: absolute;
+            bottom: -80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1.8vw;
+            line-height: 1.5;
+            color: #ecf0f1;
+            padding: 10px 20px;
+            font-family: var(--font-alt);
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #progress-bar-container {
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--info-purple), var(--primary-blue));
+            transition: width 0.3s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="whiteboard-container">
+        <div id="controls">
+            <button id="play-btn">▶ Start Tutorial</button>
+        </div>
+        <div id="whiteboard">
+            <svg id="animation-svg" viewBox="0 0 1600 900">
+                <!-- All SVG elements will be dynamically created by JavaScript -->
+            </svg>
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="voiceover-display">Click "Start Tutorial" to begin...</div>
+    </div>
+
+<script>
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById('animation-svg');
+    const playBtn = document.getElementById('play-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const voDisplay = document.getElementById('voiceover-display');
+    
+    let activeElements = [];
+    let animationFrame;
+    let timeouts = [];
+    let isPlaying = false;
+
+    const TOTAL_DURATION = 210; // 3.5 minutes
+
+    const timeline = [
+        // SECTION 1: TITLE (0-12s)
+        { 
+            time: 0.5, type: 'text', id: 'title1', text: 'Powering Your Industry', 
+            x: 800, y: 300, fontSize: 100, anchor: 'middle', weight: 'bold', 
+            duration: 2.5,
+            voiceover: 'Welcome, future engineers! Let\'s talk about powering our industries.'
+        },
+        { 
+            time: 3.5, type: 'text', id: 'title2', text: 'TRANSFORMER SIZING', 
+            x: 800, y: 440, fontSize: 130, anchor: 'middle', weight: 'bold',
+            fill: 'var(--primary-blue)', duration: 3,
+            voiceover: 'Today\'s topic: How to correctly size a transformer.'
+        },
+        { 
+            time: 7, type: 'text', id: 'subtitle', text: 'A Professional Guide for Industrial Applications', 
+            x: 800, y: 560, fontSize: 60, anchor: 'middle',
+            duration: 3,
+            voiceover: 'This is a vital skill for any industrial application.'
+        },
+        { 
+            time: 10.5, type: 'path', id: 'title-underline', d: 'M 150 590 H 1450', 
+            stroke: 'var(--primary-blue)', strokeWidth: 6, duration: 1.5,
+            voiceover: ''
+        },
+        
+        { time: 13, type: 'clear', voiceover: 'Why is getting the size right so important? Let\'s see.' },
+        
+        // SECTION 2: THE "WHY" (14-40s)
+        { 
+            time: 14, type: 'text', id: 'concept-q', text: 'The Goldilocks Problem', 
+            x: 800, y: 120, fontSize: 80, weight: 'bold', anchor: 'middle',
+            duration: 3,
+            voiceover: 'I call this the Goldilocks Problem. You can\'t be too big, or too small.'
+        },
+        { // Undersized
+            time: 18, type: 'rect', id: 'xfmr-small', x: 200, y: 350, width: 150, height: 200, stroke: 'var(--draw-color)', strokeWidth: 8, fill: '#eee', duration: 1},
+            { time: 19, type: 'text', id: 'small-label', text: 'Too Small', x: 275, y: 320, fontSize: 50, anchor: 'middle', duration: 2},
+            { time: 21, type: 'text', id: 'small-prob1', text: '❌ Overheats!', x: 275, y: 600, fontSize: 45, anchor: 'middle', fill: 'var(--danger-red)', duration: 2, voiceover: 'An undersized transformer will overheat...' },
+            { time: 23, type: 'text', id: 'small-prob2', text: '❌ Fails Early!', x: 275, y: 660, fontSize: 45, anchor: 'middle', fill: 'var(--danger-red)', duration: 2, voiceover: '...and will have a very short life.' },
+
+        { // Oversized
+            time: 26, type: 'rect', id: 'xfmr-large', x: 1250, y: 250, width: 250, height: 400, stroke: 'var(--draw-color)', strokeWidth: 8, fill: '#eee', duration: 1},
+            { time: 27, type: 'text', id: 'large-label', text: 'Too Big', x: 1375, y: 220, fontSize: 50, anchor: 'middle', duration: 2},
+            { time: 29, type: 'text', id: 'large-prob1', text: '❌ Wastes Money!', x: 1375, y: 700, fontSize: 45, anchor: 'middle', fill: 'var(--warning-orange)', duration: 2.5, voiceover: 'An oversized transformer costs too much to buy...' },
+            { time: 31, type: 'text', id: 'large-prob2', text: '❌ Inefficient!', x: 1375, y: 760, fontSize: 45, anchor: 'middle', fill: 'var(--warning-orange)', duration: 2.5, voiceover: '...and is inefficient, wasting energy.' },
+        
+        { // Just Right
+            time: 34, type: 'rect', id: 'xfmr-good', x: 700, y: 300, width: 200, height: 300, stroke: 'var(--draw-color)', strokeWidth: 8, fill: '#eee', duration: 1},
+            { time: 35, type: 'text', id: 'good-label', text: 'Just Right', x: 800, y: 270, fontSize: 50, anchor: 'middle', duration: 2},
+            { time: 37, type: 'text', id: 'good-prob1', text: '✅ Safe & Reliable!', x: 800, y: 650, fontSize: 45, anchor: 'middle', fill: 'var(--success-green)', duration: 3, voiceover: 'We want one that is just right: safe, reliable, and efficient.' },
+
+        { time: 42, type: 'clear', voiceover: 'So, how do we find the perfect size? Follow these four steps.' },
+
+        // SECTION 3: THE 4 STEPS (43-85s)
+        { 
+            time: 43, type: 'text', id: 'steps-title', text: 'The 4-Step Sizing Method', 
+            x: 800, y: 120, fontSize: 80, weight: 'bold', anchor: 'middle', fill: 'var(--info-purple)',
+            duration: 3, voiceover: 'Here is a professional, four-step method that always works.'
+        },
+        { 
+            time: 47, type: 'text', id: 'step1', text: '1. Calculate Total Connected Load', 
+            x: 150, y: 280, fontSize: 55, 
+            duration: 4, voiceover: 'Step 1: List all your electrical loads and calculate the total power in kVA.'
+        },
+        { 
+            time: 52, type: 'text', id: 'step2', text: '2. Apply Demand & Diversity Factors', 
+            x: 150, y: 400, fontSize: 55, 
+            duration: 4.5, voiceover: 'Step 2: Apply a Demand Factor, because not all machines run at once.'
+        },
+        { 
+            time: 57.5, type: 'text', id: 'step3', text: '3. Plan for Future Expansion', 
+            x: 150, y: 520, fontSize: 55, 
+            duration: 4, voiceover: 'Step 3: Add some spare capacity for future growth. A wise investment!'
+        },
+        { 
+            time: 62.5, type: 'text', id: 'step4', text: '4. Select the Next Standard Size UP', 
+            x: 150, y: 640, fontSize: 55, 
+            duration: 4.5, voiceover: 'And Step 4: Choose the next available standard transformer size. Always round up!'
+        },
+        { 
+            time: 68, type: 'path', id: 'steps-path', d: 'M 1000 300 V 620', stroke: 'var(--info-purple)', strokeWidth: 4, duration: 1},
+        {
+            time: 69, type: 'text', id: 'kvanote', text: 'Remember:', x: 1050, y: 350, fontSize: 45, duration: 2, voiceover: 'Remember this important conversion...'
+        },
+        {
+            time: 71, type: 'text', id: 'kvaformula', text: 'kVA = kW / Power Factor', x: 1050, y: 450, fontSize: 50, duration: 3, voiceover: 'kVA equals kW divided by the power factor.'
+        },
+        {
+            time: 75, type: 'rect', id: 'kva-box', x: 1020, y: 395, width: 500, height: 100, stroke: 'var(--primary-blue)', strokeWidth: 5, fill: 'none', duration: 1
+        },
+        
+        { time: 80, type: 'clear', voiceover: 'Let\'s apply this method to a real factory.' },
+
+        // SECTION 4: PRACTICAL EXAMPLE (81-155s)
+        { 
+            time: 81, type: 'text', id: 'ex-title', text: 'Industrial Plant Example', 
+            x: 800, y: 90, fontSize: 75, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
+            duration: 2
+        },
+        // Step 1
+        { time: 84, type: 'text', id: 'ex-step1-title', text: 'Step 1: List All Loads', x: 150, y: 180, fontSize: 55, weight: 'bold', duration: 2, voiceover: 'First, we list all the loads in our factory.' },
+        { time: 87, type: 'text', id: 'load1', text: '• Motor Loads = 450 kW (at 0.85 PF)', x: 200, y: 260, fontSize: 45, duration: 3, voiceover: 'We have 450 kilowatts of motors.'},
+        { time: 90.5, type: 'text', id: 'load2', text: '• Lighting Loads = 100 kW (at 0.95 PF)', x: 200, y: 320, fontSize: 45, duration: 3, voiceover: '100 kilowatts of lighting.'},
+        { time: 94, type: 'text', id: 'load3', text: '• HVAC Loads = 150 kW (at 0.90 PF)', x: 200, y: 380, fontSize: 45, duration: 3, voiceover: 'And 150 kilowatts of heating and cooling.'},
+        { time: 97.5, type: 'text', id: 'ex-calc-kva-title', text: 'Convert to kVA:', x: 200, y: 450, fontSize: 50, fill: 'var(--primary-blue)', weight: 'bold', duration: 2, voiceover: 'Now, we convert each load from kW to kVA.'},
+        { time: 100, type: 'text', id: 'kva1', text: 'Motors: 450 / 0.85 = 529 kVA', x: 250, y: 520, fontSize: 45, duration: 3},
+        { time: 103.5, type: 'text', id: 'kva2', text: 'Lighting: 100 / 0.95 = 105 kVA', x: 250, y: 580, fontSize: 45, duration: 3},
+        { time: 107, type: 'text', id: 'kva3', text: 'HVAC: 150 / 0.90 = 167 kVA', x: 250, y: 640, fontSize: 45, duration: 3},
+        { time: 110.5, type: 'path', id: 'sum-line', d: 'M 250 670 H 800', stroke: 'var(--draw-color)', strokeWidth: 4, duration: 1},
+        { time: 112, type: 'text', id: 'kva-total', text: 'Total Connected Load = 801 kVA', x: 250, y: 720, fontSize: 50, weight: 'bold', duration: 3, voiceover: 'Adding them up gives us a total connected load of 801 kVA.'},
+
+        { time: 116, type: 'clear', voiceover: 'Great start! Now for Step 2.'},
+        
+        // Step 2, 3, 4
+        { time: 117, type: 'text', id: 'ex-step2-title', text: 'Step 2: Apply Demand Factor (e.g., 0.90)', x: 150, y: 150, fontSize: 55, weight: 'bold', duration: 3, voiceover: 'Step 2: Not everything runs at once, so we apply a demand factor, let\'s say 90%.'},
+        { time: 121, type: 'text', id: 'ex-demand-calc', text: '801 kVA × 0.90 = 721 kVA', x: 200, y: 230, fontSize: 50, duration: 3.5, voiceover: '801 kVA times 0.9 equals 721 kVA.'},
+
+        { time: 125, type: 'text', id: 'ex-step3-title', text: 'Step 3: Add Future Growth (e.g., 25%)', x: 150, y: 330, fontSize: 55, weight: 'bold', duration: 3.5, voiceover: 'Step 3: We\'ll add a 25% margin for future expansion.'},
+        { time: 129, type: 'text', id: 'ex-future-calc', text: '721 kVA × 1.25 = 901 kVA', x: 200, y: 410, fontSize: 50, duration: 4, voiceover: '721 kVA times 1.25 gives us a final required size of 901 kVA.'},
+
+        { time: 134, type: 'text', id: 'ex-step4-title', text: 'Step 4: Select Standard Size', x: 150, y: 510, fontSize: 55, weight: 'bold', duration: 3, voiceover: 'Step 4: We must pick from standard available sizes.'},
+        { time: 138, type: 'text', id: 'ex-sizes', text: 'Standard Sizes: ...500, 750, 1000, 1250 kVA...', x: 200, y: 590, fontSize: 45, duration: 4, voiceover: 'Common sizes are 500, 750, 1000, and 1250 kVA.'},
+        
+        { time: 143, type: 'text', id: 'ex-final-choice', text: 'Required: 901 kVA ➜ Choose 1000 kVA', x: 200, y: 700, fontSize: 65, weight: 'bold', fill: 'var(--success-green)', duration: 4, voiceover: 'Our requirement is 901 kVA, so we must round up and choose the 1000 kVA model.'},
+        { 
+            time: 144, type: 'rect', id: 'final-choice-box', x: 150, y: 650, width: 1100, height: 100,
+            stroke: 'var(--success-green)', strokeWidth: 8, fill: 'none',
+            duration: 1
+        },
+
+        { time: 150, type: 'clear', voiceover: 'Fantastic! Let\'s summarize the key points to remember.' },
+
+        // SECTION 5: CONCLUSION (151-210s)
+        { 
+            time: 151, type: 'text', id: 'summary-title', text: 'Professional Sizing Checklist', 
+            x: 800, y: 150, fontSize: 80, weight: 'bold', anchor: 'middle', fill: 'var(--info-purple)',
+            duration: 3, voiceover: 'Here is your professional checklist for transformer sizing.'
+        },
+        { 
+            time: 155, type: 'text', id: 'sum1', text: '✓ List ALL loads and convert kW to kVA.', 
+            x: 200, y: 300, fontSize: 50, 
+            duration: 4, voiceover: 'Always list all your loads and convert them to kVA.'
+        },
+        { 
+            time: 160, type: 'text', id: 'sum2', text: '✓ Apply realistic Demand & Diversity factors.', 
+            x: 200, y: 400, fontSize: 50, 
+            duration: 4, voiceover: 'Apply realistic demand and diversity factors for your specific industry.'
+        },
+        { 
+            time: 165, type: 'text', id: 'sum3', text: '✓ Add a margin for future growth (20-25% is common).', 
+            x: 200, y: 500, fontSize: 50, 
+            duration: 5, voiceover: 'Don\'t forget to add a margin for future growth.'
+        },
+        { 
+            time: 171, type: 'text', id: 'sum4', text: '✓ ALWAYS select the next standard size UP!', 
+            x: 200, y: 600, fontSize: 50, fill: 'var(--danger-red)', weight: 'bold',
+            duration: 4.5, voiceover: 'And the golden rule: always select the next standard size UP, never down.'
+        },
+        { 
+            time: 176, type: 'text', id: 'end-text', text: 'Consult Local Standards & Engineers!', 
+            x: 800, y: 750, fontSize: 60, weight: 'bold', anchor: 'middle',
+            duration: 5, voiceover: 'Finally, for any real project, always consult your local standards and a qualified professional engineer. Well done today!'
+        },
+    ];
+
+    // --- Helper Functions ---
+    function resetAnimation() {
+        timeouts.forEach(t => clearTimeout(t));
+        timeouts = [];
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
+        activeElements = [];
+        progressBar.style.width = '0%';
+        voDisplay.textContent = 'Click "Start Tutorial" to begin...';
+        playBtn.disabled = false;
+        playBtn.textContent = '▶ Start Tutorial';
+        isPlaying = false;
+    }
+
+    // --- Element & Animation Creation ---
+    function createElement(item) {
+        let el;
+        if (item.type === 'text') {
+            el = document.createElementNS(svgNS, 'text');
+            el.setAttribute('x', item.x);
+            el.setAttribute('y', item.y);
+            el.setAttribute('font-size', item.fontSize);
+            el.setAttribute('fill', item.fill || 'var(--draw-color)');
+            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
+            if(item.weight) el.setAttribute('font-weight', item.weight);
+            el.textContent = ''; 
+            el.setAttribute('data-text', item.text);
+            el.classList.add('text-anim', 'anim-element');
+        } else if (item.type === 'path' || item.type === 'rect') {
+            el = document.createElementNS(svgNS, item.type);
+            Object.keys(item).forEach(key => {
+                if (['type', 'id', 'time', 'duration', 'voiceover', 'rx'].indexOf(key) === -1) {
+                     el.setAttribute(key.replace(/[A-Z]/g, m => "-" + m.toLowerCase()), item[key]);
+                } else if(key === 'rx') {
+                    el.setAttribute('rx', item[key]);
+                }
+            });
+            el.classList.add('anim-element');
+        }
+        if (el) {
+            el.id = item.id;
+            svg.appendChild(el);
+        }
+        return el;
+    }
+
+    function typeText(el, text, duration) {
+        if (!text || text.length === 0) {
+            el.style.opacity = 1;
+            return;
+        }
+        let charIndex = 0;
+        const chars = text.split('');
+        const charDelay = Math.max(50, (duration * 1000) / chars.length);
+        el.style.opacity = 1;
+
+        function addNextChar() {
+            if (charIndex < chars.length && isPlaying) {
+                el.textContent += chars[charIndex++];
+                const timeout = setTimeout(addNextChar, charDelay);
+                timeouts.push(timeout);
+            }
+        }
+        addNextChar();
+    }
+
+    function drawShape(el) {
+        el.style.opacity = 1;
+        el.classList.add('fade-in');
+    }
+
+    function animateItem(item) {
+        if (item.type === 'clear') {
+            let nodes = Array.from(svg.childNodes);
+            nodes.forEach((el) => { el.style.opacity = 0; el.style.transition = 'opacity 0.3s'; });
+            setTimeout(() => {
+                activeElements.forEach(el => { if (el && el.parentNode) svg.removeChild(el); });
+                activeElements = [];
+                if (item.voiceover) voDisplay.textContent = item.voiceover;
+            }, 300);
+            return;
+        }
+
+        if (item.voiceover) voDisplay.textContent = item.voiceover;
+        const el = createElement(item);
+        if (!el) return;
+        activeElements.push(el);
+        if (item.type === 'text') {
+            typeText(el, el.getAttribute('data-text'), item.duration);
+        } else {
+            drawShape(el);
+        }
+    }
+
+    // --- Main Controller ---
+    function startAnimation() {
+        if (isPlaying) return;
+        
+        resetAnimation();
+        isPlaying = true;
+        playBtn.disabled = true;
+        playBtn.textContent = '▶ Playing...';
+        
+        const startTime = Date.now();
+
+        timeline.forEach(item => {
+            const timeout = setTimeout(() => {
+                if (isPlaying) animateItem(item);
+            }, item.time * 1000);
+            timeouts.push(timeout);
+        });
+
+        function updateProgress() {
+            if (!isPlaying) {
+                cancelAnimationFrame(animationFrame);
+                return;
+            };
+
+            const elapsed = (Date.now() - startTime) / 1000;
+            
+            if (elapsed >= TOTAL_DURATION) {
+                progressBar.style.width = '100%';
+                // MODIFICATION: Stop the animation here and allow user to reset manually
+                isPlaying = false;
+                playBtn.disabled = false;
+                playBtn.textContent = '▶ Replay Tutorial';
+                // The last voiceover is already displayed by the timeline event.
+                // We can add a final confirmation if needed.
+                voDisplay.textContent = 'Tutorial Complete! Review the summary or click to replay.';
+                cancelAnimationFrame(animationFrame);
+                return;
+            }
+            
+            progressBar.style.width = (elapsed / TOTAL_DURATION) * 100 + '%';
+            animationFrame = requestAnimationFrame(updateProgress);
+        }
+        
+        updateProgress();
+    }
+
+    playBtn.addEventListener('click', startAnimation);
+    window.addEventListener('beforeunload', resetAnimation);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World-Class Breaker Sizing Animation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        :root {
+            --board-bg: #f8f9fa;
+            --draw-color: #212529;
+            --primary-blue: #0056b3;
+            --danger-red: #dc3545;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --font-main: 'Kalam', cursive;
+            --font-alt: 'Architects Daughter', cursive;
+        }
+
+        body {
+            background-color: #212529;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: var(--font-main);
+        }
+
+        #whiteboard-container {
+            position: relative;
+            width: 95vw;
+            max-width: 1400px;
+            aspect-ratio: 16 / 9;
+        }
+
+        #whiteboard {
+            width: 100%;
+            height: 100%;
+            background-color: var(--board-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 5px 5px 15px rgba(0,0,0,0.1) inset;
+            position: relative;
+            overflow: hidden;
+            border: 18px solid #ced4da;
+            border-bottom-width: 50px;
+        }
+
+        #animation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .anim-element {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .visible {
+            opacity: 1;
+        }
+
+        .draw-anim {
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+        }
+
+        .text-anim {
+            font-family: var(--font-main);
+        }
+
+        .alt-font {
+             font-family: var(--font-alt);
+        }
+
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes fade-in { to { opacity: 1; } }
+        @keyframes fire-glow {
+            0%, 100% { stroke: #e55039; }
+            50% { stroke: #f6b93b; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        #controls {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            z-index: 100;
+        }
+        #play-btn {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border: 2px solid var(--primary-blue);
+            background-color: #fff;
+            color: var(--primary-blue);
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        #play-btn:hover { background-color: var(--primary-blue); color: #fff; }
+        #play-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+        #voiceover-display {
+            position: absolute;
+            bottom: -45px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1.5vw;
+            line-height: 1.3;
+            color: var(--draw-color);
+            padding: 5px;
+            font-family: var(--font-alt);
+        }
+
+        #progress-bar-container {
+            position: absolute;
+            bottom: -37px;
+            left: -1px;
+            right: -1px;
+            height: 12px;
+            background: #adb5bd;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #00c6ff);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="whiteboard-container">
+        <div id="whiteboard">
+            <svg id="animation-svg" viewBox="0 0 1600 900">
+                <!-- All SVG elements will be dynamically created by JavaScript -->
+            </svg>
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="controls">
+            <button id="play-btn">Play Animation</button>
+        </div>
+        <div id="voiceover-display"></div>
+    </div>
+
+<script>
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById('animation-svg');
+    const playBtn = document.getElementById('play-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const voDisplay = document.getElementById('voiceover-display');
+    
+    let activeElements = [];
+    let animationTimeout;
+    let soundEnabled = true;
+    let timeouts = []; // Track all timeouts
+
+    // --- Sound Engine ---
+    const sounds = {
+        marker: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0.01 } }).toDestination(),
+        clear: new Tone.Player("https://tonejs.github.io/audio/berklee/Slight_Swoosh.mp3").toDestination(),
+        ding: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination(),
+        trip: new Tone.Player("https://tonejs.github.io/audio/berklee/mech_click.mp3").toDestination(),
+    };
+    sounds.marker.volume.value = -35;
+    sounds.ding.volume.value = -10;
+    sounds.trip.volume.value = -5;
+
+    // --- Timeline Definition ---
+    const TOTAL_DURATION = 300 * 1000; // 5 minutes
+
+    const timeline = [
+        // 0s - 15s: Title
+        { time: 1, type: 'text', id: 'title1', text: 'Mastering MCCB Sizing', x: 800, y: 300, fontSize: 80, anchor: 'middle', weight: 'bold', duration: 3 },
+        { time: 4, type: 'text', id: 'title2', text: "An Engineer's Guide to Motor Protection", x: 800, y: 380, fontSize: 50, anchor: 'middle', duration: 3.5 },
+        { time: 8, type: 'path', id: 'title-underline', d: 'M 400 410 H 1200', stroke: 'var(--primary-blue)', strokeWidth: 5, duration: 1 },
+        { time: 10, type: 'text', id: 'title-brand', text: 'Presented by DesignCalculators', x: 800, y: 500, fontSize: 50, fill: 'var(--success-green)', anchor: 'middle', duration: 3 },
+        { time: 15, type: 'clear', action: 'clear', sound: 'clear' },
+
+        // 15s - 50s: The Problem & The Hero
+        { time: 16, type: 'text', id: 'prob-title', text: "What's the risk?", x: 100, y: 150, fontSize: 60, weight: 'bold', duration: 2 },
+        { time: 19, type: 'text', id: 'prob-text', text: "An unprotected motor under fault...", x: 120, y: 220, fontSize: 45, duration: 3 },
+        { time: 23, type: 'path', id: 'motor-body', d: 'M 400 500 H 600 V 700 H 400 Z', stroke: 'var(--draw-color)', strokeWidth: 4, fill: '#efefef', duration: 1},
+        { time: 23, type: 'path', id: 'motor-shaft', d: 'M 600 600 H 650', stroke: '#888', strokeWidth: 15, duration: 0.5},
+        { time: 25, type: 'text', id: 'fault-text', text: "MASSIVE FAULT!", x: 500, y: 450, fontSize: 40, fill: 'var(--danger-red)', anchor: 'middle', duration: 1, anim: 'shake' },
+        { time: 26, type: 'path', id: 'motor-fire', d: 'M 450 490 Q 475 450 500 490 Q 525 450 550 490', stroke: 'var(--danger-red)', strokeWidth: 5, fill: 'none', duration: 1, anim: 'fire-glow'},
+        { time: 32, type: 'clear', action: 'clear', sound: 'clear' },
+        { time: 33, type: 'text', id: 'hero-title', text: "The Hero: MCCB", x: 800, y: 150, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 2},
+        { time: 36, type: 'path', id: 'mccb-box', d: 'M 650 300 H 950 V 600 H 650 Z', stroke: 'var(--draw-color)', strokeWidth: 5, fill: '#ddd', duration: 1},
+        { time: 38, type: 'path', id: 'mccb-switch', d: 'M 775 400 H 825', stroke: '#333', strokeWidth: 20, duration: 0.5},
+        { time: 40, type: 'text', id: 'job-title', text: "It has TWO critical jobs:", x: 800, y: 700, fontSize: 50, anchor: 'middle', duration: 3 },
+        { time: 50, type: 'clear', action: 'clear', sound: 'clear' },
+
+        // 50s - 90s: The Two Jobs
+        { time: 51, type: 'text', id: 'job1-title', text: '1. Overload Protection (Slow Cook)', x: 100, y: 150, fontSize: 50, fill: 'var(--warning-orange)', weight: 'bold', duration: 3 },
+        { time: 55, type: 'text', id: 'job1-desc', text: 'Protects motor from gradual overheating.', x: 120, y: 220, fontSize: 40, duration: 3.5 },
+        { time: 59, type: 'path', id: 'graph1-axes', d: 'M 150 550 V 350 H 550', stroke: 'var(--draw-color)', strokeWidth: 3, duration: 1 },
+        { time: 60, type: 'path', id: 'graph1-line', d: 'M 150 500 H 300 C 350 500, 400 450, 450 400', stroke: 'var(--warning-orange)', strokeWidth: 5, fill: 'none', duration: 4 },
+        { time: 61, type: 'text', id: 'graph1-label', text: 'Slight, sustained overcurrent', x: 200, y: 330, fontSize: 30, duration: 2 },
+        { time: 70, type: 'text', id: 'job2-title', text: '2. Short Circuit Protection (Fast Strike)', x: 800, y: 150, fontSize: 50, fill: 'var(--danger-red)', weight: 'bold', duration: 3 },
+        { time: 74, type: 'text', id: 'job2-desc', text: 'Instantly trips on massive fault currents.', x: 820, y: 220, fontSize: 40, duration: 3.5 },
+        { time: 78, type: 'path', id: 'graph2-axes', d: 'M 850 550 V 350 H 1250', stroke: 'var(--draw-color)', strokeWidth: 3, duration: 1 },
+        { time: 79, type: 'path', id: 'graph2-line', d: 'M 850 500 H 1050 V 370 H 1080 V 500 H 1250', stroke: 'var(--danger-red)', strokeWidth: 5, fill: 'none', duration: 2 },
+        { time: 80, type: 'text', id: 'graph2-label', text: 'Huge, instant spike!', x: 1065, y: 350, fontSize: 30, anchor: 'middle', duration: 2 },
+        { time: 90, type: 'clear', action: 'clear', sound: 'clear' },
+        
+        // 90s - 140s: The Golden Rule
+        { time: 91, type: 'text', id: 'rule-title', text: 'The Golden Rule of Coordination', x: 800, y: 120, fontSize: 60, weight: 'bold', anchor: 'middle', duration: 3.5 },
+        { time: 95, type: 'text', id: 'rule-formula', html: `I<tspan baseline-shift="sub" font-size="60">b</tspan> &lt; I<tspan baseline-shift="sub" font-size="60">n</tspan> ≤ I<tspan baseline-shift="sub" font-size="60">z</tspan>`, x: 800, y: 250, fontSize: 90, fill: 'var(--primary-blue)', anchor: 'middle', weight: 'bold', duration: 4 },
+        { time: 100, type: 'text', id: 'rule-ib', html: `I<tspan baseline-shift="sub">b</tspan> = Load Current (Motor FLC)`, x: 200, y: 400, fontSize: 45, duration: 3 },
+        { time: 104, type: 'text', id: 'rule-in', html: `I<tspan baseline-shift="sub">n</tspan> = Breaker Rating`, x: 200, y: 500, fontSize: 45, duration: 3 },
+        { time: 108, type: 'text', id: 'rule-iz', html: `I<tspan baseline-shift="sub">z</tspan> = Cable Ampacity`, x: 200, y: 600, fontSize: 45, duration: 3 },
+        { time: 115, type: 'text', id: 'rule-why1-title', text: "What if In > Iz ?", x: 1000, y: 400, fontSize: 45, fill: 'var(--danger-red)', anchor: 'middle', duration: 2 },
+        { time: 118, type: 'path', id: 'rule-cable', d: 'M 900 450 H 1100', stroke: '#333', strokeWidth: 10, duration: 1},
+        { time: 120, type: 'path', id: 'rule-cable-fire', d: 'M 950 440 Q 975 410 1000 440 Q 1025 410 1050 440', stroke: 'var(--danger-red)', strokeWidth: 5, fill: 'none', duration: 1, anim: 'fire-glow'},
+        { time: 121, type: 'text', id: 'rule-why1-text', text: "Cable burns before breaker trips! FIRE!", x: 1000, y: 520, fontSize: 40, anchor: 'middle', duration: 3 },
+        { time: 128, type: 'text', id: 'rule-why2-title', text: "What if In < Ib ?", x: 1000, y: 620, fontSize: 45, fill: 'var(--warning-orange)', anchor: 'middle', duration: 2 },
+        { time: 131, type: 'path', id: 'mccb-switch-trip', d: 'M 975 670 L 1025 650', stroke: '#333', strokeWidth: 20, duration: 0.2, sound: 'trip'},
+        { time: 132, type: 'text', id: 'rule-why2-text', text: "Nuisance Tripping!", x: 1000, y: 720, fontSize: 40, anchor: 'middle', duration: 2, anim: 'shake' },
+        { time: 140, type: 'clear', action: 'clear', sound: 'clear' },
+        
+        // 140s - 240s: The Calculation
+        { time: 141, type: 'text', id: 'calc-title', text: 'Example: Size MCCB for a 45kW Motor', x: 800, y: 100, fontSize: 55, weight: 'bold', anchor: 'middle', duration: 4 },
+        { time: 145, type: 'text', id: 'calc-given', text: '(415V, 0.85 PF, 0.9 Eff.)', x: 800, y: 160, fontSize: 40, anchor: 'middle', duration: 3 },
+        
+        { time: 150, type: 'text', id: 'step1-title', html: 'Step 1: Calculate Full Load Current (I<tspan baseline-shift="sub">b</tspan>)', x: 100, y: 250, fontSize: 45, weight: 'bold', duration: 4 },
+        { time: 155, type: 'text', id: 'step1-formula', html: `FLC = P / (√3 × V<tspan baseline-shift="sub">L</tspan> × PF × Eff)`, x: 150, y: 320, fontSize: 50, duration: 5 },
+        { time: 162, type: 'text', id: 'step1-calc', html: `FLC = 45000 / (1.732 × 415 × 0.85 × 0.9)`, x: 150, y: 400, fontSize: 50, duration: 6 },
+        { time: 170, type: 'text', id: 'step1-result', html: `I<tspan baseline-shift="sub">b</tspan> = 81.8 A`, x: 150, y: 500, fontSize: 60, fill: 'var(--danger-red)', weight: 'bold', duration: 2, sound: 'ding' },
+
+        { time: 175, type: 'text', id: 'step2-title', html: 'Step 2: Select Breaker Rating (I<tspan baseline-shift="sub">n</tspan>)', x: 100, y: 600, fontSize: 45, weight: 'bold', duration: 4 },
+        { time: 180, type: 'text', id: 'step2-desc', text: 'Must handle motor starting current (inrush). Rule of thumb: Size breaker to ~125% of FLC.', x: 150, y: 670, fontSize: 40, duration: 6 },
+        { time: 188, type: 'text', id: 'step2-calc', html: `I<tspan baseline-shift="sub">n</tspan> ≥ 81.8A × 1.25 = 102.25 A`, x: 150, y: 750, fontSize: 50, duration: 5 },
+        { time: 195, type: 'text', id: 'step2-result', html: `Next standard size ⇒ I<tspan baseline-shift="sub">n</tspan> = 125 A`, x: 150, y: 830, fontSize: 60, fill: 'var(--primary-blue)', weight: 'bold', duration: 3, sound: 'ding' },
+        { time: 200, type: 'clear', action: 'clear', sound: 'clear' },
+        
+        { time: 201, type: 'text', id: 'step3-title', html: 'Step 3: Select Cable Size (I<tspan baseline-shift="sub">z</tspan>)', x: 100, y: 150, fontSize: 45, weight: 'bold', duration: 4 },
+        { time: 206, type: 'text', id: 'step3-desc', html: `Remember the rule: I<tspan baseline-shift="sub">z</tspan> ≥ I<tspan baseline-shift="sub">n</tspan>. The cable MUST handle the breaker's max current.`, x: 150, y: 220, fontSize: 40, duration: 7 },
+        { time: 215, type: 'text', id: 'step3-check', text: `So, we need a cable with ampacity ≥ 125 A.`, x: 150, y: 320, fontSize: 50, duration: 4 },
+        { time: 221, type: 'text', id: 'step3-table-title', text: `From cable charts (considering derating):`, x: 150, y: 420, fontSize: 40, duration: 4 },
+        { time: 227, type: 'text', id: 'step3-table-row1', text: `35 sq.mm copper ⇒ 110 A (Too small!)`, x: 200, y: 500, fontSize: 45, fill: 'var(--danger-red)', duration: 3 },
+        { time: 232, type: 'text', id: 'step3-table-row2', text: `50 sq.mm copper ⇒ 140 A (Perfect!)`, x: 200, y: 580, fontSize: 45, fill: 'var(--success-green)', duration: 3 },
+        { time: 237, type: 'text', id: 'step3-result', html: `We choose: I<tspan baseline-shift="sub">z</tspan> = 140 A`, x: 150, y: 680, fontSize: 60, fill: 'var(--success-green)', weight: 'bold', duration: 2, sound: 'ding' },
+        { time: 240, type: 'clear', action: 'clear', sound: 'clear' },
+
+        // 240s - 270s: Final Verification
+        { time: 241, type: 'text', id: 'sum-title', text: 'Final Verification', x: 800, y: 150, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 3 },
+        { time: 245, type: 'text', id: 'sum-rule', html: `I<tspan baseline-shift="sub" font-size="70">b</tspan> &lt; I<tspan baseline-shift="sub" font-size="70">n</tspan> ≤ I<tspan baseline-shift="sub" font-size="70">z</tspan>`, x: 800, y: 300, fontSize: 100, fill: 'var(--primary-blue)', anchor: 'middle', weight: 'bold', duration: 4 },
+        { time: 252, type: 'text', id: 'sum-vals', html: `<tspan fill="var(--danger-red)">81.8A</tspan> &lt; <tspan fill="var(--primary-blue)">125A</tspan> ≤ <tspan fill="var(--success-green)">140A</tspan>`, x: 800, y: 450, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 5 },
+        { time: 260, type: 'path', id: 'sum-check', d: 'M 1200 400 L 1275 475 L 1425 325', stroke: 'var(--success-green)', strokeWidth: 20, fill: 'none', duration: 1.5, sound: 'ding' },
+        { time: 263, type: 'text', id: 'sum-conc', text: 'System is correctly sized and protected!', x: 800, y: 600, fontSize: 50, anchor: 'middle', duration: 3 },
+        { time: 270, type: 'clear', action: 'clear', sound: 'clear' },
+        
+        // 270s - 300s: Promotion
+        { time: 271, type: 'text', id: 'promo-line1', text: "Want more world-class engineering tools?", x: 800, y: 200, fontSize: 55, anchor: 'middle', duration: 4 },
+        { time: 276, type: 'text', id: 'promo-line2', text: "Free calculators, in-depth explainers, and standards-based methods.", x: 800, y: 300, fontSize: 45, anchor: 'middle', duration: 5 },
+        { time: 283, type: 'text', id: 'promo-cta', text: 'Visit the complete engineering hub:', x: 800, y: 450, fontSize: 50, fill: 'var(--primary-blue)', anchor: 'middle', duration: 3.5 },
+        { time: 288, type: 'path', id: 'promo-box', d: 'M 300 500 H 1300 V 650 H 300 Z', stroke: 'var(--success-green)', strokeWidth: 5, fill: 'rgba(40, 167, 69, 0.05)', duration: 1.5 },
+        { time: 290, type: 'text', id: 'promo-url', text: 'https://designcalculators.co.in', x: 800, y: 595, fontSize: 70, fill: 'var(--success-green)', weight: 'bold', anchor: 'middle', duration: 4 },
+        { time: 298, type: 'text', id: 'promo-end', text: 'Thanks for watching!', x: 800, y: 750, fontSize: 50, anchor: 'middle', duration: 2 },
+    ];
+
+    // --- Animation Engine ---
+    function createElement(item) {
+        let el;
+        if (item.type === 'text') {
+            el = document.createElementNS(svgNS, 'text');
+            el.setAttribute('x', item.x);
+            el.setAttribute('y', item.y);
+            el.setAttribute('font-size', item.fontSize);
+            if(item.fill) el.setAttribute('fill', item.fill);
+            else el.setAttribute('fill', 'var(--draw-color)');
+            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
+            if(item.weight) el.setAttribute('font-weight', item.weight);
+            el.innerHTML = item.html || item.text;
+            el.classList.add('text-anim');
+        } else if (item.type === 'path') {
+            el = document.createElementNS(svgNS, 'path');
+            el.setAttribute('d', item.d);
+            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
+            el.setAttribute('stroke-width', item.strokeWidth || 4);
+            el.setAttribute('fill', item.fill || 'none');
+        }
+        el.id = item.id;
+        el.classList.add('anim-element');
+        svg.appendChild(el);
+        return el;
+    }
+
+    // First, modify the animateItem function to ensure proper clearing
+    function animateItem(item) {
+        if (item.action === 'clear') {
+            if(item.sound && sounds[item.sound]) {
+                try { sounds[item.sound].start(); } catch(e) {}
+            }
+            // Immediately remove elements instead of fading
+            activeElements.forEach(el => {
+                if(el && el.parentNode) svg.removeChild(el);
+            });
+            activeElements = [];
+            return;
+        }
+
+        const el = createElement(item);
+        activeElements.push(el);
+
+        const timeout = setTimeout(() => {
+            el.classList.add('visible');
+            
+            if (item.type === 'path') {
+                el.classList.add('draw-anim');
+                el.style.animation = `draw ${item.duration}s linear forwards`;
+                
+                if (item.anim) {
+                    el.style.animation = `draw ${item.duration}s linear forwards, ${item.anim} 1s infinite`;
+                }
+            } else if (item.type === 'text') {
+                animateText(el, item.duration);
+                if (item.anim) {
+                    el.style.animation = `${item.anim} 1s infinite`;
+                }
+            }
+
+            if(soundEnabled && item.duration > 0.3) {
+                if (item.sound && sounds[item.sound]) {
+                    try { sounds[item.sound].start(); } catch(e) {}
+                } else if(item.type === 'path' || item.type === 'text') {
+                    let soundCount = 0;
+                    const maxSounds = Math.floor(item.duration * 10);
+                    const soundInterval = setInterval(() => {
+                        if(soundCount++ < maxSounds) {
+                            try { sounds.marker.triggerAttackRelease("8n"); } catch(e) {}
+                        }
+                    }, 100);
+                    const timeout2 = setTimeout(() => clearInterval(soundInterval), item.duration * 1000);
+                    timeouts.push(timeout2);
+                }
+            }
+        }, 100);
+        timeouts.push(timeout);
+    }
+
+    // Then adjust the startAnimation function to ensure proper initialization
+    function startAnimation() {
+        // Clear any existing animation first
+        resetAnimation();
+        
+        playBtn.disabled = true;
+        playBtn.textContent = "Playing...";
+        if (soundEnabled) {
+            Tone.start().catch(() => soundEnabled = false);
+        }
+        
+        const startTime = Date.now();
+        
+        function animationLoop() {
+            const elapsedTime = Date.now() - startTime;
+            if(elapsedTime >= TOTAL_DURATION) {
+                resetAnimation();
+                return;
+            }
+            updateUI(elapsedTime);
+            animationTimeout = requestAnimationFrame(animationLoop);
+        }
+        animationLoop();
+
+        // Add slight delay before starting timeline to ensure clean start
+        setTimeout(() => {
+            timeline.forEach(item => {
+                const timeout = setTimeout(() => animateItem(item), item.time * 1000);
+                timeouts.push(timeout);
+            });
+        }, 100);
+    }
+
+    function updateUI(time) {
+        const vo = timeline.slice().reverse().find(item => item.time * 1000 <= time && (item.type === 'text' || item.type === 'clear'));
+        if (vo && vo.type === 'text') {
+            const textContent = vo.text || vo.html.replace(/<[^>]+>/g, '');
+            voDisplay.textContent = textContent;
+        }
+        
+        const progress = (time / TOTAL_DURATION) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function resetAnimation() {
+        cancelAnimationFrame(animationTimeout);
+        timeouts.forEach(timeout => clearTimeout(timeout));
+        timeouts = [];
+        svg.innerHTML = '';
+        activeElements = [];
+        playBtn.disabled = false;
+        playBtn.textContent = "Play Animation";
+        voDisplay.textContent = "";
+        progressBar.style.width = '0%';
+    }
+
+    playBtn.addEventListener('click', () => {
+        if(playBtn.textContent === "Play Animation") {
+            startAnimation();
+        }
+    });
+
+</script>
+
+</body>
+</html>

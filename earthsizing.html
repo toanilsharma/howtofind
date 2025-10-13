@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Conductor Sizing - Whiteboard Tutorial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --board-bg: #f8f9fa;
+            --draw-color: #1a1a1a;
+            --primary-blue: #0056b3;
+            --danger-red: #dc3545;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --info-purple: #6f42c1;
+            --earth-green: #198754;
+            --font-main: 'Kalam', cursive;
+            --font-alt: 'Architects Daughter', cursive;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: var(--font-main);
+        }
+
+        #whiteboard-container {
+            position: relative;
+            width: 95vw;
+            max-width: 1600px;
+            aspect-ratio: 16 / 9;
+        }
+
+        #whiteboard {
+            width: 100%;
+            height: 100%;
+            background-color: var(--board-bg);
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 20px solid #8b7355;
+            border-bottom-width: 60px;
+        }
+
+        #animation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .anim-element {
+            opacity: 0;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .text-anim {
+            font-family: var(--font-main);
+        }
+
+        #controls {
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        #play-btn {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 15px 40px;
+            cursor: pointer;
+            border: 3px solid var(--primary-blue);
+            background-color: #fff;
+            color: var(--primary-blue);
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #play-btn:hover { 
+            background-color: var(--primary-blue); 
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        #play-btn:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.6;
+            transform: scale(1);
+        }
+
+        #voiceover-display {
+            position: absolute;
+            bottom: -80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1.8vw;
+            line-height: 1.5;
+            color: #ecf0f1;
+            padding: 10px 20px;
+            font-family: var(--font-alt);
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #progress-bar-container {
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-green), var(--primary-blue));
+            transition: width 0.3s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="whiteboard-container">
+        <div id="controls">
+            <button id="play-btn">▶ Start Tutorial</button>
+        </div>
+        <div id="whiteboard">
+            <svg id="animation-svg" viewBox="0 0 1600 900">
+                <!-- All SVG elements will be dynamically created by JavaScript -->
+            </svg>
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="voiceover-display">Click "Start Tutorial" to begin...</div>
+    </div>
+
+<script>
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById('animation-svg');
+    const playBtn = document.getElementById('play-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const voDisplay = document.getElementById('voiceover-display');
+    
+    let activeElements = [];
+    let animationFrame;
+    let timeouts = [];
+    let isPlaying = false;
+
+    const TOTAL_DURATION = 180; // 3 minutes
+
+    const timeline = [
+        // SECTION 1: TITLE (0-12s)
+        { 
+            time: 0.5, type: 'text', id: 'title1', text: 'Sizing Your Safety Line', 
+            x: 800, y: 300, fontSize: 100, anchor: 'middle', weight: 'bold', 
+            duration: 2.5,
+            voiceover: 'Welcome, everyone! Today, we will learn about a critical safety component.'
+        },
+        { 
+            time: 3.5, type: 'text', id: 'title2', text: 'EARTH CONDUCTOR SIZING', 
+            x: 800, y: 440, fontSize: 110, anchor: 'middle', weight: 'bold',
+            fill: 'var(--earth-green)', duration: 3,
+            voiceover: 'How to correctly size an Earth Conductor.'
+        },
+        { 
+            time: 7, type: 'text', id: 'subtitle', text: 'The Guardian of Your Electrical System!', 
+            x: 800, y: 560, fontSize: 60, anchor: 'middle',
+            duration: 3,
+            voiceover: 'Think of it as the guardian of your entire electrical system.'
+        },
+        { 
+            time: 10.5, type: 'path', id: 'title-underline', d: 'M 200 590 H 1400', 
+            stroke: 'var(--earth-green)', strokeWidth: 6, duration: 1.5,
+            voiceover: ''
+        },
+        
+        { time: 13, type: 'clear', voiceover: 'First, let\'s understand its vital role.' },
+        
+        // SECTION 2: THE "WHY" (14-40s)
+        { 
+            time: 14, type: 'text', id: 'concept-q', text: 'Why is it so Important?', 
+            x: 800, y: 120, fontSize: 80, weight: 'bold', anchor: 'middle',
+            duration: 3,
+            voiceover: 'Why is this conductor so incredibly important?'
+        },
+        { // Appliance
+            time: 18, type: 'rect', id: 'appliance', x: 400, y: 300, width: 250, height: 250,
+            stroke: 'var(--primary-blue)', strokeWidth: 8, fill: 'rgba(0, 86, 179, 0.05)', duration: 1,
+            voiceover: 'Consider any metal appliance, like this washing machine.'
+        },
+        { time: 19, type: 'text', id: 'app-label', text: 'Appliance', x: 525, y: 435, fontSize: 40, anchor: 'middle', duration: 1},
+        { // Faulty wire touching case
+            time: 21, type: 'path', id: 'fault-wire', d: 'M 525 350 C 550 380, 450 400, 400 420',
+            stroke: 'var(--danger-red)', strokeWidth: 8, fill: 'none', duration: 1.5,
+            voiceover: 'If a live wire inside breaks and touches the metal case...'
+        },
+        { // Human touching it
+            time: 23, type: 'path', id: 'human', d: 'M 750 550 V 375 H 800 M 775 375 V 300 A 40 40 0 1 1 775 220',
+            stroke: 'var(--draw-color)', strokeWidth: 8, fill: 'none', duration: 2,
+            voiceover: '...the whole machine becomes live! If someone touches it...'
+        },
+        { // DANGER text
+            time: 25.5, type: 'text', id: 'danger-text', text: 'DANGER!', x: 800, y: 350, fontSize: 70, weight: 'bold', fill: 'var(--danger-red)',
+            duration: 2, voiceover: '...they could receive a fatal electric shock.'
+        },
+        { // Earth wire appears
+            time: 28, type: 'path', id: 'earth-wire', d: 'M 650 450 H 1100 V 600 H 1200',
+            stroke: 'var(--earth-green)', strokeWidth: 10, duration: 2,
+            voiceover: 'But, the earth wire provides a safe path for this fault current.'
+        },
+        { // Earth symbol
+            time: 30, type: 'path', id: 'earth-symbol', d: 'M 1200 600 V 650 M 1150 650 H 1250 M 1170 680 H 1230 M 1190 710 H 1210',
+            stroke: 'var(--earth-green)', strokeWidth: 8, duration: 1.5
+        },
+        {
+             time: 33, type: 'text', id: 'safety-text', text: 'It carries the fault current safely to the ground, tripping the breaker!', 
+             x: 800, y: 800, fontSize: 45, anchor: 'middle', fill: 'var(--earth-green)',
+             duration: 5,
+             voiceover: 'It carries the dangerous current safely to the ground, which trips the circuit breaker instantly!'
+        },
+
+        { time: 41, type: 'clear', voiceover: 'To do this job, it must be the correct size. Here is the formula.' },
+
+        // SECTION 3: THE ADIABATIC EQUATION (42-75s)
+        { 
+            time: 42, type: 'text', id: 'formula-title', text: 'The Sizing Formula (IEC Standard)', 
+            x: 800, y: 100, fontSize: 80, weight: 'bold', anchor: 'middle',
+            duration: 3,
+            voiceover: 'We use a special formula called the Adiabatic Equation from the IEC standards.'
+        },
+        { 
+            time: 46, type: 'text', id: 'formula', text: 'S = √(I²t) / k', 
+            x: 800, y: 280, fontSize: 130, anchor: 'middle',
+            duration: 4,
+            voiceover: 'S equals the square root of I squared times t, all divided by k.'
+        },
+        { 
+            time: 51, type: 'text', id: 's-def', text: '• S = Minimum Size of Earth Wire (mm²)', 
+            x: 150, y: 450, fontSize: 50, 
+            duration: 3,
+            voiceover: 'S is the minimum cross-sectional area of the conductor in square millimeters.'
+        },
+         { 
+            time: 55, type: 'text', id: 'i-def', text: '• I = Fault Current (Amperes)', 
+            x: 150, y: 550, fontSize: 50, 
+            duration: 3,
+            voiceover: 'I is the fault current in amps, which we learned to calculate previously.'
+        },
+        { 
+            time: 59, type: 'text', id: 't-def', text: '• t = Breaker Disconnection Time (seconds)', 
+            x: 150, y: 650, fontSize: 50, 
+            duration: 4,
+            voiceover: 't is the time it takes for your protective device, like a circuit breaker, to operate.'
+        },
+        { 
+            time: 64, type: 'text', id: 'k-def', text: '• k = A Material Constant (from tables)', 
+            x: 150, y: 750, fontSize: 50, 
+            duration: 4,
+            voiceover: 'And k is a special factor that depends on the wire material and its insulation.'
+        },
+
+        { time: 70, type: 'clear', voiceover: 'Let\'s take a closer look at that k-factor.' },
+        
+        // SECTION 4: THE 'k' FACTOR (71-95s)
+        { 
+            time: 71, type: 'text', id: 'k-title', text: 'Finding the \'k\' Factor', 
+            x: 800, y: 120, fontSize: 80, weight: 'bold', anchor: 'middle', fill: 'var(--info-purple)',
+            duration: 3, voiceover: 'Finding the correct k-factor is easy. You just look it up in a table.'
+        },
+        { // Table outline
+            time: 75, type: 'rect', id: 'k-table-box', x: 200, y: 200, width: 1200, height: 450,
+            stroke: 'var(--draw-color)', strokeWidth: 6, fill: 'none', duration: 1
+        },
+        { // Table headers
+            time: 76, type: 'path', id: 'k-table-lines', d: 'M 200 300 H 1400 M 600 200 V 650 M 1000 200 V 650',
+            stroke: 'var(--draw-color)', strokeWidth: 4, duration: 1.5
+        },
+        { 
+            time: 78, type: 'text', id: 'th1', text: 'Material', x: 400, y: 265, fontSize: 55, weight: 'bold', anchor: 'middle',
+            duration: 2
+        },
+        { 
+            time: 79, type: 'text', id: 'th2', text: 'Insulation', x: 800, y: 265, fontSize: 55, weight: 'bold', anchor: 'middle',
+            duration: 2
+        },
+        { 
+            time: 80, type: 'text', id: 'th3', text: 'k-Value', x: 1200, y: 265, fontSize: 55, weight: 'bold', anchor: 'middle',
+            duration: 2, voiceover: 'The table has columns for material, insulation, and the k-value itself.'
+        },
+        // Table rows
+        { time: 83, type: 'text', id: 'row1', text: 'Copper', x: 400, y: 360, fontSize: 50, anchor: 'middle', duration: 2 },
+        { time: 83.5, type: 'text', id: 'row1b', text: 'PVC', x: 800, y: 360, fontSize: 50, anchor: 'middle', duration: 2 },
+        { time: 84, type: 'text', id: 'row1c', text: '115', x: 1200, y: 360, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 2, voiceover: 'For example, for a copper wire with PVC insulation, k is 115.' },
+        
+        { time: 87, type: 'text', id: 'row2', text: 'Copper', x: 400, y: 460, fontSize: 50, anchor: 'middle', duration: 2 },
+        { time: 87.5, type: 'text', id: 'row2b', text: 'XLPE', x: 800, y: 460, fontSize: 50, anchor: 'middle', duration: 2 },
+        { time: 88, type: 'text', id: 'row2c', text: '143', x: 1200, y: 460, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 2, voiceover: 'For copper with better XLPE insulation, k is higher, at 143.' },
+
+        { time: 91, type: 'text', id: 'row3', text: 'Aluminum', x: 400, y: 560, fontSize: 50, anchor: 'middle', duration: 2 },
+        { time: 91.5, type: 'text', id: 'row3b', text: 'PVC / XLPE', x: 800, y: 560, fontSize: 50, anchor: 'middle', duration: 2 },
+        { time: 92, type: 'text', id: 'row3c', text: '76', x: 1200, y: 560, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 2, voiceover: 'For aluminum, it\'s 76.' },
+
+        { time: 96, type: 'text', id: 'k-note', text: '(These are common values from IEC standards)', x: 800, y: 750, fontSize: 45, anchor: 'middle', fill: '#555', duration: 3, voiceover: ''},
+
+
+        { time: 100, type: 'clear', voiceover: 'Excellent! Let\'s put it all together in a practical example.' },
+
+        // SECTION 5: PRACTICAL EXAMPLE (101-145s)
+        { 
+            time: 101, type: 'text', id: 'ex-title', text: 'Practical Example', 
+            x: 800, y: 90, fontSize: 75, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
+            duration: 2
+        },
+        { 
+            time: 104, type: 'text', id: 'ex-given-title', text: 'Given:', x: 150, y: 180, fontSize: 55, weight: 'bold', duration: 1.5, voiceover: 'Here is our problem.'
+        },
+        { time: 106, type: 'text', id: 'ex-given1', text: '• Fault Current (I) = 5000 A', x: 200, y: 260, fontSize: 50, duration: 2.5, voiceover: 'A potential fault current of 5000 amps.'},
+        { time: 109, type: 'text', id: 'ex-given2', text: '• Breaker Time (t) = 0.2 seconds', x: 200, y: 330, fontSize: 50, duration: 3, voiceover: 'The breaker will trip in 0.2 seconds.'},
+        { time: 112.5, type: 'text', id: 'ex-given3', text: '• Wire is Copper with PVC insulation', x: 200, y: 400, fontSize: 50, duration: 3, voiceover: 'And we are using a copper wire with PVC insulation.'},
+        
+        { 
+            time: 116, type: 'text', id: 'ex-step1', text: 'Step 1: Find k', x: 150, y: 500, fontSize: 55, weight: 'bold', duration: 2,
+            voiceover: 'Step one is to find our k-value.'
+        },
+        { 
+            time: 118.5, type: 'text', id: 'ex-k-val', text: 'From the table, for Copper/PVC, k = 115', x: 200, y: 580, fontSize: 50, duration: 3.5,
+            voiceover: 'Looking at our table, for copper with PVC, k is 115.'
+        },
+        
+        { 
+            time: 122.5, type: 'text', id: 'ex-step2', text: 'Step 2: Apply the Formula', x: 150, y: 680, fontSize: 55, weight: 'bold', duration: 2.5,
+            voiceover: 'Now, we apply the master formula.'
+        },
+        { 
+            time: 125.5, type: 'text', id: 'ex-calc1', text: 'S = √(5000² × 0.2) / 115', x: 200, y: 770, fontSize: 50, duration: 4,
+            voiceover: 'S equals the square root of 5000 squared times 0.2, divided by 115.'
+        },
+        
+        { time: 130, type: 'clear', voiceover: 'Let\'s solve this calculation.'},
+
+        // Calculation continuation
+        { time: 130.5, type: 'text', id: 'ex-calc2', text: 'S = √ (25,000,000 × 0.2) / 115', x: 800, y: 150, fontSize: 60, anchor: 'middle', duration: 4},
+        { time: 135, type: 'text', id: 'ex-calc3', text: 'S = √ (5,000,000) / 115', x: 800, y: 280, fontSize: 60, anchor: 'middle', duration: 4},
+        { time: 139.5, type: 'text', id: 'ex-calc4', text: 'S = 2236 / 115', x: 800, y: 410, fontSize: 60, anchor: 'middle', duration: 3},
+        { 
+            time: 143, type: 'text', id: 'ex-result', text: 'S = 19.44 mm²', 
+            x: 800, y: 560, fontSize: 90, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)',
+            duration: 3, voiceover: 'Our calculated minimum size is 19.44 square millimeters.'
+        },
+        { 
+            time: 147, type: 'text', id: 'ex-final', text: 'We must choose the NEXT STANDARD SIZE UP!', 
+            x: 800, y: 700, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--danger-red)',
+            duration: 4, voiceover: 'But we can\'t buy a 19.44 wire. We must always choose the next standard size UP.'
+        },
+        { 
+            time: 151.5, type: 'text', id: 'ex-answer', text: 'Final Answer: Choose 25 mm²', 
+            x: 800, y: 800, fontSize: 70, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)',
+            duration: 4, voiceover: 'So our final, safe answer is to use a 25 square millimeter conductor.'
+        },
+        { 
+            time: 152, type: 'rect', id: 'final-box', x: 400, y: 750, width: 800, height: 90,
+            stroke: 'var(--success-green)', strokeWidth: 8, fill: 'none',
+            duration: 1
+        },
+
+
+        { time: 157, type: 'clear', voiceover: 'Let\'s quickly summarize what we learned.' },
+
+        // SECTION 6: CONCLUSION (158-180s)
+        { 
+            time: 158, type: 'text', id: 'summary-title', text: 'Summary: The 4 Key Steps', 
+            x: 800, y: 150, fontSize: 80, weight: 'bold', anchor: 'middle', fill: 'var(--info-purple)',
+            duration: 3, voiceover: 'Remember these four key steps to safety.'
+        },
+        { 
+            time: 162, type: 'text', id: 'sum1', text: '1. The Earth wire\'s job is YOUR SAFETY.', 
+            x: 200, y: 300, fontSize: 50, 
+            duration: 3, voiceover: 'One: The earth conductor exists for your safety.'
+        },
+        { 
+            time: 165.5, type: 'text', id: 'sum2', text: '2. Use the formula: S = √(I²t) / k', 
+            x: 200, y: 420, fontSize: 50, 
+            duration: 4, voiceover: 'Two: Always use the adiabatic equation to calculate the minimum size.'
+        },
+        { 
+            time: 170, type: 'text', id: 'sum3', text: '3. Find the correct \'k\' value from tables.', 
+            x: 200, y: 540, fontSize: 50, 
+            duration: 3.5, voiceover: 'Three: Be sure to select the correct k-value for your material.'
+        },
+        { 
+            time: 174, type: 'text', id: 'sum4', text: '4. ALWAYS round UP to the next standard size.', 
+            x: 200, y: 660, fontSize: 50, fill: 'var(--danger-red)', weight: 'bold',
+            duration: 4, voiceover: 'And four, the most important rule: always round your answer UP to the next standard size.'
+        },
+        { 
+            time: 178.5, type: 'text', id: 'end-text', text: 'Stay safe, and keep learning!', 
+            x: 800, y: 820, fontSize: 70, weight: 'bold', anchor: 'middle',
+            duration: 3, voiceover: 'Excellent job today. Stay safe, and keep learning!'
+        },
+    ];
+
+    // --- Helper Functions ---
+    function resetAnimation() {
+        timeouts.forEach(t => clearTimeout(t));
+        timeouts = [];
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
+        activeElements = [];
+        progressBar.style.width = '0%';
+        voDisplay.textContent = 'Click "Start Tutorial" to begin...';
+        playBtn.disabled = false;
+        playBtn.textContent = '▶ Start Tutorial';
+        isPlaying = false;
+    }
+
+    // --- Element & Animation Creation ---
+    function createElement(item) {
+        let el;
+        if (item.type === 'text') {
+            el = document.createElementNS(svgNS, 'text');
+            el.setAttribute('x', item.x);
+            el.setAttribute('y', item.y);
+            el.setAttribute('font-size', item.fontSize);
+            el.setAttribute('fill', item.fill || 'var(--draw-color)');
+            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
+            if(item.weight) el.setAttribute('font-weight', item.weight);
+            el.textContent = ''; 
+            el.setAttribute('data-text', item.text);
+            el.classList.add('text-anim', 'anim-element');
+        } else if (item.type === 'path' || item.type === 'rect') {
+            el = document.createElementNS(svgNS, item.type);
+            Object.keys(item).forEach(key => {
+                if (['type', 'id', 'time', 'duration', 'voiceover', 'rx'].indexOf(key) === -1) {
+                     el.setAttribute(key.replace(/[A-Z]/g, m => "-" + m.toLowerCase()), item[key]);
+                } else if(key === 'rx') {
+                    el.setAttribute('rx', item[key]);
+                }
+            });
+            el.classList.add('anim-element');
+        }
+        if (el) {
+            el.id = item.id;
+            svg.appendChild(el);
+        }
+        return el;
+    }
+
+    function typeText(el, text, duration) {
+        if (!text || text.length === 0) {
+            el.style.opacity = 1;
+            return;
+        }
+        let charIndex = 0;
+        const chars = text.split('');
+        const charDelay = Math.max(50, (duration * 1000) / chars.length);
+        el.style.opacity = 1;
+
+        function addNextChar() {
+            if (charIndex < chars.length && isPlaying) {
+                el.textContent += chars[charIndex++];
+                const timeout = setTimeout(addNextChar, charDelay);
+                timeouts.push(timeout);
+            }
+        }
+        addNextChar();
+    }
+
+    function drawShape(el) {
+        el.style.opacity = 1;
+        el.classList.add('fade-in');
+    }
+
+    function animateItem(item) {
+        if (item.type === 'clear') {
+            // Clear with a slight fade
+            let nodes = Array.from(svg.childNodes);
+            nodes.forEach((el, i) => {
+                setTimeout(() => {
+                    if(el) el.style.opacity = 0;
+                }, i * 15);
+            });
+
+            setTimeout(() => {
+                activeElements.forEach(el => {
+                    if (el && el.parentNode) svg.removeChild(el);
+                });
+                activeElements = [];
+                 if (item.voiceover) voDisplay.textContent = item.voiceover;
+            }, nodes.length * 15 + 200);
+            return;
+        }
+
+        if (item.voiceover) voDisplay.textContent = item.voiceover;
+
+        const el = createElement(item);
+        if (!el) return;
+        
+        activeElements.push(el);
+
+        if (item.type === 'text') {
+            typeText(el, el.getAttribute('data-text'), item.duration);
+        } else {
+            drawShape(el);
+        }
+    }
+
+    // --- Main Controller ---
+    function startAnimation() {
+        if (isPlaying) return;
+        
+        resetAnimation();
+        isPlaying = true;
+        playBtn.disabled = true;
+        playBtn.textContent = '▶ Playing...';
+        
+        const startTime = Date.now();
+
+        timeline.forEach(item => {
+            const timeout = setTimeout(() => {
+                if (isPlaying) animateItem(item);
+            }, item.time * 1000);
+            timeouts.push(timeout);
+        });
+
+        function updateProgress() {
+            if (!isPlaying) return;
+            const elapsed = (Date.now() - startTime) / 1000;
+            
+            if (elapsed >= TOTAL_DURATION) {
+                progressBar.style.width = '100%';
+                const timeout = setTimeout(() => {
+                    resetAnimation();
+                    voDisplay.textContent = 'Tutorial complete! Click to replay.';
+                }, 2000);
+                timeouts.push(timeout);
+                return;
+            }
+            
+            progressBar.style.width = (elapsed / TOTAL_DURATION) * 100 + '%';
+            animationFrame = requestAnimationFrame(updateProgress);
+        }
+        
+        updateProgress();
+    }
+
+    playBtn.addEventListener('click', startAnimation);
+    window.addEventListener('beforeunload', resetAnimation);
+</script>
+
+</body>
+</html>

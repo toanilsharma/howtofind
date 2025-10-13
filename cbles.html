@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World-Class Cable Sizing Animation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        :root {
+            --board-bg: #f8f9fa;
+            --draw-color: #212529;
+            --primary-blue: #0056b3;
+            --danger-red: #dc3545;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --font-main: 'Kalam', cursive;
+            --font-alt: 'Architects Daughter', cursive;
+        }
+
+        body {
+            background-color: #212529;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: var(--font-main);
+        }
+
+        #whiteboard-container {
+            position: relative;
+            width: 95vw;
+            max-width: 1400px;
+            aspect-ratio: 16 / 9;
+        }
+
+        #whiteboard {
+            width: 100%;
+            height: 100%;
+            background-color: var(--board-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 5px 5px 15px rgba(0,0,0,0.1) inset;
+            position: relative;
+            overflow: hidden;
+            border: 18px solid #ced4da;
+            border-bottom-width: 50px;
+        }
+
+        #animation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .anim-element {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .visible {
+            opacity: 1;
+        }
+
+        .draw-anim {
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+        }
+
+        .text-anim {
+            font-family: var(--font-main);
+        }
+        
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes fade-in { to { opacity: 1; } }
+        @keyframes heat-glow {
+            0%, 100% { stroke: var(--warning-orange); fill: var(--warning-orange); }
+            50% { stroke: var(--danger-red); fill: var(--danger-red); }
+        }
+        @keyframes shock {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(2px, -2px) scale(1.05); }
+        }
+
+        #controls {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            z-index: 100;
+        }
+        #play-btn {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border: 2px solid var(--primary-blue);
+            background-color: #fff;
+            color: var(--primary-blue);
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        #play-btn:hover { background-color: var(--primary-blue); color: #fff; }
+        #play-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+        #voiceover-display {
+            position: absolute;
+            bottom: -45px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1.5vw;
+            line-height: 1.3;
+            color: var(--draw-color);
+            padding: 5px;
+            font-family: var(--font-alt);
+        }
+
+        #progress-bar-container {
+            position: absolute;
+            bottom: -37px;
+            left: -1px;
+            right: -1px;
+            height: 12px;
+            background: #adb5bd;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="whiteboard-container">
+        <div id="whiteboard">
+            <svg id="animation-svg" viewBox="0 0 1600 900">
+                <!-- All SVG elements will be dynamically created by JavaScript -->
+            </svg>
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="controls">
+            <button id="play-btn">Play Animation</button>
+        </div>
+        <div id="voiceover-display"></div>
+    </div>
+
+<script>
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById('animation-svg');
+    const playBtn = document.getElementById('play-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const voDisplay = document.getElementById('voiceover-display');
+    
+    let activeElements = [];
+    let animationTimeout;
+    let soundEnabled = true;
+    let timeouts = []; // Track all timeouts
+
+    // --- Sound Engine ---
+    const sounds = {
+        marker: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0.01 } }).toDestination(),
+        clear: new Tone.Player("https://tonejs.github.io/audio/berklee/Slight_Swoosh.mp3").toDestination(),
+        ding: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination(),
+        warn: new Tone.Synth({ oscillator: { type: "sawtooth" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.5 } }).toDestination(),
+    };
+    sounds.marker.volume.value = -35;
+    sounds.ding.volume.value = -10;
+    sounds.warn.volume.value = -15;
+
+    // --- Timeline Definition ---
+    const TOTAL_DURATION = 300 * 1000; // 5 minutes
+
+    const timeline = [
+        // 0s - 20s: Title
+        { time: 1, type: 'text', id: 'title1', text: 'Cable Sizing Fundamentals', x: 800, y: 350, fontSize: 90, anchor: 'middle', weight: 'bold', duration: 4 },
+        { time: 6, type: 'text', id: 'title2', text: "The Highway for Electricity", x: 800, y: 450, fontSize: 60, anchor: 'middle', duration: 4.5 },
+        { time: 12, type: 'path', id: 'title-underline', d: 'M 350 480 H 1250', stroke: 'var(--primary-blue)', strokeWidth: 5, duration: 1.5 },
+        { time: 20, type: 'clear', action: 'clear', sound: 'clear' },
+
+        // 20s - 85s: Pillar 1: Ampacity
+        { time: 21, type: 'text', id: 'pillar1-title', text: "1. Ampacity (Current Capacity)", x: 800, y: 120, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 4 },
+        { time: 26, type: 'text', id: 'pillar1-desc', text: "A cable's max current before it gets too hot.", x: 800, y: 200, fontSize: 50, anchor: 'middle', duration: 5 },
+        { time: 33, type: 'text', id: 'pillar1-analogy', text: "Think of it like a water pipe...", x: 200, y: 350, fontSize: 50, duration: 4 },
+        { time: 39, type: 'path', id: 'pipe-ok', d: 'M 200 450 H 600', stroke: '#adb5bd', strokeWidth: 30, duration: 1},
+        { time: 41, type: 'text', id: 'pipe-ok-text', text: "Correct Size = Flow is fine", x: 400, y: 520, fontSize: 45, anchor: 'middle', fill: 'var(--success-green)', duration: 3},
+        { time: 47, type: 'path', id: 'pipe-bad', d: 'M 1000 450 H 1400', stroke: '#adb5bd', strokeWidth: 15, duration: 1},
+        { time: 49, type: 'text', id: 'pipe-bad-text', text: "Too small = Overheats!", x: 1200, y: 520, fontSize: 45, anchor: 'middle', fill: 'var(--danger-red)', duration: 3, sound: 'warn'},
+        { time: 50, type: 'path', id: 'pipe-heat', d: 'M 1000 450 H 1400', stroke: 'var(--warning-orange)', strokeWidth: 20, fill: 'none', duration: 2, anim: 'heat-glow'},
+        { time: 60, type: 'text', id: 'derating-title', text: "Watch out for Derating Factors!", x: 800, y: 650, fontSize: 55, weight: 'bold', anchor: 'middle', duration: 4.5 },
+        { time: 66, type: 'text', id: 'derating-desc', text: "(High ambient temp, grouping cables reduces ampacity)", x: 800, y: 720, fontSize: 45, anchor: 'middle', duration: 6 },
+        { time: 75, type: 'text', id: 'ampacity-rule', html: `Rule: Cable Ampacity (I<tspan baseline-shift="sub">z</tspan>) must be ≥ Load Current (I<tspan baseline-shift="sub">b</tspan>)`, x: 800, y: 820, fontSize: 50, anchor: 'middle', fill: 'var(--primary-blue)', duration: 7 },
+        { time: 85, type: 'clear', action: 'clear', sound: 'clear' },
+
+        // 86s - 150s: Pillar 2: Voltage Drop
+        { time: 87, type: 'text', id: 'pillar2-title', text: "2. Voltage Drop", x: 800, y: 120, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 3 },
+        { time: 91, type: 'text', id: 'pillar2-desc', text: "Voltage is lost over the length of a cable due to its resistance.", x: 800, y: 200, fontSize: 50, anchor: 'middle', duration: 6 },
+        { time: 99, type: 'text', id: 'pillar2-analogy', text: "Like water pressure loss in a long hose.", x: 800, y: 300, fontSize: 50, anchor: 'middle', duration: 5 },
+        { time: 106, type: 'path', id: 'source-box', d: 'M 150 400 H 250 V 500 H 150 Z', stroke: 'var(--draw-color)', strokeWidth: 4, fill: '#efefef', duration: 1 },
+        { time: 107, type: 'text', id: 'source-text', text: '230V', x: 200, y: 465, fontSize: 40, anchor: 'middle', duration: 1},
+        { time: 109, type: 'path', id: 'long-cable', d: 'M 250 450 H 1350', stroke: '#a98c6a', strokeWidth: 8, duration: 2},
+        { time: 112, type: 'path', id: 'load-bulb-base', d: 'M 1350 425 H 1450 V 475 H 1350 Z', stroke: '#6c757d', strokeWidth: 4, fill: '#adb5bd', duration: 1},
+        { time: 113, type: 'path', id: 'load-bulb-glass', d: 'M 1400 425 C 1450 425, 1450 350, 1400 350 C 1350 350, 1350 425, 1400 425', stroke: '#343a40', strokeWidth: 4, fill: 'rgba(253, 230, 138, 0.4)', duration: 1.5},
+        { time: 116, type: 'text', id: 'end-volt', text: '...arrives as 220V!', x: 1400, y: 550, fontSize: 50, anchor: 'middle', fill: 'var(--danger-red)', duration: 3, sound: 'warn'},
+        { time: 122, type: 'text', id: 'vd-problem-title', text: "Why is this bad?", x: 800, y: 650, fontSize: 55, weight: 'bold', anchor: 'middle', duration: 3 },
+        { time: 126, type: 'text', id: 'vd-problem-desc', text: "Inefficient motors, dim lights, equipment damage.", x: 800, y: 720, fontSize: 50, anchor: 'middle', duration: 5 },
+        { time: 135, type: 'text', id: 'vd-rule', text: "Rule: Keep Voltage Drop within limits (e.g., 3-5% per standards).", x: 800, y: 820, fontSize: 50, fill: 'var(--primary-blue)', anchor: 'middle', duration: 8 },
+        { time: 148, type: 'clear', action: 'clear', sound: 'clear' },
+        
+        // 150s - 210s: Pillar 3: Short Circuit
+        { time: 150, type: 'text', id: 'pillar3-title', text: "3. Short Circuit Rating", x: 800, y: 120, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 4 },
+        { time: 155, type: 'text', id: 'pillar3-desc', text: "Can the cable survive a massive fault current until the breaker trips?", x: 800, y: 200, fontSize: 50, anchor: 'middle', duration: 7 },
+        { time: 164, type: 'path', id: 'sc-cable-ok', d: 'M 200 450 H 600', stroke: 'var(--draw-color)', strokeWidth: 25, duration: 1},
+        { time: 166, type: 'path', id: 'sc-bolt-ok', d: 'M 400 350 L 370 420 L 430 420 L 400 500', stroke: 'var(--warning-orange)', strokeWidth: 10, fill: 'none', duration: 0.5, sound: 'warn', anim: 'shock' },
+        { time: 168, type: 'text', id: 'sc-ok-text', text: "Correctly sized: Withstands the energy", x: 400, y: 550, fontSize: 45, anchor: 'middle', fill: 'var(--success-green)', duration: 5},
+        { time: 175, type: 'path', id: 'sc-cable-bad', d: 'M 1000 450 H 1400', stroke: 'var(--draw-color)', strokeWidth: 10, duration: 1},
+        { time: 177, type: 'path', id: 'sc-bolt-bad', d: 'M 1200 350 L 1170 420 L 1230 420 L 1200 500', stroke: 'var(--warning-orange)', strokeWidth: 10, fill: 'none', duration: 0.5, sound: 'warn', anim: 'shock' },
+        { time: 178, type: 'text', id: 'sc-bad-text-bang', text: "BANG!", x: 1200, y: 460, fontSize: 60, anchor: 'middle', fill: 'var(--danger-red)', duration: 1 },
+        { time: 180, type: 'text', id: 'sc-bad-text', text: "Undersized: Ruptures before breaker trips!", x: 1200, y: 550, fontSize: 45, anchor: 'middle', fill: 'var(--danger-red)', duration: 6},
+        { time: 190, type: 'text', id: 'sc-rule', text: "Rule: Cable must handle the short circuit energy (I²t) let through by the protective device.", x: 800, y: 750, fontSize: 50, fill: 'var(--primary-blue)', anchor: 'middle', duration: 10 },
+        { time: 205, type: 'clear', action: 'clear', sound: 'clear' },
+        
+        // 210s - 270s: The Sizing Process
+        { time: 208, type: 'text', id: 'proc-title', text: 'The Sizing Process: A Checklist', x: 800, y: 150, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 5 },
+        { time: 215, type: 'text', id: 'proc-1', text: '1. Select cable based on Ampacity (and derating).', x: 150, y: 300, fontSize: 50, duration: 6 },
+        { time: 223, type: 'text', id: 'proc-2', text: '2. Check Voltage Drop for that cable size.', x: 150, y: 420, fontSize: 50, duration: 5 },
+        { time: 230, type: 'text', id: 'proc-3', text: '3. If VD is too high, INCREASE cable size and re-check.', x: 200, y: 520, fontSize: 50, fill: 'var(--warning-orange)', duration: 7 },
+        { time: 239, type: 'text', id: 'proc-4', text: '4. Check Short Circuit withstand for the chosen size.', x: 150, y: 640, fontSize: 50, duration: 6 },
+        { time: 247, type: 'text', id: 'proc-5', text: '5. If SC rating is too low, INCREASE cable size again.', x: 200, y: 740, fontSize: 50, fill: 'var(--danger-red)', duration: 7 },
+        { time: 256, type: 'text', id: 'proc-final', text: 'The final choice must satisfy ALL THREE conditions!', x: 800, y: 850, fontSize: 55, weight: 'bold', anchor: 'middle', duration: 6, sound: 'ding' },
+        { time: 265, type: 'clear', action: 'clear', sound: 'clear' },
+
+        // 270s - 300s: Promotion
+        { time: 268, type: 'text', id: 'promo-line1', text: "This is a fundamental overview.", x: 800, y: 250, fontSize: 55, anchor: 'middle', duration: 4.5 },
+        { time: 274, type: 'text', id: 'promo-line2', text: "For real-world design, always consult standards and use professional software.", x: 800, y: 350, fontSize: 45, anchor: 'middle', duration: 7 },
+        { time: 283, type: 'text', id: 'promo-cta', text: 'For free tools and in-depth guides:', x: 800, y: 480, fontSize: 50, fill: 'var(--primary-blue)', anchor: 'middle', duration: 4 },
+        { time: 288, type: 'path', id: 'promo-box', d: 'M 300 550 H 1300 V 700 H 300 Z', stroke: 'var(--success-green)', strokeWidth: 5, fill: 'rgba(40, 167, 69, 0.05)', duration: 1.5 },
+        { time: 290, type: 'text', id: 'promo-url', text: 'https://designcalculators.co.in', x: 800, y: 645, fontSize: 70, fill: 'var(--success-green)', weight: 'bold', anchor: 'middle', duration: 4 },
+        { time: 298, type: 'text', id: 'promo-end', text: 'Stay safe and design smart!', x: 800, y: 800, fontSize: 50, anchor: 'middle', duration: 2 },
+    ];
+
+    // --- Animation Engine ---
+    function createElement(item) {
+        let el;
+        if (item.type === 'text') {
+            el = document.createElementNS(svgNS, 'text');
+            el.setAttribute('x', item.x);
+            el.setAttribute('y', item.y);
+            el.setAttribute('font-size', item.fontSize);
+            el.setAttribute('fill', item.fill || 'var(--draw-color)');
+            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
+            if(item.weight) el.setAttribute('font-weight', item.weight);
+            el.innerHTML = item.html || item.text;
+            el.classList.add('text-anim');
+        } else if (item.type === 'path') {
+            el = document.createElementNS(svgNS, 'path');
+            el.setAttribute('d', item.d);
+            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
+            el.setAttribute('stroke-width', item.strokeWidth || 4);
+            el.setAttribute('fill', item.fill || 'none');
+        }
+        if(el) {
+            el.id = item.id;
+            el.classList.add('anim-element');
+            svg.appendChild(el);
+        }
+        return el;
+    }
+
+    // This function animates text by revealing characters one by one
+    function animateText(el, duration) {
+        const text = el.innerHTML; // Use innerHTML to preserve tspans
+        const totalLength = el.textContent.length;
+        el.innerHTML = ''; // Clear the element
+        
+        // Create a wrapper for tspans if they exist
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = text;
+        const children = Array.from(tempDiv.childNodes);
+        
+        let charIndex = 0;
+        
+        children.forEach(child => {
+            if (child.nodeType === Node.TEXT_NODE) {
+                const textContent = child.textContent;
+                for (let i = 0; i < textContent.length; i++) {
+                    const tspan = document.createElementNS(svgNS, 'tspan');
+                    tspan.textContent = textContent[i];
+                    tspan.style.opacity = 0;
+                    el.appendChild(tspan);
+                    
+                    const timeout = setTimeout(() => {
+                        tspan.style.transition = 'opacity 0.1s';
+                        tspan.style.opacity = 1;
+                    }, (charIndex / totalLength) * duration * 1000);
+                    timeouts.push(timeout);
+                    charIndex++;
+                }
+            } else { // It's an element like a tspan
+                 el.appendChild(child.cloneNode(true));
+            }
+        });
+    }
+
+    function animateItem(item) {
+        if (item.action === 'clear') {
+            if(item.sound && sounds[item.sound]) {
+                try { sounds[item.sound].start(); } catch(e) {}
+            }
+            activeElements.forEach(el => {
+                if(el && el.parentNode) svg.removeChild(el);
+            });
+            activeElements = [];
+            return;
+        }
+
+        const el = createElement(item);
+        if(!el) return;
+        activeElements.push(el);
+
+        const timeout = setTimeout(() => {
+            el.classList.add('visible');
+            
+            if (item.type === 'path') {
+                el.classList.add('draw-anim');
+                let animationCss = `draw ${item.duration}s linear forwards`;
+                if (item.anim) {
+                    animationCss += `, ${item.anim} 1s ease-in-out infinite`;
+                }
+                el.style.animation = animationCss;
+            } else if (item.type === 'text') {
+                 if (item.anim) {
+                    el.style.animation = `${item.anim} 1s infinite`;
+                }
+                // Text is animated by revealing chars, not a single fade-in
+                animateText(el, item.duration);
+            }
+
+            if(soundEnabled && item.duration > 0.3) {
+                if (item.sound && sounds[item.sound]) {
+                    try { sounds[item.sound].triggerAttackRelease("C4", "8n"); } catch(e) {}
+                } else if(item.type === 'path' || item.type === 'text') {
+                    let soundCount = 0;
+                    const maxSounds = Math.floor(item.duration * 10);
+                    const soundInterval = setInterval(() => {
+                        if(soundCount++ < maxSounds) {
+                            try { sounds.marker.triggerAttackRelease("8n"); } catch(e) {}
+                        }
+                    }, 100);
+                    const timeout2 = setTimeout(() => clearInterval(soundInterval), item.duration * 1000);
+                    timeouts.push(timeout2);
+                }
+            }
+        }, 100);
+        timeouts.push(timeout);
+    }
+
+    // First, modify the startAnimation function to ensure proper initialization
+    function startAnimation() {
+        // Clear any existing animation first
+        resetAnimation();
+        
+        playBtn.disabled = true;
+        playBtn.textContent = "Playing...";
+        
+        // Initialize Tone.js with a user gesture
+        document.body.addEventListener('click', function initTone() {
+            document.body.removeEventListener('click', initTone);
+            if (soundEnabled) {
+                Tone.start().then(() => {
+                    console.log('Audio ready');
+                    // Start timeline after audio is ready
+                    timeline.forEach(item => {
+                        const timeout = setTimeout(() => animateItem(item), item.time * 1000);
+                        timeouts.push(timeout);
+                    });
+                }).catch(e => {
+                    console.error('Audio error:', e);
+                    soundEnabled = false;
+                    // Start timeline even if audio fails
+                    timeline.forEach(item => {
+                        const timeout = setTimeout(() => animateItem(item), item.time * 1000);
+                        timeouts.push(timeout);
+                    });
+                });
+            } else {
+                // Start timeline immediately if sound is disabled
+                timeline.forEach(item => {
+                    const timeout = setTimeout(() => animateItem(item), item.time * 1000);
+                    timeouts.push(timeout);
+                });
+            }
+        }, { once: true });
+
+        const startTime = Date.now();
+        
+        function animationLoop() {
+            const elapsedTime = Date.now() - startTime;
+            if(elapsedTime >= TOTAL_DURATION) {
+                resetAnimation();
+                return;
+            }
+            updateUI(elapsedTime);
+            animationTimeout = requestAnimationFrame(animationLoop);
+        }
+        animationLoop();
+    }
+
+    // Then modify the animateText function to be more robust
+    function animateText(el, duration) {
+        try {
+            const text = el.innerHTML;
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text;
+            const plainText = tempDiv.textContent || tempDiv.innerText || '';
+            const len = plainText.length;
+            el.innerHTML = '';
+            let i = 0;
+            const interval = (duration * 1000) / len;
+
+            function type() {
+                if (i < text.length) {
+                    if(text.charAt(i) === '<') {
+                        const tagEnd = text.indexOf('>', i);
+                        if(tagEnd > -1) {
+                            el.innerHTML += text.substring(i, tagEnd + 1);
+                            i = tagEnd + 1;
+                        } else {
+                            el.innerHTML += text.charAt(i);
+                            i++;
+                        }
+                    } else {
+                        el.innerHTML += text.charAt(i);
+                        i++;
+                    }
+                    const timeout = setTimeout(type, Math.max(50, interval));
+                    timeouts.push(timeout);
+                }
+            }
+            type();
+        } catch(e) {
+            console.error('Text animation error:', e);
+            el.style.opacity = 1;
+        }
+    }
+
+    function updateUI(time) {
+        // Find the most recent text item to display as a "voiceover"
+        const vo = timeline.slice().reverse().find(item => item.time * 1000 <= time && item.type === 'text');
+        if (vo) {
+            const textContent = (vo.text || vo.html || '').replace(/<[^>]+>/g, '');
+            if(voDisplay.textContent !== textContent) {
+                 voDisplay.textContent = textContent;
+            }
+        } else if (time < timeline[0].time * 1000) {
+             voDisplay.textContent = "";
+        }
+        
+        const progress = (time / TOTAL_DURATION) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function resetAnimation() {
+        cancelAnimationFrame(animationTimeout);
+        timeouts.forEach(timeout => clearTimeout(timeout));
+        timeouts = [];
+        svg.innerHTML = '';
+        activeElements = [];
+        playBtn.disabled = false;
+        playBtn.textContent = "Play Animation";
+        voDisplay.textContent = "";
+        progressBar.style.width = '0%';
+    }
+
+    playBtn.addEventListener('click', () => {
+        if(playBtn.textContent.includes("Play")) {
+            startAnimation();
+        }
+    });
+
+</script>
+
+</body>
+</html>

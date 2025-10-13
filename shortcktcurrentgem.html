@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short Circuit Current - Whiteboard Tutorial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --board-bg: #f8f9fa;
+            --draw-color: #1a1a1a;
+            --primary-blue: #0056b3;
+            --danger-red: #dc3545;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --info-purple: #6f42c1;
+            --font-main: 'Kalam', cursive;
+            --font-alt: 'Architects Daughter', cursive;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: var(--font-main);
+        }
+
+        #whiteboard-container {
+            position: relative;
+            width: 95vw;
+            max-width: 1600px;
+            aspect-ratio: 16 / 9;
+        }
+
+        #whiteboard {
+            width: 100%;
+            height: 100%;
+            background-color: var(--board-bg);
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 20px solid #8b7355;
+            border-bottom-width: 60px;
+        }
+
+        #animation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .anim-element {
+            opacity: 0;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .text-anim {
+            font-family: var(--font-main);
+        }
+
+        #controls {
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        #play-btn {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 15px 40px;
+            cursor: pointer;
+            border: 3px solid var(--primary-blue);
+            background-color: #fff;
+            color: var(--primary-blue);
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #play-btn:hover { 
+            background-color: var(--primary-blue); 
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        #play-btn:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.6;
+            transform: scale(1);
+        }
+
+        #voiceover-display {
+            position: absolute;
+            bottom: -80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1.8vw;
+            line-height: 1.5;
+            color: #ecf0f1;
+            padding: 10px 20px;
+            font-family: var(--font-alt);
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #progress-bar-container {
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--warning-orange), var(--danger-red));
+            transition: width 0.3s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="whiteboard-container">
+        <div id="controls">
+            <button id="play-btn">▶ Start Tutorial</button>
+        </div>
+        <div id="whiteboard">
+            <svg id="animation-svg" viewBox="0 0 1600 900">
+                <!-- All SVG elements will be dynamically created by JavaScript -->
+            </svg>
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="voiceover-display">Click "Start Tutorial" to begin...</div>
+    </div>
+
+<script>
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById('animation-svg');
+    const playBtn = document.getElementById('play-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const voDisplay = document.getElementById('voiceover-display');
+    
+    let activeElements = [];
+    let animationFrame;
+    let timeouts = [];
+    let isPlaying = false;
+
+    const TOTAL_DURATION = 180; // 3 minutes
+
+    const timeline = [
+        // SECTION 1: TITLE (0-12s)
+        { 
+            time: 0.5, type: 'text', id: 'title1', text: 'How to Calculate', 
+            x: 800, y: 300, fontSize: 100, anchor: 'middle', weight: 'bold', 
+            duration: 2.5,
+            voiceover: 'Hello class! Today we\'re tackling a very important topic.'
+        },
+        { 
+            time: 3.5, type: 'text', id: 'title2', text: 'SHORT CIRCUIT CURRENT', 
+            x: 800, y: 440, fontSize: 120, anchor: 'middle', weight: 'bold',
+            fill: 'var(--danger-red)', duration: 3,
+            voiceover: 'How to calculate Short Circuit Current.'
+        },
+        { 
+            time: 7, type: 'text', id: 'subtitle', text: 'The Ultimate Safety Calculation!', 
+            x: 800, y: 560, fontSize: 60, anchor: 'middle',
+            duration: 2.5,
+            voiceover: 'This is perhaps the most important calculation for electrical safety.'
+        },
+        { 
+            time: 10, type: 'path', id: 'title-underline', d: 'M 200 590 H 1400', 
+            stroke: 'var(--danger-red)', strokeWidth: 6, duration: 1.5,
+            voiceover: ''
+        },
+        
+        { time: 13, type: 'clear', voiceover: 'First, what is it, and why do we care?' },
+        
+        // SECTION 2: THE CONCEPT (14-35s)
+        { 
+            time: 14, type: 'text', id: 'concept-q', text: 'What is a Short Circuit?', 
+            x: 800, y: 120, fontSize: 80, weight: 'bold', anchor: 'middle',
+            duration: 3,
+            voiceover: 'A short circuit is a low-resistance path for electricity.'
+        },
+        { // Transformer Symbol
+            time: 18, type: 'path', id: 'xfmr', d: 'M 400 300 A 50 50 0 1 0 400 400 M 400 350 H 500 M 500 300 A 50 50 0 1 0 500 400',
+            stroke: 'var(--primary-blue)', strokeWidth: 8, fill: 'none', duration: 2,
+            voiceover: 'Imagine power coming from a transformer...'
+        },
+        { // Wires to load
+            time: 20, type: 'path', id: 'wires', d: 'M 550 325 H 1000 M 550 375 H 1000',
+            stroke: 'var(--draw-color)', strokeWidth: 6, duration: 2,
+            voiceover: '...through wires to power a load, like a motor.'
+        },
+        { // Motor (Load)
+            time: 21, type: 'rect', id: 'motor-box', x: 1000, y: 300, width: 150, height: 100,
+            stroke: 'var(--draw-color)', strokeWidth: 6, fill: 'rgba(0,0,0,0.05)', duration: 1
+        },
+        {
+            time: 22, type: 'text', id: 'motor-label', text: 'Load', x: 1075, y: 365, fontSize: 50,
+            duration: 1
+        },
+        { // Short circuit FAULT path
+            time: 24, type: 'path', id: 'fault', d: 'M 750 325 C 780 350, 720 350, 750 375',
+            stroke: 'var(--danger-red)', strokeWidth: 10, fill: 'none', duration: 1.5,
+            voiceover: 'If these wires accidentally touch, that\'s a short circuit!'
+        },
+        {
+             time: 25, type: 'text', id: 'fault-label', text: 'FAULT!', x: 800, y: 450, fontSize: 70, weight: 'bold', fill: 'var(--danger-red)',
+             duration: 2
+        },
+        {
+             time: 28, type: 'text', id: 'isc-def', text: 'Isc is the MAXIMUM possible current during this fault.', 
+             x: 800, y: 600, fontSize: 55, anchor: 'middle', fill: 'var(--draw-color)',
+             duration: 4,
+             voiceover: 'The short circuit current, or Isc, is the absolute maximum current that can flow during this fault.'
+        },
+
+        { time: 34, type: 'clear', voiceover: 'Now, let\'s learn the formulas to calculate it.' },
+
+        // SECTION 3: THE FORMULAS (35-65s)
+        { 
+            time: 35, type: 'text', id: 'formula-title', text: 'The Magic Formulas (IEC 60909)', 
+            x: 800, y: 100, fontSize: 80, weight: 'bold', anchor: 'middle',
+            duration: 2,
+            voiceover: 'We use a two-step process based on the IEC standard.'
+        },
+        { 
+            time: 38, type: 'text', id: 'step1-title', text: 'Step 1: Find the Full Load Current (FLC)', 
+            x: 100, y: 200, fontSize: 60, weight: 'bold', fill: 'var(--info-purple)',
+            duration: 3,
+            voiceover: 'First, we find the transformer\'s normal full load current.'
+        },
+        { 
+            time: 42, type: 'text', id: 'flc-3ph', text: '3-Phase FLC = (kVA × 1000) / (1.732 × V)', 
+            x: 150, y: 290, fontSize: 55, 
+            duration: 4,
+            voiceover: 'For three-phase systems, it\'s kVA times 1000, divided by root 3 times voltage.'
+        },
+        { 
+            time: 47, type: 'text', id: 'flc-1ph', text: '1-Phase FLC = (kVA × 1000) / V', 
+            x: 150, y: 380, fontSize: 55, 
+            duration: 4,
+            voiceover: 'For single-phase, it\'s the same, just without the root 3.'
+        },
+        { 
+            time: 52, type: 'text', id: 'step2-title', text: 'Step 2: Find the Short Circuit Current (Isc)', 
+            x: 100, y: 520, fontSize: 60, weight: 'bold', fill: 'var(--info-purple)',
+            duration: 3,
+            voiceover: 'Second, we use the FLC to find the short circuit current.'
+        },
+        { 
+            time: 56, type: 'text', id: 'isc-formula', text: 'Isc = FLC / (%Z / 100)', 
+            x: 150, y: 630, fontSize: 70, 
+            duration: 4,
+            voiceover: 'The formula is the same for both: FLC divided by the percent impedance.'
+        },
+         { 
+            time: 61, type: 'text', id: 'z-note', text: '(Z is the transformer impedance from its nameplate)', 
+            x: 200, y: 720, fontSize: 45, fill: '#555',
+            duration: 3,
+            voiceover: 'You can find the impedance value, Z, on the transformer\'s nameplate.'
+        },
+
+        { time: 66, type: 'clear', voiceover: 'Let\'s solve a three-phase example!' },
+
+        // SECTION 4: 3-PHASE EXAMPLE (67-105s)
+        { 
+            time: 67, type: 'text', id: 'ex1-title', text: 'Example 1: Three-Phase System', 
+            x: 800, y: 90, fontSize: 75, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
+            duration: 2
+        },
+        { 
+            time: 70, type: 'text', id: 'ex1-given', text: 'Given: 1000 kVA Transformer, 400V, 5% Impedance', 
+            x: 800, y: 170, fontSize: 55, anchor: 'middle', 
+            duration: 4,
+            voiceover: 'We have a 1000 kVA transformer at 400 volts, with 5% impedance.'
+        },
+        { 
+            time: 75, type: 'text', id: 'ex1-step1', text: 'Step 1: Calculate FLC', 
+            x: 150, y: 280, fontSize: 60, weight: 'bold',
+            duration: 2, voiceover: 'First, let\'s find the Full Load Current.'
+        },
+        { 
+            time: 78, type: 'text', id: 'ex1-flc-calc', text: 'FLC = (1000 × 1000) / (1.732 × 400)', 
+            x: 200, y: 370, fontSize: 55, 
+            duration: 4, voiceover: 'We plug our numbers into the three-phase formula.'
+        },
+         { 
+            time: 83, type: 'text', id: 'ex1-flc-result', text: 'FLC = 1443 Amperes', 
+            x: 200, y: 460, fontSize: 60, fill: 'var(--primary-blue)', weight: 'bold',
+            duration: 3, voiceover: 'This gives us 1443 amps.'
+        },
+        { 
+            time: 87, type: 'text', id: 'ex1-step2', text: 'Step 2: Calculate Isc', 
+            x: 150, y: 580, fontSize: 60, weight: 'bold',
+            duration: 2, voiceover: 'Now for the short circuit current.'
+        },
+        { 
+            time: 90, type: 'text', id: 'ex1-isc-calc', text: 'Isc = 1443 / (5 / 100)', 
+            x: 200, y: 670, fontSize: 55, 
+            duration: 3, voiceover: 'We divide our FLC by the impedance.'
+        },
+         { 
+            time: 94, type: 'text', id: 'ex1-isc-result', text: 'Isc = 28,860 A or 28.86 kA', 
+            x: 200, y: 760, fontSize: 65, fill: 'var(--danger-red)', weight: 'bold',
+            duration: 4, voiceover: 'And the result is a massive 28,860 amps, or 28.86 kiloamps!'
+        },
+        { 
+            time: 99, type: 'rect', id: 'ex1-box', x: 150, y: 720, width: 1000, height: 90,
+            stroke: 'var(--danger-red)', strokeWidth: 6, fill: 'rgba(220, 53, 69, 0.1)',
+            duration: 1
+        },
+        
+        { time: 106, type: 'clear', voiceover: 'Great! Now for a single-phase example.' },
+
+        // SECTION 5: 1-PHASE EXAMPLE (107-140s)
+        { 
+            time: 107, type: 'text', id: 'ex2-title', text: 'Example 2: Single-Phase System', 
+            x: 800, y: 90, fontSize: 75, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
+            duration: 2
+        },
+        { 
+            time: 110, type: 'text', id: 'ex2-given', text: 'Given: 100 kVA Transformer, 230V, 4% Impedance', 
+            x: 800, y: 170, fontSize: 55, anchor: 'middle', 
+            duration: 4,
+            voiceover: 'This time, a smaller 100 kVA transformer at 230 volts, with 4% impedance.'
+        },
+        { 
+            time: 115, type: 'text', id: 'ex2-step1', text: 'Step 1: Calculate FLC', 
+            x: 150, y: 280, fontSize: 60, weight: 'bold',
+            duration: 2, voiceover: 'Again, we start with the FLC.'
+        },
+        { 
+            time: 118, type: 'text', id: 'ex2-flc-calc', text: 'FLC = (100 × 1000) / 230', 
+            x: 200, y: 370, fontSize: 55, 
+            duration: 4, voiceover: 'Using the single-phase formula this time.'
+        },
+         { 
+            time: 123, type: 'text', id: 'ex2-flc-result', text: 'FLC = 435 Amperes', 
+            x: 200, y: 460, fontSize: 60, fill: 'var(--primary-blue)', weight: 'bold',
+            duration: 3, voiceover: 'Which gives us 435 amps.'
+        },
+        { 
+            time: 127, type: 'text', id: 'ex2-step2', text: 'Step 2: Calculate Isc', 
+            x: 150, y: 580, fontSize: 60, weight: 'bold',
+            duration: 2, voiceover: 'And now for the final step.'
+        },
+        { 
+            time: 130, type: 'text', id: 'ex2-isc-calc', text: 'Isc = 435 / (4 / 100)', 
+            x: 200, y: 670, fontSize: 55, 
+            duration: 3, voiceover: 'We divide the FLC by the impedance.'
+        },
+         { 
+            time: 134, type: 'text', id: 'ex2-isc-result', text: 'Isc = 10,875 A or 10.88 kA', 
+            x: 200, y: 760, fontSize: 65, fill: 'var(--danger-red)', weight: 'bold',
+            duration: 4, voiceover: 'Our final answer is 10,875 amps, or 10.88 kiloamps.'
+        },
+        { 
+            time: 139, type: 'rect', id: 'ex2-box', x: 150, y: 720, width: 950, height: 90,
+            stroke: 'var(--danger-red)', strokeWidth: 6, fill: 'rgba(220, 53, 69, 0.1)',
+            duration: 1
+        },
+        
+        { time: 144, type: 'clear', voiceover: 'So, why is this number so important?' },
+
+        // SECTION 6: CONCLUSION (145-180s)
+        { 
+            time: 145, type: 'text', id: 'summary-title', text: 'Why It Matters: SAFETY!', 
+            x: 800, y: 110, fontSize: 90, weight: 'bold', anchor: 'middle', fill: 'var(--warning-orange)',
+            duration: 3, voiceover: 'It all comes down to one word: Safety.'
+        },
+        { // Circuit Breaker Icon
+            time: 150, type: 'rect', id: 'cb-box', x: 250, y: 250, width: 200, height: 300, stroke: '#333', strokeWidth: 8, fill: '#eee', duration: 1},
+        { time: 151, type: 'rect', id: 'cb-switch', x: 320, y: 350, width: 60, height: 120, fill: 'var(--danger-red)', stroke: '#333', strokeWidth: 4, duration: 1},
+        { time: 152, type: 'path', id: 'cb-line', d: 'M 350 250 V 200 M 350 550 V 600', stroke: '#333', strokeWidth: 8, duration: 1},
+        { 
+            time: 154, type: 'text', id: 'sum1', text: 'Circuit breakers and fuses protect our circuits.', 
+            x: 600, y: 300, fontSize: 50, 
+            duration: 4, voiceover: 'Devices like circuit breakers and fuses are designed to protect our electrical systems.'
+        },
+        { 
+            time: 159, type: 'text', id: 'sum2', text: 'They must be strong enough to STOP the Isc.', 
+            x: 600, y: 450, fontSize: 50, 
+            duration: 4, voiceover: 'But they need to be strong enough to interrupt the massive short circuit current without failing.'
+        },
+        { 
+            time: 164, type: 'text', id: 'sum3', text: 'Device Rating MUST BE > Isc', 
+            x: 800, y: 650, fontSize: 70, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
+            duration: 4, voiceover: 'The rule is simple: the device\'s interrupting rating MUST be greater than the calculated Isc.'
+        },
+        { 
+            time: 169, type: 'rect', id: 'rule-box', x: 300, y: 600, width: 1000, height: 100,
+            stroke: 'var(--success-green)', strokeWidth: 8, fill: 'none',
+            duration: 1
+        },
+         { 
+            time: 174, type: 'text', id: 'end-text', text: 'Great work today!', 
+            x: 800, y: 800, fontSize: 70, weight: 'bold', anchor: 'middle',
+            duration: 4, voiceover: 'You now know how to perform one of the most vital calculations in electrical design. Great work!'
+        },
+    ];
+
+    // --- Helper Functions ---
+    function resetAnimation() {
+        timeouts.forEach(t => clearTimeout(t));
+        timeouts = [];
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
+        activeElements = [];
+        progressBar.style.width = '0%';
+        voDisplay.textContent = 'Click "Start Tutorial" to begin...';
+        playBtn.disabled = false;
+        playBtn.textContent = '▶ Start Tutorial';
+        isPlaying = false;
+    }
+
+    // --- Element & Animation Creation ---
+    function createElement(item) {
+        let el;
+        if (item.type === 'text') {
+            el = document.createElementNS(svgNS, 'text');
+            el.setAttribute('x', item.x);
+            el.setAttribute('y', item.y);
+            el.setAttribute('font-size', item.fontSize);
+            el.setAttribute('fill', item.fill || 'var(--draw-color)');
+            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
+            if(item.weight) el.setAttribute('font-weight', item.weight);
+            el.textContent = ''; 
+            el.setAttribute('data-text', item.text);
+            el.classList.add('text-anim', 'anim-element');
+        } else if (item.type === 'path' || item.type === 'rect') {
+            el = document.createElementNS(svgNS, item.type);
+            Object.keys(item).forEach(key => {
+                if (['type', 'id', 'time', 'duration', 'voiceover'].indexOf(key) === -1) {
+                    el.setAttribute(key.replace(/[A-Z]/g, m => "-" + m.toLowerCase()), item[key]);
+                }
+            });
+            el.classList.add('anim-element');
+        }
+        if (el) {
+            el.id = item.id;
+            svg.appendChild(el);
+        }
+        return el;
+    }
+
+    function typeText(el, text, duration) {
+        if (!text || text.length === 0) {
+            el.style.opacity = 1;
+            return;
+        }
+        let charIndex = 0;
+        const chars = text.split('');
+        const charDelay = Math.max(50, (duration * 1000) / chars.length);
+        el.style.opacity = 1;
+
+        function addNextChar() {
+            if (charIndex < chars.length && isPlaying) {
+                el.textContent += chars[charIndex++];
+                const timeout = setTimeout(addNextChar, charDelay);
+                timeouts.push(timeout);
+            }
+        }
+        addNextChar();
+    }
+
+    function drawShape(el) {
+        el.style.opacity = 1;
+        el.classList.add('fade-in');
+    }
+
+    function animateItem(item) {
+        if (item.type === 'clear') {
+            activeElements.forEach(el => {
+                if (el && el.parentNode) svg.removeChild(el);
+            });
+            activeElements = [];
+            if (item.voiceover) voDisplay.textContent = item.voiceover;
+            return;
+        }
+
+        if (item.voiceover) voDisplay.textContent = item.voiceover;
+
+        const el = createElement(item);
+        if (!el) return;
+        
+        activeElements.push(el);
+
+        if (item.type === 'text') {
+            typeText(el, el.getAttribute('data-text'), item.duration);
+        } else {
+            drawShape(el);
+        }
+    }
+
+    // --- Main Controller ---
+    function startAnimation() {
+        if (isPlaying) return;
+        
+        resetAnimation();
+        isPlaying = true;
+        playBtn.disabled = true;
+        playBtn.textContent = '▶ Playing...';
+        
+        const startTime = Date.now();
+
+        timeline.forEach(item => {
+            const timeout = setTimeout(() => {
+                if (isPlaying) animateItem(item);
+            }, item.time * 1000);
+            timeouts.push(timeout);
+        });
+
+        function updateProgress() {
+            if (!isPlaying) return;
+            const elapsed = (Date.now() - startTime) / 1000;
+            
+            if (elapsed >= TOTAL_DURATION) {
+                progressBar.style.width = '100%';
+                const timeout = setTimeout(() => {
+                    resetAnimation();
+                    voDisplay.textContent = 'Tutorial complete! Click to replay.';
+                }, 2000);
+                timeouts.push(timeout);
+                return;
+            }
+            
+            progressBar.style.width = (elapsed / TOTAL_DURATION) * 100 + '%';
+            animationFrame = requestAnimationFrame(updateProgress);
+        }
+        
+        updateProgress();
+    }
+
+    playBtn.addEventListener('click', startAnimation);
+    window.addEventListener('beforeunload', resetAnimation);
+</script>
+
+</body>
+</html>
