@@ -26,32 +26,33 @@
         }
 
         body {
-            background-color: #2c3e50;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
             font-family: var(--font-main);
         }
 
         #whiteboard-container {
             position: relative;
-            width: 95vw;
-            max-width: 1600px;
-            aspect-ratio: 16 / 9;
+            background: #000;
+            /* 16:9 Aspect Ratio Sizing */
+            width: 100vw; 
+            height: 56.25vw; /* height = width * 9 / 16 */
+            max-height: 100vh;
+            max-width: 177.78vh; /* width = height * 16 / 9 */
+            margin: auto;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
         }
 
         #whiteboard {
             width: 100%;
             height: 100%;
             background-color: var(--board-bg);
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
-            border: 20px solid #8b7355;
-            border-bottom-width: 60px;
         }
 
         #animation-svg {
@@ -75,20 +76,65 @@
         .text-anim {
             font-family: var(--font-main);
         }
-
-        #controls {
+        
+        #splash-screen {
             position: absolute;
-            top: -70px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #2c3e50;
             z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            transition: opacity 1s ease-out;
         }
 
-        #play-btn {
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #splash-screen h1 {
+            font-family: var(--font-main);
+            font-size: 5vw;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        #splash-screen p {
+             font-family: var(--font-alt);
+             font-size: 2.5vw;
+        }
+
+        #replay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        #replay-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        #replay-btn {
             font-family: sans-serif;
             font-weight: bold;
-            font-size: 20px;
-            padding: 15px 40px;
+            font-size: 2vw;
+            padding: 20px 40px;
             cursor: pointer;
             border: 3px solid var(--primary-blue);
             background-color: #fff;
@@ -97,46 +143,19 @@
             transition: all 0.3s;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
-        #play-btn:hover { 
-            background-color: var(--primary-blue); 
-            color: #fff;
-            transform: scale(1.05);
-        }
-
-        #play-btn:disabled { 
-            cursor: not-allowed; 
-            opacity: 0.6;
-            transform: scale(1);
-        }
-
-        #voiceover-display {
-            position: absolute;
-            bottom: -80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 1.8vw;
-            line-height: 1.5;
-            color: #ecf0f1;
-            padding: 10px 20px;
-            font-family: var(--font-alt);
-            background: rgba(44, 62, 80, 0.9);
-            border-radius: 8px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        #replay-btn:hover {
+             background-color: var(--primary-blue); 
+             color: #fff;
+             transform: scale(1.05);
         }
 
         #progress-bar-container {
             position: absolute;
-            bottom: -5px;
+            bottom: 0px;
             left: 0;
             right: 0;
-            height: 8px;
+            height: 5px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 4px 4px;
         }
 
         #progress-bar {
@@ -144,7 +163,6 @@
             height: 100%;
             background: linear-gradient(90deg, #28a745, #20c997);
             transition: width 0.3s ease;
-            border-radius: 0 0 4px 4px;
         }
 
         .fade-in {
@@ -160,8 +178,9 @@
 <body>
 
     <div id="whiteboard-container">
-        <div id="controls">
-            <button id="play-btn">▶ Start Tutorial</button>
+        <div id="splash-screen">
+            <h1>Industrial UPS Sizing</h1>
+            <p>A Professional Guide</p>
         </div>
         <div id="whiteboard">
             <svg id="animation-svg" viewBox="0 0 1600 900">
@@ -171,20 +190,22 @@
                 <div id="progress-bar"></div>
             </div>
         </div>
-        <div id="voiceover-display">Click "Start Tutorial" to begin...</div>
+        <div id="replay-container">
+            <button id="replay-btn">Replay Tutorial</button>
+        </div>
     </div>
 
 <script>
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.getElementById('animation-svg');
-    const playBtn = document.getElementById('play-btn');
     const progressBar = document.getElementById('progress-bar');
-    const voDisplay = document.getElementById('voiceover-display');
+    const splashScreen = document.getElementById('splash-screen');
+    const replayContainer = document.getElementById('replay-container');
+    const replayBtn = document.getElementById('replay-btn');
     
     let activeElements = [];
     let animationFrame;
     let timeouts = [];
-    let intervals = [];
     let isPlaying = false;
 
     // --- Timeline Definition ---
@@ -194,237 +215,191 @@
         // SECTION 1: TITLE (0-14s)
         { 
             time: 0.5, type: 'text', id: 'title1', text: 'How to Correctly Size an', 
-            x: 800, y: 280, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 2.5,
-            voiceover: 'Welcome! In this tutorial, we will learn the professional method for sizing an industrial Uninterruptible Power Supply, or UPS.'
+            x: 800, y: 280, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 2.5
         },
         { 
             time: 3.5, type: 'text', id: 'title2', text: 'INDUSTRIAL UPS', 
             x: 800, y: 420, fontSize: 130, anchor: 'middle', weight: 'bold',
-            fill: 'var(--primary-blue)', duration: 3.5,
-            voiceover: 'Correctly sizing a UPS is critical for system reliability and safety.'
+            fill: 'var(--primary-blue)', duration: 3.5
         },
         { 
             time: 7.5, type: 'text', id: 'subtitle', text: 'A Professional Step-by-Step Guide', 
-            x: 800, y: 540, fontSize: 66, anchor: 'middle', duration: 3,
-            voiceover: 'Follow these steps for a perfect sizing calculation every time.'
+            x: 800, y: 540, fontSize: 66, anchor: 'middle', duration: 3
         },
         { 
             time: 11, type: 'path', id: 'title-underline', d: 'M 200 570 H 1400', 
-            stroke: 'var(--primary-blue)', strokeWidth: 6, duration: 1.5,
-            voiceover: ''
+            stroke: 'var(--primary-blue)', strokeWidth: 6, duration: 1.5
         },
-        
-        { time: 14, type: 'clear', voiceover: 'The entire process is based on four key steps.' },
+        { time: 14, type: 'clear'},
         
         // SECTION 2: THE CORE PRINCIPLES (15-45s)
         { 
             time: 15, type: 'text', id: 'principles-heading', text: 'The 4 Key Sizing Steps', 
-            x: 800, y: 110, fontSize: 90, weight: 'bold', anchor: 'middle', duration: 3,
-            voiceover: 'We will go through each of these steps in detail.'
+            x: 800, y: 110, fontSize: 90, weight: 'bold', anchor: 'middle', duration: 3
         },
         { 
             time: 19, type: 'rect', id: 'box1', x: 100, y: 180, width: 1400, height: 140,
-            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1,
-            voiceover: ''
+            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1
         },
         { 
             time: 20, type: 'text', id: 'check1', text: '1. Calculate the Total Load (in VA)', 
-            x: 150, y: 270, fontSize: 62, weight: 'bold', duration: 4,
-            voiceover: 'First, we must sum up the power consumption of all connected equipment in Volt-Amperes.'
+            x: 150, y: 270, fontSize: 62, weight: 'bold', duration: 4
         },
         { 
             time: 25, type: 'rect', id: 'box2', x: 100, y: 340, width: 1400, height: 140,
-            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1,
-            voiceover: ''
+            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1
         },
         { 
             time: 26, type: 'text', id: 'check2', text: '2. Add a Future Growth Factor (20-25%)', 
-            x: 150, y: 430, fontSize: 62, weight: 'bold', duration: 4.5,
-            voiceover: 'Second, we add a safety margin for future expansion. A UPS should never run at 100% capacity.'
+            x: 150, y: 430, fontSize: 62, weight: 'bold', duration: 4.5
         },
         { 
             time: 31.5, type: 'rect', id: 'box3', x: 100, y: 500, width: 1400, height: 140,
-            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1,
-            voiceover: ''
+            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1
         },
         { 
             time: 32.5, type: 'text', id: 'check3', text: '3. Define the Required Backup Time (Autonomy)', 
-            x: 150, y: 590, fontSize: 62, weight: 'bold', duration: 4.5,
-            voiceover: 'Third, we must decide how long the UPS needs to power the load during an outage.'
+            x: 150, y: 590, fontSize: 62, weight: 'bold', duration: 4.5
         },
         { 
             time: 38, type: 'rect', id: 'box4', x: 100, y: 660, width: 1400, height: 140,
-            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1,
-            voiceover: ''
+            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1
         },
         { 
             time: 39, type: 'text', id: 'check4', text: '4. Calculate the Required Battery Size (in Ah)', 
-            x: 150, y: 750, fontSize: 62, weight: 'bold', duration: 5,
-            voiceover: 'Finally, based on the load and backup time, we calculate the size of the battery bank in Amp-hours.'
+            x: 150, y: 750, fontSize: 62, weight: 'bold', duration: 5
         },
-
-        { time: 46, type: 'clear', voiceover: 'Now, let\'s use these steps in a practical example.' },
+        { time: 46, type: 'clear' },
 
         // SECTION 3: EXAMPLE SETUP (47-85s)
         { 
             time: 47, type: 'text', id: 'example-title', text: 'Example: Sizing for a Critical Control Panel', 
             x: 800, y: 80, fontSize: 78, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
-            duration: 3, voiceover: 'We need to provide backup power for a critical industrial control panel.'
+            duration: 3
         },
         { 
             time: 51, type: 'text', id: 'given-title', text: 'Panel Loads:', 
-            x: 150, y: 160, fontSize: 64, weight: 'bold', duration: 2,
-            voiceover: 'These are the loads inside the panel.'
+            x: 150, y: 160, fontSize: 64, weight: 'bold', duration: 2
         },
-        { time: 54, type: 'text', id: 'load1', text: '• PLC System = 500 VA', x: 200, y: 230, fontSize: 58, duration: 2.5, voiceover: 'A PLC system drawing 500 VA.' },
-        { time: 57, type: 'text', id: 'load2', text: '• HMI Touchscreen = 350 VA', x: 200, y: 300, fontSize: 58, duration: 2.5, voiceover: 'An HMI touchscreen at 350 VA.' },
-        { time: 60, type: 'text', id: 'load3', text: '• Control Relays & I/O = 450 VA', x: 200, y: 370, fontSize: 58, duration: 2.5, voiceover: 'Various control relays and I/O modules totaling 450 VA.' },
-        { time: 63, type: 'text', id: 'load4', text: '• Emergency LED Lights = 200 VA', x: 200, y: 440, fontSize: 58, duration: 2.5, voiceover: 'And emergency lighting at 200 VA.' },
+        { time: 54, type: 'text', id: 'load1', text: '• PLC System = 500 VA', x: 200, y: 230, fontSize: 58, duration: 2.5 },
+        { time: 57, type: 'text', id: 'load2', text: '• HMI Touchscreen = 350 VA', x: 200, y: 300, fontSize: 58, duration: 2.5 },
+        { time: 60, type: 'text', id: 'load3', text: '• Control Relays & I/O = 450 VA', x: 200, y: 370, fontSize: 58, duration: 2.5 },
+        { time: 63, type: 'text', id: 'load4', text: '• Emergency LED Lights = 200 VA', x: 200, y: 440, fontSize: 58, duration: 2.5 },
         { 
             time: 66, type: 'text', id: 'backup-title', text: 'Required Backup Time: 30 minutes (0.5 hours)', 
-            x: 150, y: 530, fontSize: 60, weight: 'bold', duration: 4,
-            voiceover: 'The system must run for 30 minutes after a power failure to allow for a safe shutdown.'
+            x: 150, y: 530, fontSize: 60, weight: 'bold', duration: 4
         },
         { 
             time: 71, type: 'text', id: 'ups-params', text: 'UPS System Parameters (from Datasheet):', 
-            x: 150, y: 620, fontSize: 60, weight: 'bold', fill: 'var(--primary-blue)', duration: 3,
-            voiceover: 'We get these values from the UPS manufacturer datasheet.'
+            x: 150, y: 620, fontSize: 60, weight: 'bold', fill: 'var(--primary-blue)', duration: 3
         },
-        { time: 75, type: 'text', id: 'param1', text: '• DC Voltage = 48V | Inverter Efficiency = 90%', x: 200, y: 700, fontSize: 58, duration: 4, voiceover: 'A 48-volt DC system with 90% inverter efficiency.' },
-        { time: 80, type: 'text', id: 'param2', text: '• Battery Derating Factor = 0.85 (for age/temp)', x: 200, y: 770, fontSize: 58, duration: 4, voiceover: 'And a standard battery derating factor of 0.85 to account for aging and temperature.' },
-
-        { time: 86, type: 'clear', voiceover: 'Step 1 and 2: Let\'s find the required UPS VA rating.' },
+        { time: 75, type: 'text', id: 'param1', text: '• DC Voltage = 48V | Inverter Efficiency = 90%', x: 200, y: 700, fontSize: 58, duration: 4 },
+        { time: 80, type: 'text', id: 'param2', text: '• Battery Derating Factor = 0.85 (for age/temp)', x: 200, y: 770, fontSize: 58, duration: 4 },
+        { time: 86, type: 'clear' },
 
         // SECTION 4: LOAD & SIZING CALCULATION (87-115s)
         { 
             time: 87, type: 'text', id: 'step12-title', text: 'Step 1 & 2: Calculate Final UPS VA Rating', 
             x: 800, y: 100, fontSize: 78, weight: 'bold', anchor: 'middle', fill: 'var(--danger-red)',
-            duration: 3, voiceover: 'First, we sum the loads and apply the growth factor.'
+            duration: 3
         },
         { 
             time: 91, type: 'text', id: 's1-calc1', text: 'Total Load VA = 500 + 350 + 450 + 200', 
-            x: 800, y: 220, fontSize: 64, anchor: 'middle', duration: 3.5,
-            voiceover: 'Summing all our individual loads...'
+            x: 800, y: 220, fontSize: 64, anchor: 'middle', duration: 3.5
         },
         { 
             time: 95, type: 'text', id: 's1-calc2', text: 'Total Load VA = 1500 VA', 
-            x: 800, y: 320, fontSize: 72, anchor: 'middle', duration: 3,
-            voiceover: '...gives us a total of 1500 VA.'
+            x: 800, y: 320, fontSize: 72, anchor: 'middle', duration: 3
         },
         { 
             time: 99, type: 'text', id: 's2-title', text: 'Apply 25% Growth Factor:', 
-            x: 800, y: 440, fontSize: 64, anchor: 'middle', duration: 2.5,
-            voiceover: 'Now we apply the 25% future growth factor.'
+            x: 800, y: 440, fontSize: 64, anchor: 'middle', duration: 2.5
         },
         { 
             time: 102, type: 'text', id: 's2-calc1', text: 'Required VA = 1500 VA × 1.25 = 1875 VA', 
-            x: 800, y: 540, fontSize: 72, anchor: 'middle', duration: 4,
-            voiceover: '1500 times 1.25 equals 1875 VA.'
+            x: 800, y: 540, fontSize: 72, anchor: 'middle', duration: 4
         },
         { 
             time: 107, type: 'text', id: 's2-result', text: 'Selection: Choose next standard size: 2000VA (2kVA) UPS', 
             x: 800, y: 680, fontSize: 68, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)',
-            duration: 5, voiceover: 'UPS systems come in standard sizes. We select the next size up, which is a 2000VA, or 2kVA, unit.'
+            duration: 5
         },
         { 
             time: 108, type: 'rect', id: 's2-box', x: 200, y: 620, width: 1200, height: 110,
             stroke: 'var(--success-green)', strokeWidth: 5, fill: 'rgba(40, 167, 69, 0.1)',
-            duration: 1, voiceover: ''
+            duration: 1
         },
-        
-        { time: 115, type: 'clear', voiceover: 'Now, with our UPS selected, let\'s size the battery bank.' },
+        { time: 115, type: 'clear' },
 
         // SECTION 5: BATTERY CALCULATION (116-155s)
         { 
             time: 116, type: 'text', id: 'step34-title', text: 'Step 3 & 4: Calculate Battery Bank Size (Ah)', 
             x: 800, y: 90, fontSize: 78, weight: 'bold', anchor: 'middle', fill: 'var(--danger-red)',
-            duration: 3, voiceover: 'This calculation determines how long our 2kVA UPS will last.'
+            duration: 3
         },
-        { time: 120, type: 'text', id: 'b-calc1', text: '1. Power (W) = VA × PF = 1500VA × 0.8 = 1200 W', x: 150, y: 190, fontSize: 60, duration: 4.5, voiceover: 'First, find the real power in Watts. We use the actual load of 1500VA and an average power factor of 0.8 for control loads.' },
-        { time: 125, type: 'text', id: 'b-calc2', text: '2. DC Current (I_dc) = Power / (V_dc × Efficiency)', x: 150, y: 300, fontSize: 60, duration: 4.5, voiceover: 'Next, calculate the DC current that will be drawn from the batteries.' },
-        { time: 130, type: 'text', id: 'b-calc3', text: '   I_dc = 1200W / (48V × 0.9) = 27.78 Amps', x: 200, y: 390, fontSize: 60, duration: 4.5, voiceover: '1200 Watts divided by 48 volts times 0.9 efficiency gives 27.78 amps.' },
-        { time: 135, type: 'text', id: 'b-calc4', text: '3. Required Amp-Hours (Ah) = (I_dc × Time) / Derating', x: 150, y: 500, fontSize: 60, duration: 5, voiceover: 'Now we can find the required Amp-hour capacity.' },
-        { time: 141, type: 'text', id: 'b-calc5', text: '   Ah = (27.78A × 0.5h) / 0.85 = 16.34 Ah', x: 200, y: 590, fontSize: 60, duration: 5, voiceover: '27.78 amps times half an hour, divided by our 0.85 derating factor, equals 16.34 Amp-hours.' },
+        { time: 120, type: 'text', id: 'b-calc1', text: '1. Power (W) = VA × PF = 1500VA × 0.8 = 1200 W', x: 150, y: 190, fontSize: 60, duration: 4.5 },
+        { time: 125, type: 'text', id: 'b-calc2', text: '2. DC Current (I_dc) = Power / (V_dc × Efficiency)', x: 150, y: 300, fontSize: 60, duration: 4.5 },
+        { time: 130, type: 'text', id: 'b-calc3', text: '   I_dc = 1200W / (48V × 0.9) = 27.78 Amps', x: 200, y: 390, fontSize: 60, duration: 4.5 },
+        { time: 135, type: 'text', id: 'b-calc4', text: '3. Required Amp-Hours (Ah) = (I_dc × Time) / Derating', x: 150, y: 500, fontSize: 60, duration: 5 },
+        { time: 141, type: 'text', id: 'b-calc5', text: '   Ah = (27.78A × 0.5h) / 0.85 = 16.34 Ah', x: 200, y: 590, fontSize: 60, duration: 5 },
         { 
             time: 147, type: 'text', id: 'b-result', text: 'Selection: Choose next standard size: 20Ah Battery Bank', 
             x: 800, y: 720, fontSize: 68, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)',
-            duration: 5, voiceover: 'We select the next standard battery size up, which is 20 Amp-hours.'
+            duration: 5
         },
         { 
             time: 148, type: 'rect', id: 'b-box', x: 200, y: 660, width: 1200, height: 110,
             stroke: 'var(--success-green)', strokeWidth: 5, fill: 'rgba(40, 167, 69, 0.1)',
-            duration: 1, voiceover: ''
+            duration: 1
         },
-
-        { time: 156, type: 'clear', voiceover: 'Let\'s summarize our final, professionally sized system.' },
+        { time: 156, type: 'clear' },
 
         // SECTION 6: CONCLUSION (157-200s)
         { 
             time: 157, type: 'text', id: 'final-title', text: 'Final Selection & Summary', 
             x: 800, y: 100, fontSize: 90, weight: 'bold', anchor: 'middle', fill: 'var(--primary-blue)',
-            duration: 3, voiceover: 'Here is our final engineered solution.'
+            duration: 3
         },
         { 
             time: 161, type: 'text', id: 'final-ups', text: 'UPS: 2000VA (2kVA) Unit', 
-            x: 800, y: 220, fontSize: 78, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 4,
-            voiceover: 'A 2000 VA UPS unit.'
+            x: 800, y: 220, fontSize: 78, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 4
         },
         { 
             time: 166, type: 'text', id: 'final-batt', text: 'Battery: 48V, 20Ah Bank', 
-            x: 800, y: 340, fontSize: 78, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 4,
-            voiceover: 'Paired with a 48 volt, 20 Amp-hour battery bank.'
+            x: 800, y: 340, fontSize: 78, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 4
         },
         { 
             time: 171, type: 'text', id: 'standards-title', text: 'This design meets international standards:', 
-            x: 800, y: 460, fontSize: 62, anchor: 'middle', duration: 3,
-            voiceover: 'This method ensures compliance with key international standards.'
+            x: 800, y: 460, fontSize: 62, anchor: 'middle', duration: 3
         },
         { 
             time: 175, type: 'text', id: 'std1', text: '✓ IEC 62040-3 (UPS Performance & Classification)', 
-            x: 800, y: 550, fontSize: 58, anchor: 'middle', duration: 4,
-            voiceover: 'IEC 62040 part 3, which specifies UPS performance requirements.'
+            x: 800, y: 550, fontSize: 58, anchor: 'middle', duration: 4
         },
         { 
             time: 180, type: 'text', id: 'std2', text: '✓ IEEE 485 (Recommended Practice for Battery Sizing)', 
-            x: 800, y: 630, fontSize: 58, anchor: 'middle', duration: 4.5,
-            voiceover: 'And IEEE 485, which is the recommended practice for sizing lead-acid batteries for stationary applications.'
+            x: 800, y: 630, fontSize: 58, anchor: 'middle', duration: 4.5
         },
         { 
             time: 186, type: 'text', id: 'footer-text', text: 'For exact calculations visit our site:', 
-            x: 800, y: 750, fontSize: 58, anchor: 'middle', duration: 3,
-            voiceover: 'For more detailed calculations and free engineering tools, please visit our website.'
+            x: 800, y: 750, fontSize: 58, anchor: 'middle', duration: 3
         },
         { 
             time: 190, type: 'text', id: 'footer-link', text: 'https://designcalculators.co.in', 
             x: 800, y: 830, fontSize: 68, anchor: 'middle', weight: 'bold',
-            fill: 'var(--primary-blue)', duration: 5,
-            voiceover: 'Thank you for learning with us today!'
+            fill: 'var(--primary-blue)', duration: 5
         },
     ];
 
     // --- Helper Functions ---
     function resetAnimation() {
-        // Clear all timeouts and intervals
+        isPlaying = false;
         timeouts.forEach(t => clearTimeout(t));
-        intervals.forEach(i => clearInterval(i));
         timeouts = [];
-        intervals = [];
-        
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-
-        // Remove all elements
-        while(svg.firstChild) {
-            svg.removeChild(svg.firstChild);
-        }
-        
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
         activeElements = [];
         progressBar.style.width = '0%';
-        voDisplay.textContent = 'Click "Start Tutorial" to begin...';
-        playBtn.disabled = false;
-        playBtn.textContent = '▶ Start Tutorial';
-        isPlaying = false;
     }
 
     function updateUI(elapsedSeconds) {
@@ -432,16 +407,9 @@
         progressBar.style.width = percentage + '%';
     }
 
-    function showVoiceover(text) {
-        if(text && text.trim() !== '') {
-            voDisplay.textContent = text;
-        }
-    }
-
     // --- Element Creation ---
     function createElement(item) {
         let el;
-        
         if (item.type === 'text') {
             el = document.createElementNS(svgNS, 'text');
             el.setAttribute('x', item.x);
@@ -450,28 +418,23 @@
             el.setAttribute('fill', item.fill || 'var(--draw-color)');
             if(item.anchor) el.setAttribute('text-anchor', item.anchor);
             if(item.weight) el.setAttribute('font-weight', item.weight);
-            el.textContent = ''; // Start empty for typing effect
+            el.textContent = '';
             el.setAttribute('data-text', item.text);
             el.classList.add('text-anim', 'anim-element');
-            
-        } else if (item.type === 'path') {
-            el = document.createElementNS(svgNS, 'path');
-            el.setAttribute('d', item.d);
+        } else if (item.type === 'path' || item.type === 'rect') {
+            el = document.createElementNS(svgNS, item.type);
+            if (item.type === 'path') {
+                el.setAttribute('d', item.d);
+            } else { // rect
+                el.setAttribute('x', item.x);
+                el.setAttribute('y', item.y);
+                el.setAttribute('width', item.width);
+                el.setAttribute('height', item.height);
+                el.setAttribute('rx', item.rx || 10);
+            }
             el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
             el.setAttribute('stroke-width', item.strokeWidth || 4);
             el.setAttribute('fill', item.fill || 'none');
-            el.classList.add('anim-element');
-            
-        } else if (item.type === 'rect') {
-            el = document.createElementNS(svgNS, 'rect');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('width', item.width);
-            el.setAttribute('height', item.height);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
-            el.setAttribute('rx', item.rx || 10);
             el.classList.add('anim-element');
         }
         
@@ -479,130 +442,98 @@
             el.id = item.id;
             svg.appendChild(el);
         }
-        
         return el;
     }
 
-    // --- Typing Animation (Human-like speed) ---
+    // --- Animation Effects ---
     function typeText(el, text, duration) {
-        if(!text || text.length === 0) {
-            el.style.opacity = 1;
-            return;
-        }
-
+        if (!text || text.length === 0) { el.style.opacity = 1; return; }
         let charIndex = 0;
         const chars = text.split('');
-        const charDelay = (duration * 1000) / chars.length;
-        // Ensure minimum delay for readability (50ms per character minimum)
-        const actualDelay = Math.max(50, charDelay);
-
+        const actualDelay = Math.max(50, (duration * 1000) / chars.length);
         el.style.opacity = 1;
 
         function addNextChar() {
-            if(charIndex < chars.length && isPlaying) {
-                el.textContent += chars[charIndex];
-                charIndex++;
-                const timeout = setTimeout(addNextChar, actualDelay);
-                timeouts.push(timeout);
+            if (charIndex < chars.length && isPlaying) {
+                el.textContent += chars[charIndex++];
+                timeouts.push(setTimeout(addNextChar, actualDelay));
             }
         }
-
         addNextChar();
     }
 
-    // --- Draw Animation for Paths/Rects ---
     function drawShape(el, duration) {
         el.style.opacity = 1;
         el.style.animationDuration = (duration > 1 ? 1 : duration) + 's';
         el.classList.add('fade-in');
     }
 
-    // --- Main Animation Function ---
+     // --- Main Animation Logic ---
     function animateItem(item) {
         if (item.type === 'clear') {
-            // Clear the board
-            activeElements.forEach(el => {
-                if(el && el.parentNode) {
-                    svg.removeChild(el);
-                }
-            });
+            activeElements.forEach(el => el && el.parentNode && svg.removeChild(el));
             activeElements = [];
-            if(item.voiceover) showVoiceover(item.voiceover);
             return;
         }
-
-        // Show voiceover
-        if(item.voiceover) {
-            showVoiceover(item.voiceover);
-        }
-
-        // Create and animate element
         const el = createElement(item);
         if(!el) return;
-        
         activeElements.push(el);
-
         if(item.type === 'text') {
-            const text = el.getAttribute('data-text');
-            typeText(el, text, item.duration);
+            typeText(el, el.getAttribute('data-text'), item.duration);
         } else {
             drawShape(el, item.duration);
         }
     }
 
-    // --- Start Animation ---
     function startAnimation() {
         if(isPlaying) return;
         
         resetAnimation();
+        replayContainer.classList.remove('visible');
         isPlaying = true;
-        playBtn.disabled = true;
-        playBtn.textContent = '▶ Playing...';
-        
         const startTime = Date.now();
 
-        // Schedule all timeline items
         timeline.forEach(item => {
             const timeout = setTimeout(() => {
-                if(isPlaying) {
-                    animateItem(item);
-                }
+                if(isPlaying) animateItem(item);
             }, item.time * 1000);
             timeouts.push(timeout);
         });
 
-        // Animation loop for progress bar
         function updateProgress() {
             if(!isPlaying) return;
-            
             const elapsed = (Date.now() - startTime) / 1000;
             
-            if(elapsed >= TOTAL_DURATION) {
-                progressBar.style.width = '100%';
-                // Don't reset automatically, let the footer stay
-                playBtn.disabled = false;
-                playBtn.textContent = '▶ Replay Tutorial';
+            if(elapsed >= TOTAL_DURATION + 5) { // Add buffer for final text
                 isPlaying = false;
-                 const timeout = setTimeout(() => {
-                    voDisplay.textContent = 'Tutorial complete! Click to replay.';
-                }, 2000);
-                timeouts.push(timeout);
+                replayContainer.classList.add('visible');
                 return;
             }
             
-            updateUI(elapsed);
+            updateUI(Math.min(elapsed, TOTAL_DURATION));
             animationFrame = requestAnimationFrame(updateProgress);
         }
-        
         updateProgress();
     }
 
-    // --- Event Listeners ---
-    playBtn.addEventListener('click', startAnimation);
+    function initTutorial() {
+        setTimeout(() => {
+            splashScreen.classList.add('fade-out');
+            setTimeout(() => {
+                splashScreen.style.display = 'none'; // This was the fix!
+                startAnimation();
+            }, 1000); // Must match CSS transition duration
+        }, 3000); // Splash screen visible for 3 seconds
+    }
 
-    // Cleanup on page unload
+    // --- Event Listeners ---
+    replayBtn.addEventListener('click', startAnimation);
+    window.addEventListener('load', initTutorial);
     window.addEventListener('beforeunload', resetAnimation);
 </script>
 
 </body>
 </html>
+
+    
+  
