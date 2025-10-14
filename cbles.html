@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Cable Sizing - A Professional Guide</title>
+    <title>Industrial Cable Sizing - The Definitive Guide</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
@@ -12,9 +12,10 @@
             --board-bg: #f8f9fa;
             --draw-color: #1a1a1a;
             --primary-blue: #0056b3;
-            --danger-red: #dc3545;
+            --danger-red: #b33600;
             --success-green: #28a745;
-            --warning-orange: #fd7e14;
+            --warning-orange: #b36b00;
+            --info-purple: #5e35b1;
             --font-main: 'Kalam', cursive;
             --font-alt: 'Architects Daughter', cursive;
         }
@@ -26,32 +27,32 @@
         }
 
         body {
-            background-color: #2c3e50;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
             font-family: var(--font-main);
         }
 
         #whiteboard-container {
             position: relative;
-            width: 95vw;
-            max-width: 1600px;
-            aspect-ratio: 16 / 9;
+            background: #000;
+            width: 100vw; 
+            height: 56.25vw;
+            max-height: 100vh;
+            max-width: 177.78vh;
+            margin: auto;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
         }
 
         #whiteboard {
             width: 100%;
             height: 100%;
             background-color: var(--board-bg);
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
-            border: 20px solid #8b7355;
-            border-bottom-width: 60px;
         }
 
         #animation-svg {
@@ -68,27 +69,64 @@
             stroke-linejoin: round;
         }
         
-        .visible {
-            opacity: 1;
-        }
-
-        .text-anim {
-            font-family: var(--font-main);
-        }
-
-        #controls {
+        #splash-screen {
             position: absolute;
-            top: -70px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #2c3e50;
             z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            transition: opacity 1s ease-out;
         }
 
-        #play-btn {
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #splash-screen h1 {
+            font-family: var(--font-main);
+            font-size: 5vw;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        #splash-screen p {
+             font-family: var(--font-alt);
+             font-size: 2.5vw;
+        }
+
+        #replay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        #replay-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        #replay-btn {
             font-family: sans-serif;
             font-weight: bold;
-            font-size: 20px;
-            padding: 15px 40px;
+            font-size: 2vw;
+            padding: 20px 40px;
             cursor: pointer;
             border: 3px solid var(--primary-blue);
             background-color: #fff;
@@ -97,46 +135,19 @@
             transition: all 0.3s;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
-        #play-btn:hover { 
-            background-color: var(--primary-blue); 
-            color: #fff;
-            transform: scale(1.05);
-        }
-
-        #play-btn:disabled { 
-            cursor: not-allowed; 
-            opacity: 0.6;
-            transform: scale(1);
-        }
-
-        #voiceover-display {
-            position: absolute;
-            bottom: -80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 1.8vw;
-            line-height: 1.5;
-            color: #ecf0f1;
-            padding: 10px 20px;
-            font-family: var(--font-alt);
-            background: rgba(44, 62, 80, 0.9);
-            border-radius: 8px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        #replay-btn:hover {
+             background-color: var(--primary-blue); 
+             color: #fff;
+             transform: scale(1.05);
         }
 
         #progress-bar-container {
             position: absolute;
-            bottom: -5px;
+            bottom: 0px;
             left: 0;
             right: 0;
-            height: 8px;
+            height: 5px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 4px 4px;
         }
 
         #progress-bar {
@@ -144,349 +155,121 @@
             height: 100%;
             background: linear-gradient(90deg, #28a745, #20c997);
             transition: width 0.3s ease;
-            border-radius: 0 0 4px 4px;
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .fade-in { animation: fadeIn 0.5s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-
     <div id="whiteboard-container">
-        <div id="controls">
-            <button id="play-btn">▶ Start Tutorial</button>
+        <div id="splash-screen">
+            <h1>Industrial Cable Sizing</h1>
+            <p>The Definitive Professional Guide</p>
         </div>
         <div id="whiteboard">
-            <svg id="animation-svg" viewBox="0 0 1600 900">
-                <!-- All SVG elements will be dynamically created by JavaScript -->
-            </svg>
+            <svg id="animation-svg" viewBox="0 0 1600 900"></svg>
             <div id="progress-bar-container">
                 <div id="progress-bar"></div>
             </div>
         </div>
-        <div id="voiceover-display">Click "Start Tutorial" to begin...</div>
+        <div id="replay-container">
+            <button id="replay-btn">Replay Tutorial</button>
+        </div>
     </div>
 
 <script>
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.getElementById('animation-svg');
-    const playBtn = document.getElementById('play-btn');
     const progressBar = document.getElementById('progress-bar');
-    const voDisplay = document.getElementById('voiceover-display');
+    const splashScreen = document.getElementById('splash-screen');
+    const replayContainer = document.getElementById('replay-container');
+    const replayBtn = document.getElementById('replay-btn');
     
     let activeElements = [];
     let animationFrame;
     let timeouts = [];
-    let intervals = [];
     let isPlaying = false;
 
-    // --- Timeline Definition ---
-    const TOTAL_DURATION = 190; // in seconds
+    const TOTAL_DURATION = 230; // seconds, increased for clarity
 
     const timeline = [
-        // SECTION 1: TITLE (0-14s)
-        { 
-            time: 0.5, type: 'text', id: 'title1', text: 'How to Select', 
-            x: 800, y: 280, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2.5,
-            voiceover: 'Welcome! Today, we will master the professional method for selecting the perfect industrial cable size.'
-        },
-        { 
-            time: 3.5, type: 'text', id: 'title2', text: 'The PERFECT CABLE SIZE', 
-            x: 800, y: 420, fontSize: 120, anchor: 'middle', weight: 'bold',
-            fill: 'var(--primary-blue)', duration: 3.5,
-            voiceover: 'This is one of the most important tasks for an electrical engineer.'
-        },
-        { 
-            time: 7.5, type: 'text', id: 'subtitle', text: 'For Industrial Applications', 
-            x: 800, y: 540, fontSize: 66, anchor: 'middle', duration: 3,
-            voiceover: 'Our focus today is on robust industrial applications.'
-        },
-        { 
-            time: 11, type: 'path', id: 'title-underline', d: 'M 200 570 H 1400', 
-            stroke: 'var(--primary-blue)', strokeWidth: 6, duration: 1.5,
-            voiceover: ''
-        },
+        // SECTION 1: TITLE (0-15s)
+        { time: 0.5, type: 'text', id: 'title1', text: 'The Ultimate Guide to', x: 800, y: 320, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 3 },
+        { time: 4, type: 'text', id: 'title2', text: 'INDUSTRIAL CABLE SIZING', x: 800, y: 480, fontSize: 130, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 4 },
+        { time: 9, type: 'text', id: 'subtitle', text: 'Beyond the Formula: The Professional Method', x: 800, y: 590, fontSize: 70, anchor: 'middle', duration: 4 },
+        { time: 13, type: 'path', id: 'title-underline', d: 'M 150 620 H 1450', stroke: 'var(--primary-blue)', strokeWidth: 8, duration: 2 },
+        { time: 16, type: 'clear'},
         
-        { time: 14, type: 'clear', voiceover: 'Cable sizing is based on three critical checks.' },
+        // SECTION 2: THE 3 PILLARS (17-45s)
+        { time: 17, type: 'text', id: 'pillars-title', text: 'The 3 Pillars of Cable Sizing', x: 800, y: 120, fontSize: 100, weight: 'bold', anchor: 'middle', duration: 3 },
+        { time: 21, type: 'rect', id: 'box1', x: 100, y: 190, width: 1400, height: 160, stroke: 'var(--draw-color)', strokeWidth: 5, fill: 'rgba(0,0,0,0.02)', duration: 1},
+        { time: 22, type: 'text', id: 'pillar1', text: '1. Ampacity (Current Capacity) Check', x: 800, y: 295, fontSize: 72, weight: 'bold', fill: 'var(--danger-red)', anchor: 'middle', duration: 5 },
+        { time: 28, type: 'rect', id: 'box2', x: 100, y: 370, width: 1400, height: 160, stroke: 'var(--draw-color)', strokeWidth: 5, fill: 'rgba(0,0,0,0.02)', duration: 1},
+        { time: 29, type: 'text', id: 'pillar2', text: '2. Voltage Drop Check', x: 800, y: 475, fontSize: 72, weight: 'bold', fill: 'var(--warning-orange)', anchor: 'middle', duration: 4 },
+        { time: 34, type: 'rect', id: 'box3', x: 100, y: 550, width: 1400, height: 160, stroke: 'var(--draw-color)', strokeWidth: 5, fill: 'rgba(0,0,0,0.02)', duration: 1},
+        { time: 35, type: 'text', id: 'pillar3', text: '3. Short Circuit Withstand Check', x: 800, y: 655, fontSize: 72, weight: 'bold', fill: 'var(--info-purple)', anchor: 'middle', duration: 5 },
+        { time: 42, type: 'text', id: 'iec-std', text: 'Based on International Standard IEC 60364', x: 800, y: 820, fontSize: 60, anchor: 'middle', duration: 3},
+        { time: 46, type: 'clear' },
+
+        // SECTION 3: EXAMPLE SETUP (47-75s)
+        { time: 47, type: 'text', id: 'example-title', text: 'Example: Feeder for a 55kW Motor', x: 800, y: 100, fontSize: 90, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)', duration: 3 },
+        { time: 51, type: 'text', id: 'given-title', text: 'Project Data:', x: 100, y: 220, fontSize: 70, weight: 'bold', duration: 2},
+        { time: 54, type: 'text', id: 'given1', text: '• Motor: 55kW, 400V, 3-Ph, PF=0.85, Eff=92%', x: 150, y: 320, fontSize: 62, duration: 4 },
+        { time: 59, type: 'text', id: 'given2', text: '• Cable Length: 120 meters (0.12 km)', x: 150, y: 410, fontSize: 62, duration: 3 },
+        { time: 63, type: 'text', id: 'given3', text: '• Installation: 3 cables on a ladder tray', x: 150, y: 500, fontSize: 62, duration: 3 },
+        { time: 67, type: 'text', id: 'given4', text: '• Ambient Temperature: 45°C', x: 150, y: 590, fontSize: 62, duration: 3 },
+        { time: 71, type: 'text', id: 'given5', text: '• System Fault Level: 25kA for 1 second', x: 150, y: 680, fontSize: 62, duration: 3 },
+        { time: 76, type: 'clear' },
         
-        // SECTION 2: THE CORE PRINCIPLES (15-45s)
-        { 
-            time: 15, type: 'text', id: 'principles-heading', text: 'The 3 Critical Checks', 
-            x: 800, y: 120, fontSize: 90, weight: 'bold', anchor: 'middle', duration: 3,
-            voiceover: 'We must satisfy all three of these conditions.'
-        },
-        { 
-            time: 19, type: 'rect', id: 'box1', x: 100, y: 200, width: 1400, height: 160,
-            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1,
-            voiceover: ''
-        },
-        { 
-            time: 20, type: 'text', id: 'check1', text: '1. Current Carrying Capacity (Ampacity)', 
-            x: 150, y: 300, fontSize: 68, weight: 'bold', duration: 4,
-            voiceover: 'First, the cable must safely carry the load current without overheating.'
-        },
-        { 
-            time: 25, type: 'rect', id: 'box2', x: 100, y: 400, width: 1400, height: 160,
-            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1,
-            voiceover: ''
-        },
-        { 
-            time: 26, type: 'text', id: 'check2', text: '2. Voltage Drop Limit', 
-            x: 150, y: 500, fontSize: 68, weight: 'bold', duration: 4,
-            voiceover: 'Second, the voltage drop must be within acceptable limits to ensure equipment runs correctly.'
-        },
-        { 
-            time: 31, type: 'rect', id: 'box3', x: 100, y: 600, width: 1400, height: 160,
-            stroke: 'var(--draw-color)', strokeWidth: 4, fill: 'rgba(0,0,0,0.02)', duration: 1,
-            voiceover: ''
-        },
-        { 
-            time: 32, type: 'text', id: 'check3', text: '3. Short Circuit Withstand', 
-            x: 150, y: 700, fontSize: 68, weight: 'bold', duration: 4,
-            voiceover: 'And third, the cable must survive a short circuit fault long enough for protection to operate. This is for safety.'
-        },
+        // SECTION 4: AMPACITY CHECK (77-123s)
+        { time: 77, type: 'text', id: 'step1-title-main', text: 'Step 1: Ampacity Check', x: 800, y: 100, fontSize: 90, weight: 'bold', fill: 'var(--danger-red)', anchor: 'middle', duration: 3 },
+        { time: 81, type: 'text', id: 'flc-title', text: 'Full Load Current (I_L):', x: 100, y: 200, fontSize: 68, duration: 2},
+        { time: 84, type: 'text', id: 'flc-calc', text: 'I_L = 55000 / (1.732 × 400 × 0.85 × 0.92)', x: 150, y: 290, fontSize: 62, duration: 5},
+        { time: 90, type: 'text', id: 'flc-result', text: 'I_L = 101.8 Amperes', x: 800, y: 380, fontSize: 72, anchor: 'middle', weight: 'bold', fill: 'var(--draw-color)', duration: 3 },
+        { time: 94, type: 'path', d: 'M 50 440 H 1550', stroke: 'rgba(0,0,0,0.2)', strokeWidth: 3, duration: 1 },
+        { time: 96, type: 'text', id: 'derating-title', text: 'Derating Factors (K):', x: 100, y: 520, fontSize: 68, duration: 2 },
+        { time: 99, type: 'text', id: 'k1', text: ' • Temp (K_temp) = 0.91 | Grouping (K_group) = 0.88', x: 150, y: 610, fontSize: 62, fill: 'var(--warning-orange)', duration: 6 },
+        { time: 106, type: 'text', id: 'k-total-calc', text: 'K_total = 0.91 × 0.88 = 0.80', x: 800, y: 700, fontSize: 72, anchor: 'middle', weight: 'bold', duration: 4 },
+        { time: 111, type: 'text', id: 'req-iz-title', text: 'Required Cable Rating (I_z) = I_L / K_total', x: 800, y: 780, fontSize: 64, anchor: 'middle', duration: 4 },
+        { time: 116, type: 'text', id: 'req-iz-result', text: 'I_z ≥ 127.25 Amperes', x: 800, y: 860, fontSize: 78, anchor: 'middle', weight: 'bold', fill: 'var(--danger-red)', duration: 4 },
+        { time: 122, type: 'clear' },
 
-        { time: 40, type: 'clear', voiceover: 'Let\'s apply these checks to a real-world example.' },
-
-        // SECTION 3: EXAMPLE SETUP (41-75s)
-        { 
-            time: 41, type: 'text', id: 'example-title', text: 'Example: Sizing a Motor Feeder', 
-            x: 800, y: 90, fontSize: 84, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
-            duration: 3, voiceover: 'We need to size a cable for a large industrial motor.'
-        },
-        { 
-            time: 45, type: 'text', id: 'given-title', text: 'Given Data:', 
-            x: 150, y: 170, fontSize: 68, weight: 'bold', duration: 2,
-            voiceover: 'Here are the project specifications.'
-        },
-        { 
-            time: 48, type: 'text', id: 'given1', text: '• Motor: 55 kW, 400V, 3-Phase, PF=0.88',
-            x: 200, y: 240, fontSize: 58, duration: 3,
-            voiceover: 'A 55 kilowatt, 400 volt, three-phase motor with a power factor of 0.88.'
-        },
-        { 
-            time: 51.5, type: 'text', id: 'given2', text: '• Full Load Current (FLC) = 99 Amperes',
-            x: 200, y: 310, fontSize: 58, duration: 3,
-            voiceover: 'The calculated full load current is 99 amps.'
-        },
-        { 
-            time: 55, type: 'text', id: 'given3', text: '• Cable Length = 80 meters',
-            x: 200, y: 380, fontSize: 58, duration: 2.5,
-            voiceover: 'The cable run is 80 meters long.'
-        },
-        { 
-            time: 58, type: 'text', id: 'given4', text: '• Installation: On tray with 2 other cables',
-            x: 200, y: 450, fontSize: 58, duration: 3,
-            voiceover: 'It is installed on a cable tray, grouped with two other cables.'
-        },
-        { 
-            time: 61.5, type: 'text', id: 'given5', text: '• Ambient Temperature = 45°C',
-            x: 200, y: 520, fontSize: 58, duration: 2.5,
-            voiceover: 'The ambient air temperature is 45 degrees Celsius.'
-        },
-        { 
-            time: 64.5, type: 'text', id: 'given6', text: '• Fault Level = 15 kA for 1 second',
-            x: 200, y: 590, fontSize: 58, duration: 3,
-            voiceover: 'And the system fault level is 15 kilo-amps for one second.'
-        },
-        { 
-            time: 68, type: 'text', id: 'derating-title', text: 'Derating Factors (from IEC tables):',
-            x: 150, y: 680, fontSize: 68, weight: 'bold', fill: 'var(--primary-blue)', duration: 3,
-            voiceover: 'Now, we find the derating factors from standard IEC tables.'
-        },
-        { 
-            time: 71.5, type: 'text', id: 'derating1', text: 'Grouping (Cg) = 0.88 | Temp (Ct) = 0.91',
-            x: 200, y: 760, fontSize: 58, duration: 3.5,
-            voiceover: 'For three cables on a tray, the grouping factor is 0.88. For 45 degrees, the temperature factor is 0.91.'
-        },
-
-        { time: 76, type: 'clear', voiceover: 'Let\'s start with the first check: Ampacity.' },
-
-        // SECTION 4: AMPACITY CALCULATION (77-105s)
-        { 
-            time: 77, type: 'text', id: 'step1-title', text: 'Step 1: Required Ampacity', 
-            x: 800, y: 110, fontSize: 84, weight: 'bold', anchor: 'middle', fill: 'var(--danger-red)',
-            duration: 3, voiceover: 'First, we must calculate the required current rating, including derating factors.'
-        },
-        { 
-            time: 81, type: 'text', id: 'step1-formula', text: 'I_required = FLC / (Cg × Ct)',
-            x: 800, y: 240, fontSize: 72, anchor: 'middle', duration: 4,
-            voiceover: 'The required rating is the Full Load Current divided by the product of all derating factors.'
-        },
-        { 
-            time: 86, type: 'text', id: 'step1-calc1', text: 'I_required = 99 / (0.88 × 0.91)',
-            x: 800, y: 360, fontSize: 72, anchor: 'middle', duration: 4,
-            voiceover: 'So, 99 amps divided by 0.88 times 0.91.'
-        },
-        { 
-            time: 91, type: 'text', id: 'step1-calc2', text: 'I_required = 99 / 0.80 = 123.75 Amps',
-            x: 800, y: 480, fontSize: 72, anchor: 'middle', duration: 4,
-            voiceover: 'This gives us a required minimum current rating of 123.75 Amperes.'
-        },
-        { 
-            time: 96, type: 'text', id: 'step1-selection', text: 'We need a cable that can handle > 124A.',
-            x: 800, y: 600, fontSize: 62, anchor: 'middle', duration: 3,
-            voiceover: 'We must select a cable size that can handle at least 124 amps *after* derating.'
-        },
-        { 
-            time: 100, type: 'text', id: 'step1-result', text: 'Initial Selection: 50mm² Copper XLPE (rated ~151A)',
-            x: 800, y: 720, fontSize: 68, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)',
-            duration: 5, voiceover: 'Looking at IEC tables, a 50 square millimeter copper cable has a rating of 151 amps. This is our initial selection.'
-        },
-        { 
-            time: 101, type: 'rect', id: 'step1-box', x: 200, y: 660, width: 1200, height: 110,
-            stroke: 'var(--success-green)', strokeWidth: 5, fill: 'rgba(40, 167, 69, 0.1)',
-            duration: 1, voiceover: ''
-        },
+        // SECTION 5: CABLE SELECTION & VD CHECK (123-170s)
+        { time: 123, type: 'text', id: 'selection-title', text: 'Cable Selection (from IEC Tables)', x: 800, y: 100, fontSize: 84, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 3 },
+        { time: 127, type: 'text', id: 'selection-text', text: 'Based on Iz ≥ 127.25A, we select a 35mm² Copper cable.', x: 800, y: 200, fontSize: 64, anchor: 'middle', duration: 4 },
+        { time: 132, type: 'text', id: 'selection-rating', text: '(Standard rating is ~140A)', x: 800, y: 270, fontSize: 50, anchor: 'middle', fill: '#555', duration: 3 },
+        { time: 136, type: 'path', d: 'M 50 330 H 1550', stroke: 'rgba(0,0,0,0.2)', strokeWidth: 3, duration: 1 },
+        { time: 138, type: 'text', id: 'step2-title-main', text: 'Step 2: Voltage Drop Check', x: 800, y: 410, fontSize: 90, weight: 'bold', fill: 'var(--warning-orange)', anchor: 'middle', duration: 3 },
+        { time: 142, type: 'text', id: 'rx-data', text: 'For 35mm² cable: R=0.64 Ω/km, X=0.08 Ω/km', x: 800, y: 500, fontSize: 62, anchor: 'middle', duration: 4 },
+        { time: 147, type: 'text', id: 'vd-formula', text: 'VD = 1.732 × I_L × L × [R·cos(φ) + X·sin(φ)]', x: 800, y: 590, fontSize: 60, anchor: 'middle', duration: 4 },
+        { time: 152, type: 'text', id: 'vd-calc', text: 'VD = 1.732 × 101.8 × 0.12 × [0.64×0.85 + 0.08×0.527]', x: 800, y: 670, fontSize: 54, anchor: 'middle', duration: 6 },
+        { time: 159, type: 'text', id: 'vd-result', text: 'VD = 12.38 Volts', x: 800, y: 750, fontSize: 72, anchor: 'middle', weight: 'bold', duration: 3 },
+        { time: 163, type: 'text', id: 'vd-percent', text: '%VD = (12.38V / 400V) × 100 = 3.1%', x: 800, y: 830, fontSize: 68, anchor: 'middle', weight: 'bold', duration: 4 },
+        { time: 168, type: 'text', id: 'vd-pass', text: 'PASS ✓ (Acceptable < 5%)', x: 800, y: 890, fontSize: 64, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 3 },
+        { time: 173, type: 'clear' },
         
-        { time: 106, type: 'clear', voiceover: 'Now, let\'s check this 50mm² cable for voltage drop.' },
-
-        // SECTION 5: VOLTAGE DROP (107-130s)
-        { 
-            time: 107, type: 'text', id: 'step2-title', text: 'Step 2: Voltage Drop Check (for 50mm²)', 
-            x: 800, y: 110, fontSize: 78, weight: 'bold', anchor: 'middle', fill: 'var(--danger-red)',
-            duration: 3, voiceover: 'Now we perform the voltage drop calculation for our selected 50mm² cable.'
-        },
-        { 
-            time: 111, type: 'text', id: 'step2-formula', text: 'VD = 1.732 × I × L × [R·cos(φ) + X·sin(φ)]',
-            x: 800, y: 220, fontSize: 58, anchor: 'middle', duration: 4,
-            voiceover: 'We use the standard IEC formula. For 50mm² copper, R is 0.49 and X is 0.08 Ohms per kilometer.'
-        },
-        { 
-            time: 116, type: 'text', id: 'step2-calc1', text: 'VD = 1.732 × 99A × 0.08km × (0.49×0.88 + 0.08×0.475)',
-            x: 800, y: 330, fontSize: 58, anchor: 'middle', duration: 5,
-            voiceover: 'Plugging in our values: 1.732, times 99 amps, times 0.08 kilometers, and the impedance term.'
-        },
-        { 
-            time: 122, type: 'text', id: 'step2-calc2', text: 'VD = 13.72 × (0.431 + 0.038) = 6.44 Volts',
-            x: 800, y: 440, fontSize: 68, anchor: 'middle', duration: 4,
-            voiceover: 'The calculation gives us a voltage drop of 6.44 Volts.'
-        },
-        { 
-            time: 127, type: 'text', id: 'step2-percent', text: '%VD = (6.44V / 400V) × 100 = 1.61%',
-            x: 800, y: 570, fontSize: 78, anchor: 'middle', weight: 'bold',
-            fill: 'var(--success-green)', duration: 4,
-            voiceover: 'As a percentage, this is only 1.61 percent.'
-        },
-        { 
-            time: 132, type: 'text', id: 'step2-ok', text: 'This is < 5% limit, so it is ACCEPTABLE ✓',
-            x: 800, y: 690, fontSize: 68, anchor: 'middle', weight: 'bold',
-            fill: 'var(--success-green)', duration: 3,
-            voiceover: 'This is well below the typical 5 percent limit, so our cable passes the voltage drop test.'
-        },
-
-        { time: 136, type: 'clear', voiceover: 'Finally, the most critical safety check: short circuit withstand.' },
-
-        // SECTION 6: SHORT CIRCUIT (137-165s)
-        { 
-            time: 137, type: 'text', id: 'step3-title', text: 'Step 3: Short Circuit Check', 
-            x: 800, y: 110, fontSize: 84, weight: 'bold', anchor: 'middle', fill: 'var(--warning-orange)',
-            duration: 3, voiceover: 'Can our 50mm² cable survive a 15 kilo-amp fault for one second?'
-        },
-        { 
-            time: 141, type: 'text', id: 'step3-formula', text: 'S_min = (I_fault × √t) / K',
-            x: 800, y: 240, fontSize: 72, anchor: 'middle', duration: 4,
-            voiceover: 'We use the adiabatic formula, where S is the minimum required cross-section.'
-        },
-        { 
-            time: 146, type: 'text', id: 'step3-k', text: 'K is a material constant (~143 for Copper XLPE)',
-            x: 800, y: 340, fontSize: 58, anchor: 'middle', fill: '#555', duration: 3,
-            voiceover: 'K is a constant based on the conductor and insulation. For XLPE insulated copper, it is 143.'
-        },
-        { 
-            time: 150, type: 'text', id: 'step3-calc', text: 'S_min = (15,000A × √1s) / 143',
-            x: 800, y: 460, fontSize: 72, anchor: 'middle', duration: 4,
-            voiceover: 'Plugging in our fault values: 15,000 amps for 1 second.'
-        },
-        { 
-            time: 155, type: 'text', id: 'step3-result', text: 'S_min = 104.9 mm²',
-            x: 800, y: 600, fontSize: 108, anchor: 'middle', weight: 'bold',
-            fill: 'var(--danger-red)', duration: 3,
-            voiceover: 'This means we need a cable of at least 105 square millimeters.'
-        },
-        { 
-            time: 159, type: 'text', id: 'step3-fail', text: 'Our 50mm² cable FAILS this check! ✗',
-            x: 800, y: 730, fontSize: 72, anchor: 'middle', weight: 'bold',
-            fill: 'var(--danger-red)', duration: 4,
-            voiceover: 'Our initially selected 50mm² cable is not safe! It would be destroyed in a fault.'
-        },
-        { 
-            time: 160, type: 'rect', id: 'step3-box', x: 250, y: 530, width: 1100, height: 130,
-            stroke: 'var(--danger-red)', strokeWidth: 6, fill: 'rgba(220, 53, 69, 0.1)',
-            duration: 1, voiceover: ''
-        },
-
-        { time: 165, type: 'clear', voiceover: 'We must upsize our cable and make our final selection.' },
-
-        // SECTION 7: CONCLUSION (166-190s)
-        { 
-            time: 166, type: 'text', id: 'final-title', text: 'Final Selection & Summary', 
-            x: 800, y: 110, fontSize: 90, weight: 'bold', anchor: 'middle', fill: 'var(--primary-blue)',
-            duration: 3, voiceover: 'Based on the critical short circuit check, we revise our selection.'
-        },
-        { 
-            time: 170, type: 'text', id: 'final-text1', text: 'The short circuit check requires ≥ 105mm².',
-            x: 800, y: 230, fontSize: 62, anchor: 'middle', duration: 3,
-            voiceover: 'The short circuit calculation is the deciding factor in this case.'
-        },
-        { 
-            time: 174, type: 'text', id: 'final-text2', text: 'The next standard size is 120mm².',
-            x: 800, y: 320, fontSize: 62, anchor: 'middle', duration: 3,
-            voiceover: 'We choose the next available standard cable size, which is 120 square millimeters.'
-        },
-        { 
-            time: 178, type: 'text', id: 'final-answer', text: 'Final Cable: 120mm² Copper XLPE',
-            x: 800, y: 450, fontSize: 84, anchor: 'middle', weight: 'bold',
-            fill: 'var(--success-green)', duration: 4,
-            voiceover: 'This cable satisfies all three checks: ampacity, voltage drop, and short circuit safety.'
-        },
-        { 
-            time: 179, type: 'rect', id: 'final-box', x: 200, y: 390, width: 1200, height: 110,
-            stroke: 'var(--success-green)', strokeWidth: 6, fill: 'rgba(40, 167, 69, 0.1)',
-            duration: 1, voiceover: ''
-        },
-        { 
-            time: 183, type: 'text', id: 'sum-text', text: 'Always perform all 3 checks!',
-            x: 800, y: 600, fontSize: 72, anchor: 'middle', duration: 3,
-            voiceover: 'Remember to always perform all three critical checks for a safe and reliable design.'
-        },
-        { 
-            time: 187, type: 'text', id: 'website-text', text: 'For more, visit: https://designcalculators.co.in',
-            x: 800, y: 750, fontSize: 58, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)',
-            duration: 3, voiceover: 'Thank you for learning with us today!'
-        },
+        // SECTION 6: SHORT CIRCUIT CHECK & CONCLUSION (174-230s)
+        { time: 174, type: 'text', id: 'step3-title-main', text: 'Step 3: Short Circuit Check', x: 800, y: 120, fontSize: 90, weight: 'bold', fill: 'var(--info-purple)', anchor: 'middle', duration: 3 },
+        { time: 178, type: 'text', id: 'sc-formula', text: 'Min. Area (S) = ( I_sc × √t ) / k', x: 800, y: 240, fontSize: 72, anchor: 'middle', duration: 5 },
+        { time: 184, type: 'text', id: 'k-factor', text: 'k = 143 for Copper/XLPE insulation', x: 800, y: 320, fontSize: 58, anchor: 'middle', fill: '#555', duration: 4 },
+        { time: 189, type: 'text', id: 'sc-calc', text: 'S = ( 25000 A × √1s ) / 143', x: 800, y: 420, fontSize: 68, anchor: 'middle', duration: 6 },
+        { time: 196, type: 'text', id: 'sc-result', text: 'S (min) = 174.8 mm²', x: 800, y: 530, fontSize: 78, anchor: 'middle', weight: 'bold', fill: 'var(--danger-red)', duration: 4 },
+        { time: 201, type: 'text', id: 'sc-fail', text: 'FAIL! Our 35mm² cable is TOO SMALL for the fault!', x: 800, y: 630, fontSize: 68, anchor: 'middle', weight: 'bold', fill: 'var(--danger-red)', duration: 5 },
+        { time: 207, type: 'rect', id: 'final-box', x: 100, y: 690, width: 1400, height: 160, stroke: 'var(--success-green)', strokeWidth: 8, fill: 'rgba(40, 167, 69, 0.1)', duration: 1},
+        { time: 209, type: 'text', id: 'final-selection', text: 'CORRECT SELECTION: 185mm² Cable', x: 800, y: 790, fontSize: 80, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 5 },
+        { time: 215, type: 'text', id: 'final-summary', text: 'The cable must be upsized to safely handle the short circuit.', x: 800, y: 880, fontSize: 54, anchor: 'middle', duration: 4 },
+        { time: 220, type: 'text', id: 'footer-link', text: 'For more tools, visit: https://designcalculators.co.in', x: 800, y: 850, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 5},
     ];
 
-    // --- Helper Functions ---
     function resetAnimation() {
-        // Clear all timeouts and intervals
+        isPlaying = false;
         timeouts.forEach(t => clearTimeout(t));
-        intervals.forEach(i => clearInterval(i));
         timeouts = [];
-        intervals = [];
-        
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-
-        // Remove all elements
-        while(svg.firstChild) {
-            svg.removeChild(svg.firstChild);
-        }
-        
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
         activeElements = [];
         progressBar.style.width = '0%';
-        voDisplay.textContent = 'Click "Start Tutorial" to begin...';
-        playBtn.disabled = false;
-        playBtn.textContent = '▶ Start Tutorial';
-        isPlaying = false;
     }
 
     function updateUI(elapsedSeconds) {
@@ -494,174 +277,135 @@
         progressBar.style.width = percentage + '%';
     }
 
-    function showVoiceover(text) {
-        if(text && text.trim() !== '') {
-            voDisplay.textContent = text;
-        }
-    }
-
-    // --- Element Creation ---
     function createElement(item) {
         let el;
-        
         if (item.type === 'text') {
             el = document.createElementNS(svgNS, 'text');
             el.setAttribute('x', item.x);
             el.setAttribute('y', item.y);
             el.setAttribute('font-size', item.fontSize);
             el.setAttribute('fill', item.fill || 'var(--draw-color)');
-            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
-            if(item.weight) el.setAttribute('font-weight', item.weight);
-            el.textContent = ''; // Start empty for typing effect
+            if (item.anchor) el.setAttribute('text-anchor', item.anchor);
+            if (item.weight) el.setAttribute('font-weight', item.weight);
+            el.textContent = '';
             el.setAttribute('data-text', item.text);
-            el.classList.add('text-anim', 'anim-element');
-            
-        } else if (item.type === 'path') {
-            el = document.createElementNS(svgNS, 'path');
-            el.setAttribute('d', item.d);
+        } else if (item.type === 'path' || item.type === 'rect') {
+            el = document.createElementNS(svgNS, item.type);
+            if (item.type === 'path') {
+                el.setAttribute('d', item.d);
+            } else { // rect
+                el.setAttribute('x', item.x);
+                el.setAttribute('y', item.y);
+                el.setAttribute('width', item.width);
+                el.setAttribute('height', item.height);
+                el.setAttribute('rx', 15);
+            }
             el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
             el.setAttribute('stroke-width', item.strokeWidth || 4);
             el.setAttribute('fill', item.fill || 'none');
-            el.classList.add('anim-element');
-            
-        } else if (item.type === 'rect') {
-            el = document.createElementNS(svgNS, 'rect');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('width', item.width);
-            el.setAttribute('height', item.height);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
-            el.setAttribute('rx', item.rx || 10);
-            el.classList.add('anim-element');
         }
-        
-        if(el) {
+        if (el) {
             el.id = item.id;
+            el.classList.add('anim-element');
             svg.appendChild(el);
         }
-        
         return el;
     }
 
-    // --- Typing Animation (Human-like speed) ---
     function typeText(el, text, duration) {
-        if(!text || text.length === 0) {
-            el.style.opacity = 1;
-            return;
-        }
-
+        if (!text || text.length === 0) { el.style.opacity = 1; return; }
         let charIndex = 0;
         const chars = text.split('');
-        const charDelay = (duration * 1000) / chars.length;
-        // Ensure minimum delay for readability (50ms per character minimum)
-        const actualDelay = Math.max(50, charDelay);
-
+        const actualDelay = Math.max(40, (duration * 1000) / chars.length);
         el.style.opacity = 1;
 
         function addNextChar() {
-            if(charIndex < chars.length && isPlaying) {
-                el.textContent += chars[charIndex];
-                charIndex++;
-                const timeout = setTimeout(addNextChar, actualDelay);
-                timeouts.push(timeout);
+            if (charIndex < chars.length && isPlaying) {
+                el.textContent += chars[charIndex++];
+                timeouts.push(setTimeout(addNextChar, actualDelay));
             }
         }
-
         addNextChar();
     }
 
-    // --- Draw Animation for Paths/Rects ---
     function drawShape(el, duration) {
         el.style.opacity = 1;
         el.style.animationDuration = (duration > 1 ? 1 : duration) + 's';
         el.classList.add('fade-in');
     }
 
-    // --- Main Animation Function ---
     function animateItem(item) {
         if (item.type === 'clear') {
-            // Clear the board
-            activeElements.forEach(el => {
-                if(el && el.parentNode) {
-                    svg.removeChild(el);
-                }
-            });
+            activeElements.forEach(el => el && el.parentNode && svg.removeChild(el));
             activeElements = [];
-            if(item.voiceover) showVoiceover(item.voiceover);
             return;
         }
-
-        // Show voiceover
-        if(item.voiceover) {
-            showVoiceover(item.voiceover);
-        }
-
-        // Create and animate element
         const el = createElement(item);
         if(!el) return;
-        
         activeElements.push(el);
-
         if(item.type === 'text') {
-            const text = el.getAttribute('data-text');
-            typeText(el, text, item.duration);
+            typeText(el, el.getAttribute('data-text'), item.duration);
         } else {
             drawShape(el, item.duration);
         }
     }
 
-    // --- Start Animation ---
     function startAnimation() {
         if(isPlaying) return;
         
         resetAnimation();
+        replayContainer.classList.remove('visible');
         isPlaying = true;
-        playBtn.disabled = true;
-        playBtn.textContent = '▶ Playing...';
-        
         const startTime = Date.now();
 
-        // Schedule all timeline items
         timeline.forEach(item => {
             const timeout = setTimeout(() => {
-                if(isPlaying) {
-                    animateItem(item);
-                }
+                if(isPlaying) animateItem(item);
             }, item.time * 1000);
             timeouts.push(timeout);
         });
 
-        // Animation loop for progress bar
         function updateProgress() {
             if(!isPlaying) return;
-            
             const elapsed = (Date.now() - startTime) / 1000;
             
             if(elapsed >= TOTAL_DURATION) {
+                isPlaying = false;
                 progressBar.style.width = '100%';
-                const timeout = setTimeout(() => {
-                    resetAnimation();
-                    voDisplay.textContent = 'Tutorial complete! Click to replay.';
-                }, 2000);
-                timeouts.push(timeout);
+                // Hide the footer link at the very end before showing replay
+                const footer = document.getElementById('footer-link');
+                if(footer) footer.style.opacity = 0;
+
+                setTimeout(() => replayContainer.classList.add('visible'), 2000);
                 return;
             }
             
             updateUI(elapsed);
             animationFrame = requestAnimationFrame(updateProgress);
         }
-        
         updateProgress();
     }
 
-    // --- Event Listeners ---
-    playBtn.addEventListener('click', startAnimation);
+    function initTutorial() {
+        setTimeout(() => {
+            splashScreen.classList.add('fade-out');
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                startAnimation();
+            }, 1000);
+        }, 3000);
+    }
 
-    // Cleanup on page unload
+    replayBtn.addEventListener('click', () => {
+        // Ensure footer is hidden before replay
+        const footer = document.getElementById('footer-link');
+        if(footer) footer.style.opacity = 0;
+        startAnimation();
+    });
+    window.addEventListener('load', initTutorial);
     window.addEventListener('beforeunload', resetAnimation);
 </script>
-
 </body>
 </html>
+
+
