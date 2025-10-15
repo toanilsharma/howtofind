@@ -1,133 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voltage Drop Calculation - Professor's Tutorial</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --board-bg: #f8f9fa;
-            --draw-color: #1a1a1a;
-            --primary-blue: #0056b3;
-            --danger-red: #dc3545;
-            --success-green: #28a745;
-            --warning-orange: #fd7e14;
-            --font-main: 'Kalam', cursive;
-            --font-alt: 'Architects Daughter', cursive;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #2c3e50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            font-family: var(--font-main);
-        }
-
-        #whiteboard-container {
-            position: relative;
-            width: 95vw;
-            max-width: 1600px;
-            aspect-ratio: 16 / 9;
-        }
-
-        #whiteboard {
-            width: 100%;
-            height: 100%;
-            background-color: var(--board-bg);
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-            border: 20px solid #8b7355;
-            border-bottom-width: 60px;
-        }
-
-        #animation-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .anim-element {
-            opacity: 0;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        
-        .visible {
-            opacity: 1;
-        }
-
-        .text-anim {
-            font-family: var(--font-main);
-        }
-
-        #controls {
-            position: absolute;
-            top: -70px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-        }
-
-        #play-btn {
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 20px;
-            padding: 15px 40px;
-            cursor: pointer;
-            border: 3px solid var(--primary-blue);
-            background-color: #fff;
-            color: var(--primary-blue);
-            border-radius: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        #play-btn:hover { 
-            background-color: var(--primary-blue); 
-            color: #fff;
-            transform: scale(1.05);
-        }
-
-        #play-btn:disabled { 
-            cursor: not-allowed; 
-            opacity: 0.6;
-            transform: scale(1);
-        }
-
-        #voiceover-display {
-            position: absolute;
-            bottom: -80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 1.8vw;
-            line-height: 1.5;
-            color: #ecf0f1;
-            padding: 10px 20px;
-            font-family: var(--font-alt);
-            background: rgba(44, 62, 80, 0.9);
-            border-radius: 8px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
         #progress-bar-container {
             position: absolute;
@@ -464,75 +335,7 @@
             type: 'text', 
             id: 'step1-title', 
             text: 'Step 1: Find sin(φ)', 
-            x: 150, y: 120, 
-            fontSize: 78, 
-            weight: 'bold',
-            fill: 'var(--danger-red)',
-            duration: 2,
-            voiceover: 'First, we need to find sine of phi.'
-        },
-        { 
-            time: 83, 
-            type: 'text', 
-            id: 'step1-calc1', 
-            text: 'Given: cos(φ) = 0.85', 
-            x: 200, y: 220, 
-            fontSize: 66,
-            duration: 2.5,
-            voiceover: 'We know cosine phi equals 0.85.'
-        },
-        { 
-            time: 86, 
-            type: 'text', 
-            id: 'step1-calc2', 
-            text: 'φ = cos⁻¹(0.85) = 31.79°', 
-            x: 200, y: 300, 
-            fontSize: 66,
-            duration: 3,
-            voiceover: 'So phi equals inverse cosine of 0.85, which is 31.79 degrees.'
-        },
-        { 
-            time: 89.5, 
-            type: 'text', 
-            id: 'step1-result', 
-            text: 'sin(31.79°) = 0.527', 
-            x: 200, y: 380, 
-            fontSize: 66,
-            weight: 'bold',
-            fill: 'var(--success-green)',
-            duration: 2.5,
-            voiceover: 'Therefore, sine of 31.79 degrees equals 0.527.'
-        },
-        { 
-            time: 93, 
-            type: 'text', 
-            id: 'step2-title', 
-            text: 'Step 2: Calculate Impedance Term', 
-            x: 150, y: 510, 
-            fontSize: 78, 
-            weight: 'bold',
-            fill: 'var(--danger-red)',
-            duration: 2.5,
-            voiceover: 'Step 2: Calculate the impedance term.'
-        },
-        { 
-            time: 96, 
-            type: 'text', 
-            id: 'step2-calc1', 
-            text: 'R × cos(φ) = 0.33 × 0.85 = 0.2805', 
-            x: 200, y: 610, 
-            fontSize: 62,
-            duration: 3,
-            voiceover: 'R times cosine phi equals 0.33 times 0.85, which is 0.2805.'
-        },
-        { 
-            time: 99.5, 
-            type: 'text', 
-            id: 'step2-calc2', 
-            text: 'X × sin(φ) = 0.075 × 0.527 = 0.0395', 
-            x: 200, y: 685, 
-            fontSize: 62,
-            duration: 3,
+            x: 
             voiceover: 'X times sine phi equals 0.075 times 0.527, which is 0.0395.'
         },
         { 
@@ -657,66 +460,11 @@
             text: '% VD = (Voltage Drop / System Voltage) × 100', 
             x: 800, y: 260, 
             fontSize: 66,
-            anchor: 'middle',
-            duration: 4,
-            voiceover: 'Percentage voltage drop equals actual drop divided by system voltage, times 100.'
-        },
-        { 
-            time: 141, 
-            type: 'text', 
-            id: 'percent-calc', 
-            text: '% VD = (8.31V / 400V) × 100', 
-            x: 800, y: 380, 
-            fontSize: 72,
-            anchor: 'middle',
-            duration: 3.5,
-            voiceover: 'So, 8.31 volts divided by 400 volts, times 100.'
-        },
-        { 
-            time: 145, 
-            type: 'text', 
-            id: 'percent-result', 
-            text: '% VD = 2.08%', 
-            x: 800, y: 510, 
-            fontSize: 108,
-            anchor: 'middle',
-            weight: 'bold',
-            fill: 'var(--primary-blue)',
-            duration: 2.5,
-            voiceover: 'Equals 2.08 percent!'
-        },
-        { 
-            time: 148, 
-            type: 'rect', 
-            id: 'percent-box', 
+            ', 
             x: 500, y: 440, 
             width: 600, 
             height: 130,
-            stroke: 'var(--primary-blue)', 
-            strokeWidth: 6, 
-            fill: 'rgba(0, 86, 179, 0.1)',
-            duration: 1,
-            voiceover: ''
-        },
-        { 
-            time: 150, 
-            type: 'text', 
-            id: 'acceptable-q', 
-            text: 'Is this acceptable?', 
-            x: 800, y: 650, 
-            fontSize: 72,
-            anchor: 'middle',
-            duration: 2.5,
-            voiceover: 'Now, is this acceptable?'
-        },
-        { 
-            time: 153, 
-            type: 'text', 
-            id: 'acceptable-a', 
-            text: 'YES! ✓ (Standard limit: 3-5%)', 
-            x: 800, y: 750, 
-            fontSize: 84,
-            anchor: 'middle',
+            middle',
             weight: 'bold',
             fill: 'var(--success-green)',
             duration: 3,
@@ -735,164 +483,8 @@
             x: 800, y: 110, 
             fontSize: 90, 
             weight: 'bold',
-            anchor: 'middle',
-            fill: 'var(--primary-blue)',
-            duration: 2,
-            voiceover: 'Here\'s what we covered today.'
-        },
-        { 
-            time: 162, 
-            type: 'text', 
-            id: 'sum1', 
-            text: '✓ Learned the IEC voltage drop formula', 
-            x: 200, y: 230, 
-            fontSize: 62,
-            duration: 3,
-            voiceover: 'We learned the international standard formula.'
-        },
-        { 
-            time: 165.5, 
-            type: 'text', 
-            id: 'sum2', 
-            text: '✓ Understood each parameter (K, I, L, R, X)', 
-            x: 200, y: 310, 
-            fontSize: 62,
-            duration: 3,
-            voiceover: 'We understood all the parameters involved.'
-        },
-        { 
-            time: 169, 
-            type: 'text', 
-            id: 'sum3', 
-            text: '✓ Solved a complete practical example', 
-            x: 200, y: 390, 
-            fontSize: 62,
-            duration: 2.5,
-            voiceover: 'We solved a complete real-world problem.'
-        },
-        { 
-            time: 172, 
-            type: 'text', 
-            id: 'sum4', 
-            text: '✓ Verified against percentage limits', 
-            x: 200, y: 470, 
-            fontSize: 62,
-            duration: 2.5,
-            voiceover: 'And verified our answer against standard limits.'
-        },
-        { 
-            time: 175, 
-            type: 'text', 
-            id: 'cta-text', 
-            text: 'For more free tools and calculators, visit:', 
-            x: 800, y: 600, 
-            fontSize: 58,
-            anchor: 'middle',
-            duration: 3.5,
-            voiceover: 'For more free electrical engineering tools and calculators...'
-        },
-        { 
-            time: 178, 
-            type: 'text', 
-            id: 'website', 
-            text: 'https://designcalculators.co.in', 
-            x: 800, y: 710, 
-            fontSize: 84,
-            anchor: 'middle',
-            weight: 'bold',
-            fill: 'var(--success-green)',
-            duration: 5,
-            voiceover: 'Visit https://designcalculators.co.in. Thank you, and happy learning!'
-        },
-        { 
-            time: 181, 
-            type: 'rect', 
-            id: 'website-box', 
-            x: 300, y: 650, 
-            width: 1000, 
-            height: 110,
-            stroke: 'var(--success-green)', 
-            strokeWidth: 5, 
-            fill: 'none',
-            duration: 1,
-            voiceover: ''
-        },
-    ];
-
-    // --- Helper Functions ---
-    function resetAnimation() {
-        // Clear all timeouts and intervals
-        timeouts.forEach(t => clearTimeout(t));
-        intervals.forEach(i => clearInterval(i));
-        timeouts = [];
-        intervals = [];
-        
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-
-        // Remove all elements
-        while(svg.firstChild) {
-            svg.removeChild(svg.firstChild);
-        }
-        
-        activeElements = [];
-        progressBar.style.width = '0%';
-        voDisplay.textContent = 'Click "Start Tutorial" to begin...';
-        playBtn.disabled = false;
-        playBtn.textContent = '▶ Start Tutorial';
-        isPlaying = false;
-    }
-
-    function updateUI(elapsedSeconds) {
-        const percentage = (elapsedSeconds / TOTAL_DURATION) * 100;
-        progressBar.style.width = percentage + '%';
-    }
-
-    function showVoiceover(text) {
-        if(text && text.trim() !== '') {
-            voDisplay.textContent = text;
-        }
-    }
-
-    // --- Element Creation ---
-    function createElement(item) {
-        let el;
-        
-        if (item.type === 'text') {
-            el = document.createElementNS(svgNS, 'text');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('font-size', item.fontSize);
-            el.setAttribute('fill', item.fill || 'var(--draw-color)');
-            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
-            if(item.weight) el.setAttribute('font-weight', item.weight);
-            el.textContent = ''; // Start empty for typing effect
-            el.setAttribute('data-text', item.text);
-            el.classList.add('text-anim', 'anim-element');
             
-        } else if (item.type === 'path') {
-            el = document.createElementNS(svgNS, 'path');
-            el.setAttribute('d', item.d);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
-            el.classList.add('anim-element');
             
-        } else if (item.type === 'rect') {
-            el = document.createElementNS(svgNS, 'rect');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('width', item.width);
-            el.setAttribute('height', item.height);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
-            el.setAttribute('rx', item.rx || 10);
-            el.classList.add('anim-element');
-        }
-        
-        if(el) {
             el.id = item.id;
             svg.appendChild(el);
         }
@@ -900,19 +492,7 @@
         return el;
     }
 
-    // --- Typing Animation (Human-like speed) ---
-    function typeText(el, text, duration) {
-        if(!text || text.length === 0) {
-            el.style.opacity = 1;
-            return;
-        }
-
-        let charIndex = 0;
-        const chars = text.split('');
-        const charDelay = (duration * 1000) / chars.length;
-        // Ensure minimum delay for readability (60ms per character minimum)
-        const actualDelay = Math.max(60, charDelay);
-
+    // --
         el.style.opacity = 1;
 
         function addNextChar() {
@@ -1018,4 +598,5 @@
 </script>
 
 </body>
+
 </html>
