@@ -1,602 +1,414 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Voltage Drop - The Professional Masterclass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --board-bg: #f8f9fa;
+            --draw-color: #1a1a1a;
+            --primary-blue: #0056b3;
+            --danger-red: #b33600;
+            --success-green: #28a745;
+            --warning-orange: #b36b00;
+            --info-purple: #5e35b1;
+            --font-main: 'Kalam', cursive;
+            --font-alt: 'Architects Daughter', cursive;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: var(--font-main);
+        }
+
+        #whiteboard-container {
+            position: relative;
+            background: #000;
+            width: 100vw; 
+            height: 56.25vw;
+            max-height: 100vh;
+            max-width: 177.78vh;
+            margin: auto;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+        }
+
+        #whiteboard {
+            width: 100%;
+            height: 100%;
+            background-color: var(--board-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #animation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .anim-element {
+            opacity: 0;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        #splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a2a3a;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            transition: opacity 1s ease-out;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #splash-screen h1 {
+            font-family: var(--font-main);
+            font-size: 5vw;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        #splash-screen p {
+             font-family: var(--font-alt);
+             font-size: 2.5vw;
+        }
+
+        #replay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        #replay-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        #replay-btn {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 2vw;
+            padding: 20px 40px;
+            cursor: pointer;
+            border: 3px solid var(--primary-blue);
+            background-color: #fff;
+            color: var(--primary-blue);
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #replay-btn:hover {
+             background-color: var(--primary-blue); 
+             color: #fff;
+             transform: scale(1.05);
+        }
 
         #progress-bar-container {
             position: absolute;
-            bottom: -5px;
+            bottom: 0px;
             left: 0;
             right: 0;
-            height: 8px;
+            height: 5px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 4px 4px;
         }
 
         #progress-bar {
             width: 0%;
             height: 100%;
             background: linear-gradient(90deg, #28a745, #20c997);
-            transition: width 0.3s ease;
-            border-radius: 0 0 4px 4px;
+            transition: width 0.2s ease;
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .fade-in { animation: fadeIn 0.4s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-
     <div id="whiteboard-container">
-        <div id="controls">
-            <button id="play-btn">▶ Start Tutorial</button>
+        <div id="splash-screen">
+            <h1>Voltage Drop</h1>
+            <p>The Industrial Masterclass</p>
         </div>
         <div id="whiteboard">
-            <svg id="animation-svg" viewBox="0 0 1600 900">
-                <!-- All SVG elements will be dynamically created by JavaScript -->
-            </svg>
+            <svg id="animation-svg" viewBox="0 0 1600 900"></svg>
             <div id="progress-bar-container">
                 <div id="progress-bar"></div>
             </div>
         </div>
-        <div id="voiceover-display">Click "Start Tutorial" to begin...</div>
+        <div id="replay-container">
+            <button id="replay-btn">Replay Tutorial</button>
+        </div>
     </div>
 
 <script>
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.getElementById('animation-svg');
-    const playBtn = document.getElementById('play-btn');
     const progressBar = document.getElementById('progress-bar');
-    const voDisplay = document.getElementById('voiceover-display');
+    const splashScreen = document.getElementById('splash-screen');
+    const replayContainer = document.getElementById('replay-container');
+    const replayBtn = document.getElementById('replay-btn');
     
     let activeElements = [];
     let animationFrame;
     let timeouts = [];
-    let intervals = [];
     let isPlaying = false;
 
-    // --- Timeline Definition (Slower, More Readable, LARGER FONT) ---
-    const TOTAL_DURATION = 180; // 3 minutes in seconds
+    const TOTAL_DURATION = 200; // Faster pace
 
     const timeline = [
-        // SECTION 1: TITLE (0-12s)
-        { 
-            time: 0.5, 
-            type: 'text', 
-            id: 'title1', 
-            text: 'How to Calculate', 
-            x: 800, y: 280, 
-            fontSize: 110, 
-            anchor: 'middle', 
-            weight: 'bold', 
-            duration: 2.5,
-            voiceover: 'Welcome! Today we will learn how to calculate voltage drop.'
-        },
-        { 
-            time: 3.5, 
-            type: 'text', 
-            id: 'title2', 
-            text: 'VOLTAGE DROP', 
-            x: 800, y: 420, 
-            fontSize: 130, 
-            anchor: 'middle', 
-            weight: 'bold',
-            fill: 'var(--primary-blue)',
-            duration: 3,
-            voiceover: 'This is a critical skill for electrical engineers and designers.'
-        },
-        { 
-            time: 7, 
-            type: 'text', 
-            id: 'subtitle', 
-            text: 'A Step-by-Step Professional Guide', 
-            x: 800, y: 540, 
-            fontSize: 66, 
-            anchor: 'middle',
-            duration: 2.5,
-            voiceover: 'Let me guide you through this step by step.'
-        },
-        { 
-            time: 10, 
-            type: 'path', 
-            id: 'title-underline', 
-            d: 'M 200 570 H 1400', 
-            stroke: 'var(--primary-blue)', 
-            strokeWidth: 6,
-            duration: 1.5,
-            voiceover: ''
-        },
+        // SECTION 1: WHAT (0-15s)
+        { time: 0.5, type: 'text', id: 'title-what', text: 'WHAT is Voltage Drop?', x: 800, y: 150, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2.5, fill: 'var(--primary-blue)' },
+        { time: 3.5, type: 'text', id: 'what-desc', text: 'The loss of electrical pressure (voltage) along a cable.', x: 800, y: 280, fontSize: 72, anchor: 'middle', duration: 3},
+        { time: 7, type: 'rect', id: 'source-box', x: 100, y: 400, width: 300, height: 200, stroke: 'var(--success-green)', strokeWidth: 8, duration: 1},
+        { time: 8, type: 'text', id: 'source-text', text: 'Source', x: 250, y: 480, fontSize: 68, anchor: 'middle', weight: 'bold', duration: 1.5},
+        { time: 8.5, type: 'text', id: 'source-volt', text: '415V', x: 250, y: 550, fontSize: 60, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 1.5},
+        { time: 9, type: 'rect', id: 'load-box', x: 1200, y: 400, width: 300, height: 200, stroke: 'var(--danger-red)', strokeWidth: 8, duration: 1},
+        { time: 10, type: 'text', id: 'load-text', text: 'Load', x: 1350, y: 480, fontSize: 68, anchor: 'middle', weight: 'bold', duration: 1.5},
+        { time: 10.5, type: 'text', id: 'load-volt', text: '402V', x: 1350, y: 550, fontSize: 60, anchor: 'middle', weight: 'bold', fill: 'var(--danger-red)', duration: 1.5},
+        { time: 11, type: 'path', id: 'cable-path', d: 'M 400 500 H 1200', stroke: 'var(--draw-color)', strokeWidth: 10, duration: 1.5},
+        { time: 12, type: 'text', id: 'cable-label', text: 'Long Cable', x: 800, y: 480, fontSize: 54, anchor: 'middle', duration: 1.5},
+        { time: 13.5, type: 'text', id: 'vd-label', text: 'Voltage Drop = 13V', x: 800, y: 600, fontSize: 72, anchor: 'middle', weight: 'bold', fill: 'var(--warning-orange)', duration: 2},
+        { time: 16, type: 'clear' },
         
-        // CLEAR AND NEW SECTION
-        { time: 13, type: 'clear', voiceover: 'First, let me show you the master formula.' },
+        // SECTION 2: WHY (17-38s)
+        { time: 17, type: 'text', id: 'title-why', text: 'WHY is it Critical?', x: 800, y: 150, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2, fill: 'var(--danger-red)' },
+        { time: 20, type: 'text', id: 'why-1', text: '1. Equipment Malfunction & Damage', x: 150, y: 300, fontSize: 72, duration: 3},
+        { time: 24, type: 'text', id: 'why-2', text: '2. Poor Performance (Dim Lights, Slow Motors)', x: 150, y: 450, fontSize: 72, duration: 3.5},
+        { time: 28.5, type: 'text', id: 'why-3', text: '3. Overheating & Fire Hazard', x: 150, y: 600, fontSize: 72, duration: 3},
+        { time: 32.5, type: 'text', id: 'why-4', text: '4. Wasted Energy & Higher Bills', x: 150, y: 750, fontSize: 72, duration: 3},
+        { time: 37, type: 'clear' },
+
+        // SECTION 3: WHERE & WHEN (38-58s)
+        { time: 38, type: 'text', id: 'title-where', text: 'WHERE & WHEN to Check?', x: 800, y: 150, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2, fill: 'var(--info-purple)' },
+        { time: 41, type: 'text', id: 'where-text', text: 'WHERE: On the longest cable runs and most critical loads.', x: 800, y: 320, fontSize: 72, anchor: 'middle', duration: 4 },
+        { time: 46, type: 'text', id: 'when-text', text: 'WHEN: Always during the design phase!', x: 800, y: 550, fontSize: 80, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 3.5 },
+        { time: 50.5, type: 'rect', id: 'when-box', x: 200, y: 480, width: 1200, height: 140, stroke: 'var(--success-green)', strokeWidth: 8, fill: 'none', duration: 1.5},
+        { time: 53, type: 'text', id: 'when-subtitle', text: '(Never wait for problems to appear on site)', x: 800, y: 700, fontSize: 60, anchor: 'middle', duration: 3},
+        { time: 57, type: 'clear' },
         
-        // SECTION 2: THE FORMULA (14-35s)
-        { 
-            time: 14, 
-            type: 'text', 
-            id: 'formula-heading', 
-            text: 'The Master Formula (IEC Standard)', 
-            x: 800, y: 100, 
-            fontSize: 84, 
-            weight: 'bold', 
-            anchor: 'middle',
-            duration: 3,
-            voiceover: 'This is the internationally accepted IEC formula for voltage drop calculation.'
-        },
-        { 
-            time: 18, 
-            type: 'rect', 
-            id: 'formula-box', 
-            x: 100, y: 180, 
-            width: 1400, 
-            height: 140,
-            stroke: 'var(--primary-blue)', 
-            strokeWidth: 5, 
-            fill: 'rgba(0, 86, 179, 0.05)',
-            duration: 1,
-            voiceover: ''
-        },
-        { 
-            time: 19.5, 
-            type: 'text', 
-            id: 'formula', 
-            text: 'VD = K × I × L × [R·cos(φ) + X·sin(φ)]', 
-            x: 800, y: 275, 
-            fontSize: 78, 
-            anchor: 'middle',
-            fill: 'var(--draw-color)',
-            weight: 'bold',
-            duration: 4,
-            voiceover: 'Voltage Drop equals K times Current times Length times Impedance.'
-        },
-        { 
-            time: 25, 
-            type: 'text', 
-            id: 'k-label', 
-            text: '• K = Constant', 
-            x: 150, y: 400, 
-            fontSize: 66,
-            duration: 2,
-            voiceover: 'K is a constant that depends on the system type.'
-        },
-        { 
-            time: 27.5, 
-            type: 'text', 
-            id: 'k-value', 
-            text: '  (√3 ≈ 1.732 for 3-phase, 2 for single-phase)', 
-            x: 200, y: 470, 
-            fontSize: 58,
-            fill: '#555',
-            duration: 3,
-            voiceover: 'Root 3, or 1.732, for three-phase systems, and 2 for single-phase.'
-        },
-        { 
-            time: 31.5, 
-            type: 'text', 
-            id: 'i-label', 
-            text: '• I = Load Current (Amperes)', 
-            x: 150, y: 550, 
-            fontSize: 66,
-            duration: 2.5,
-            voiceover: 'I is the load current in amperes.'
-        },
-        { 
-            time: 35, 
-            type: 'text', 
-            id: 'l-label', 
-            text: '• L = Cable Length (kilometers)', 
-            x: 150, y: 630, 
-            fontSize: 66,
-            duration: 2.5,
-            voiceover: 'L is the one-way cable length in kilometers.'
-        },
-        { 
-            time: 38.5, 
-            type: 'text', 
-            id: 'z-label', 
-            text: '• [R·cos(φ) + X·sin(φ)] = Impedance Effect', 
-            x: 150, y: 710, 
-            fontSize: 66,
-            duration: 3,
-            voiceover: 'This part represents the impedance effect on voltage drop.'
-        },
-        { 
-            time: 42, 
-            type: 'text', 
-            id: 'z-note', 
-            text: '  R and X values come from cable tables', 
-            x: 200, y: 780, 
-            fontSize: 58,
-            fill: '#555',
-            duration: 3,
-            voiceover: 'R is resistance, X is reactance. Both come from manufacturer tables.'
-        },
+        // SECTION 4: HOW (The Formula) (58-85s)
+        { time: 58, type: 'text', id: 'title-how', text: 'HOW to Calculate?', x: 800, y: 120, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2, fill: 'var(--draw-color)' },
+        { time: 61, type: 'text', id: 'how-subtitle', text: 'Using the International IEC Formula:', x: 800, y: 220, fontSize: 68, anchor: 'middle', duration: 2.5},
+        { time: 64, type: 'rect', id: 'formula-box', x: 50, y: 280, width: 1500, height: 180, stroke: 'var(--primary-blue)', strokeWidth: 8, fill: 'rgba(0, 86, 179, 0.05)', duration: 1.5},
+        { time: 66, type: 'text', id: 'formula-text', text: 'VD = K × I × L × [R·cos(φ) + X·sin(φ)]', x: 800, y: 390, fontSize: 78, anchor: 'middle', weight: 'bold', duration: 4},
+        { time: 71, type: 'text', id: 'k-label', text: 'K = Constant (√3 for 3-ph)', x: 150, y: 550, fontSize: 64, duration: 2.5, fill: 'var(--danger-red)' },
+        { time: 74, type: 'text', id: 'i-label', text: 'I = Load Current (A)', x: 150, y: 650, fontSize: 64, duration: 2, fill: 'var(--primary-blue)'},
+        { time: 76.5, type: 'text', id: 'l-label', text: 'L = Cable Length (km)', x: 150, y: 750, fontSize: 64, duration: 2, fill: 'var(--warning-orange)'},
+        { time: 79, type: 'text', id: 'z-label', text: '[ ... ] = Impedance (Ω/km)', x: 900, y: 550, fontSize: 64, duration: 2.5, fill: 'var(--info-purple)'},
+        { time: 82, type: 'text', id: 'z-subtitle', text: '(R & X from cable datasheets)', x: 900, y: 650, fontSize: 54, duration: 2},
+        { time: 85, type: 'clear' },
 
-        // CLEAR
-        { time: 46, type: 'clear', voiceover: 'Now, let\'s solve a practical example together!' },
+        // SECTION 5: Industrial Example (86-140s)
+        { time: 86, type: 'text', id: 'example-title', text: 'Example: 110kW Pump Motor', x: 800, y: 100, fontSize: 90, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)', duration: 3 },
+        { time: 90, type: 'text', id: 'given-title', text: 'Data:', x: 100, y: 200, fontSize: 70, weight: 'bold', duration: 1.5},
+        { time: 92, type: 'text', id: 'given1', text: '• Current (I): 195A | PF (cos φ): 0.89', x: 150, y: 290, fontSize: 64, duration: 3 },
+        { time: 96, type: 'text', id: 'given2', text: '• Cable Length (L): 200 meters = 0.2 km', x: 150, y: 380, fontSize: 64, duration: 3 },
+        { time: 100, type: 'text', id: 'given3', text: '• Cable: 120mm² Copper (R=0.18, X=0.08 Ω/km)', x: 150, y: 470, fontSize: 64, duration: 4 },
+        { time: 105, type: 'path', d: 'M 50 550 H 1550', stroke: 'rgba(0,0,0,0.2)', strokeWidth: 3, duration: 1 },
+        { time: 107, type: 'text', id: 'calc-title', text: 'Calculation:', x: 100, y: 620, fontSize: 70, weight: 'bold', duration: 1.5},
+        { time: 109, type: 'text', id: 'sin-phi', text: 'First, find sin(φ): If cos(φ)=0.89, then sin(φ)=0.456', x: 150, y: 700, fontSize: 60, duration: 4},
+        { time: 114, type: 'text', id: 'vd-calc-line', text: 'VD = 1.732 × 195A × 0.2km × [0.18×0.89 + 0.08×0.456]', x: 800, y: 800, fontSize: 58, anchor: 'middle', duration: 6},
+        { time: 121, type: 'clear' },
 
-        // SECTION 3: EXAMPLE SETUP (47-65s)
-        { 
-            time: 47, 
-            type: 'text', 
-            id: 'example-title', 
-            text: 'Practical Example', 
-            x: 800, y: 90, 
-            fontSize: 90, 
-            weight: 'bold', 
-            anchor: 'middle',
-            fill: 'var(--success-green)',
-            duration: 2.5,
-            voiceover: 'Here\'s a real-world problem we need to solve.'
-        },
-        { 
-            time: 50.5, 
-            type: 'text', 
-            id: 'given-title', 
-            text: 'Given Data:', 
-            x: 150, y: 180, 
-            fontSize: 72, 
-            weight: 'bold',
-            duration: 1.5,
-            voiceover: 'These are the given parameters.'
-        },
-        { 
-            time: 53, 
-            type: 'text', 
-            id: 'given1', 
-            text: '• System Voltage = 400V (3-Phase)', 
-            x: 200, y: 260, 
-            fontSize: 62,
-            duration: 3,
-            voiceover: 'A 400-volt, three-phase system.'
-        },
-        { 
-            time: 56.5, 
-            type: 'text', 
-            id: 'given2', 
-            text: '• Load Current (I) = 100 Amperes', 
-            x: 200, y: 330, 
-            fontSize: 62,
-            duration: 2.5,
-            voiceover: 'The load draws 100 amperes of current.'
-        },
-        { 
-            time: 59.5, 
-            type: 'text', 
-            id: 'given3', 
-            text: '• Cable Length (L) = 150 meters = 0.15 km', 
-            x: 200, y: 400, 
-            fontSize: 62,
-            duration: 3,
-            voiceover: 'Cable length is 150 meters, or 0.15 kilometers.'
-        },
-        { 
-            time: 63, 
-            type: 'text', 
-            id: 'given4', 
-            text: '• Power Factor (cos φ) = 0.85', 
-            x: 200, y: 470, 
-            fontSize: 62,
-            duration: 2.5,
-            voiceover: 'Power factor is 0.85.'
-        },
-        { 
-            time: 66, 
-            type: 'text', 
-            id: 'given5', 
-            text: '• Cable Type: 70 mm² Copper', 
-            x: 200, y: 540, 
-            fontSize: 62,
-            duration: 2.5,
-            voiceover: 'We\'re using a 70 square millimeter copper cable.'
-        },
-        { 
-            time: 69, 
-            type: 'text', 
-            id: 'cable-data-title', 
-            text: 'From Standard Cable Tables:', 
-            x: 200, y: 630, 
-            fontSize: 66, 
-            weight: 'bold',
-            fill: 'var(--primary-blue)',
-            duration: 2.5,
-            voiceover: 'Looking at standard cable tables for 70mm² copper:'
-        },
-        { 
-            time: 72, 
-            type: 'text', 
-            id: 'cable-r', 
-            text: '• Resistance (R) = 0.33 Ω/km', 
-            x: 250, y: 710, 
-            fontSize: 62,
-            duration: 2.5,
-            voiceover: 'Resistance is 0.33 ohms per kilometer.'
-        },
-        { 
-            time: 75, 
-            type: 'text', 
-            id: 'cable-x', 
-            text: '• Reactance (X) = 0.075 Ω/km', 
-            x: 250, y: 780, 
-            fontSize: 62,
-            duration: 2.5,
-            voiceover: 'Reactance is 0.075 ohms per kilometer.'
-        },
+        // Section 6: Result & Final Check (122-160s)
+        { time: 122, type: 'text', id: 'result-title', text: 'Result', x: 800, y: 150, fontSize: 110, weight: 'bold', anchor: 'middle', fill: 'var(--draw-color)', duration: 2},
+        { time: 125, type: 'text', id: 'vd-result', text: 'VD = 13.27 Volts', x: 800, y: 320, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 3},
+        { time: 129, type: 'text', id: 'check-title', text: 'But is this acceptable?', x: 800, y: 450, fontSize: 72, anchor: 'middle', duration: 2.5},
+        { time: 132, type: 'rect', id: 'check-box', x: 100, y: 520, width: 1400, height: 280, stroke: 'var(--danger-red)', strokeWidth: 8, fill: 'rgba(179, 54, 0, 0.05)', duration: 1.5},
+        { time: 134, type: 'text', id: 'check-formula', text: '%VD = (Voltage Drop / System Voltage) × 100', x: 800, y: 600, fontSize: 68, anchor: 'middle', duration: 4},
+        { time: 139, type: 'text', id: 'check-calc', text: '%VD = (13.27V / 415V) × 100 = 3.2%', x: 800, y: 720, fontSize: 72, anchor: 'middle', weight: 'bold', duration: 4},
+        { time: 144, type: 'clear'},
 
-        // CLEAR
-        { time: 79, type: 'clear', voiceover: 'Step 1: Calculate sine of phi.' },
+        // Section 7: Conclusion (145-200s)
+        { time: 145, type: 'text', id: 'final-title', text: 'Final Verdict', x: 800, y: 200, fontSize: 110, weight: 'bold', anchor: 'middle', fill: 'var(--primary-blue)', duration: 3},
+        { time: 149, type: 'text', id: 'final-result', text: '3.2% Voltage Drop', x: 800, y: 350, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 3},
+        { time: 153, type: 'rect', id: 'final-box', x: 200, y: 420, width: 1200, height: 250, stroke: 'var(--success-green)', strokeWidth: 10, fill: 'rgba(40, 167, 69, 0.1)', duration: 1.5},
+        { time: 155, type: 'text', id: 'final-verdict', text: 'PASS ✓', x: 800, y: 550, fontSize: 130, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 3},
+        { time: 159, type: 'text', id: 'final-standard', text: 'This is within the 5% limit recommended by IEC 60364 for industrial loads.', x: 800, y: 750, fontSize: 60, anchor: 'middle', duration: 5},
+        { time: 165, type: 'text', id: 'footer-link', text: 'For industrial calculators, visit: https://designcalculators.co.in', x: 800, y: 860, fontSize: 54, anchor: 'middle', weight: 'bold', fill: 'var(--draw-color)', duration: 8},
+    ];
 
-        // SECTION 4: CALCULATIONS (80-125s)
-        { 
-            time: 80, 
-            type: 'text', 
-            id: 'step1-title', 
-            text: 'Step 1: Find sin(φ)', 
-            x: 
-            voiceover: 'X times sine phi equals 0.075 times 0.527, which is 0.0395.'
-        },
-        { 
-            time: 103, 
-            type: 'text', 
-            id: 'step2-result', 
-            text: 'Total = 0.2805 + 0.0395 = 0.32 Ω/km', 
-            x: 200, y: 765, 
-            fontSize: 66,
-            weight: 'bold',
-            fill: 'var(--success-green)',
-            duration: 3,
-            voiceover: 'Adding them together gives us 0.32 ohms per kilometer.'
-        },
+    function resetAnimation() {
+        isPlaying = false;
+        timeouts.forEach(t => clearTimeout(t));
+        timeouts = [];
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
+        activeElements = [];
+        progressBar.style.width = '0%';
+    }
 
-        // CLEAR
-        { time: 107, type: 'clear', voiceover: 'Step 3: Apply the main formula.' },
+    function updateUI(elapsedSeconds) {
+        const percentage = (elapsedSeconds / TOTAL_DURATION) * 100;
+        progressBar.style.width = percentage + '%';
+    }
 
-        { 
-            time: 108, 
-            type: 'text', 
-            id: 'step3-title', 
-            text: 'Step 3: Apply the Formula', 
-            x: 800, y: 120, 
-            fontSize: 84, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: 'var(--danger-red)',
-            duration: 2.5,
-            voiceover: 'Now we apply the complete formula.'
-        },
-        { 
-            time: 111, 
-            type: 'text', 
-            id: 'formula-reminder', 
-            text: 'VD = K × I × L × [R·cos(φ) + X·sin(φ)]', 
-            x: 800, y: 220, 
-            fontSize: 62, 
-            anchor: 'middle',
-            fill: '#555',
-            duration: 3,
-            voiceover: 'Remember our formula.'
-        },
-        { 
-            time: 115, 
-            type: 'text', 
-            id: 'substitution', 
-            text: 'Substituting Values:', 
-            x: 150, y: 320, 
-            fontSize: 70, 
-            weight: 'bold',
-            duration: 2,
-            voiceover: 'Let\'s substitute all our values.'
-        },
-        { 
-            time: 117.5, 
-            type: 'text', 
-            id: 'calc-line1', 
-            text: 'VD = 1.732 × 100A × 0.15km × 0.32 Ω/km', 
-            x: 200, y: 420, 
-            fontSize: 62,
-            duration: 4,
-            voiceover: 'VD equals 1.732 times 100 amperes times 0.15 kilometers times 0.32 ohms per kilometer.'
-        },
-        { 
-            time: 122, 
-            type: 'text', 
-            id: 'calc-line2', 
-            text: 'VD = 1.732 × 100 × 0.15 × 0.32', 
-            x: 200, y: 500, 
-            fontSize: 62,
-            duration: 3,
-            voiceover: 'Simplifying the calculation.'
-        },
-        { 
-            time: 125.5, 
-            type: 'text', 
-            id: 'calc-line3', 
-            text: 'VD = 8.31 Volts', 
-            x: 200, y: 620, 
-            fontSize: 90,
-            weight: 'bold',
-            fill: 'var(--success-green)',
-            duration: 2.5,
-            voiceover: 'The voltage drop is 8.31 volts!'
-        },
-        { 
-            time: 128.5, 
-            type: 'rect', 
-            id: 'result-box', 
-            x: 150, y: 560, 
-            width: 700, 
-            height: 120,
-            stroke: 'var(--success-green)', 
-            strokeWidth: 6, 
-            fill: 'rgba(40, 167, 69, 0.1)',
-            duration: 1,
-            voiceover: ''
-        },
-
-        // CLEAR
-        { time: 131, type: 'clear', voiceover: 'But we must check if this is acceptable!' },
-
-        // SECTION 5: PERCENTAGE CHECK (132-155s)
-        { 
-            time: 132, 
-            type: 'text', 
-            id: 'check-title', 
-            text: 'Critical Step: Percentage Check', 
-            x: 800, y: 130, 
-            fontSize: 84, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: 'var(--warning-orange)',
-            duration: 3,
-            voiceover: 'This is critical! We must check the percentage voltage drop.'
-        },
-        { 
-            time: 136, 
-            type: 'text', 
-            id: 'percent-formula', 
-            text: '% VD = (Voltage Drop / System Voltage) × 100', 
-            x: 800, y: 260, 
-            fontSize: 66,
-            ', 
-            x: 500, y: 440, 
-            width: 600, 
-            height: 130,
-            middle',
-            weight: 'bold',
-            fill: 'var(--success-green)',
-            duration: 3,
-            voiceover: 'Yes! It\'s well within the standard limit of 3 to 5 percent. Excellent!'
-        },
-
-        // CLEAR
-        { time: 158, type: 'clear', voiceover: 'Let me summarize what we learned today.' },
-
-        // SECTION 6: CONCLUSION (159-180s)
-        { 
-            time: 159, 
-            type: 'text', 
-            id: 'summary-title', 
-            text: 'Summary', 
-            x: 800, y: 110, 
-            fontSize: 90, 
-            weight: 'bold',
-            
-            
+    function createElement(item) {
+        let el;
+        if (item.type === 'text') {
+            el = document.createElementNS(svgNS, 'text');
+            el.setAttribute('x', item.x);
+            el.setAttribute('y', item.y);
+            el.setAttribute('font-size', item.fontSize);
+            el.setAttribute('fill', item.fill || 'var(--draw-color)');
+            if (item.anchor) el.setAttribute('text-anchor', item.anchor);
+            if (item.weight) el.setAttribute('font-weight', item.weight);
+            el.textContent = '';
+            el.setAttribute('data-text', item.text);
+        } else if (item.type === 'path' || item.type === 'rect') {
+            el = document.createElementNS(svgNS, item.type);
+            if (item.type === 'path') {
+                el.setAttribute('d', item.d);
+            } else { // rect
+                el.setAttribute('x', item.x);
+                el.setAttribute('y', item.y);
+                el.setAttribute('width', item.width);
+                el.setAttribute('height', item.height);
+                el.setAttribute('rx', 15);
+            }
+            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
+            el.setAttribute('stroke-width', item.strokeWidth || 4);
+            el.setAttribute('fill', item.fill || 'none');
+        }
+        if (el) {
             el.id = item.id;
+            el.classList.add('anim-element');
             svg.appendChild(el);
         }
-        
         return el;
     }
 
-    // --
+    function typeText(el, text, duration) {
+        if (!text || text.length === 0) { el.style.opacity = 1; return; }
+        let charIndex = 0;
+        const chars = text.split('');
+        const actualDelay = Math.max(25, (duration * 1000) / chars.length); // Faster typing
         el.style.opacity = 1;
 
         function addNextChar() {
-            if(charIndex < chars.length && isPlaying) {
-                el.textContent += chars[charIndex];
-                charIndex++;
-                const timeout = setTimeout(addNextChar, actualDelay);
-                timeouts.push(timeout);
+            if (charIndex < chars.length && isPlaying) {
+                el.textContent += chars[charIndex++];
+                timeouts.push(setTimeout(addNextChar, actualDelay));
             }
         }
-
         addNextChar();
     }
 
-    // --- Draw Animation for Paths/Rects ---
     function drawShape(el, duration) {
         el.style.opacity = 1;
+        el.style.animationDuration = (duration > 0.8 ? 0.8 : duration) + 's'; // Faster drawing
         el.classList.add('fade-in');
     }
 
-    // --- Main Animation Function ---
     function animateItem(item) {
         if (item.type === 'clear') {
-            // Clear the board
             activeElements.forEach(el => {
-                if(el && el.parentNode) {
-                    svg.removeChild(el);
+                if (el && el.parentNode) {
+                    el.style.transition = 'opacity 0.3s ease-out';
+                    el.style.opacity = 0;
                 }
             });
-            activeElements = [];
-            if(item.voiceover) showVoiceover(item.voiceover);
+            setTimeout(() => {
+                 activeElements.forEach(el => el && el.parentNode && svg.removeChild(el));
+                 activeElements = [];
+            }, 300);
             return;
         }
-
-        // Show voiceover
-        if(item.voiceover) {
-            showVoiceover(item.voiceover);
-        }
-
-        // Create and animate element
         const el = createElement(item);
         if(!el) return;
-        
         activeElements.push(el);
-
         if(item.type === 'text') {
-            const text = el.getAttribute('data-text');
-            typeText(el, text, item.duration);
+            typeText(el, el.getAttribute('data-text'), item.duration);
         } else {
             drawShape(el, item.duration);
         }
     }
 
-    // --- Start Animation ---
     function startAnimation() {
         if(isPlaying) return;
         
         resetAnimation();
+        replayContainer.classList.remove('visible');
         isPlaying = true;
-        playBtn.disabled = true;
-        playBtn.textContent = '▶ Playing...';
-        
         const startTime = Date.now();
 
-        // Schedule all timeline items
         timeline.forEach(item => {
             const timeout = setTimeout(() => {
-                if(isPlaying) {
-                    animateItem(item);
-                }
+                if(isPlaying) animateItem(item);
             }, item.time * 1000);
             timeouts.push(timeout);
         });
 
-        // Animation loop for progress bar
         function updateProgress() {
             if(!isPlaying) return;
-            
             const elapsed = (Date.now() - startTime) / 1000;
             
             if(elapsed >= TOTAL_DURATION) {
+                isPlaying = false;
                 progressBar.style.width = '100%';
-                const timeout = setTimeout(() => {
-                    resetAnimation();
-                    voDisplay.textContent = 'Tutorial complete! Click to replay.';
-                }, 1000);
-                timeouts.push(timeout);
+                setTimeout(() => replayContainer.classList.add('visible'), 2000);
                 return;
             }
             
             updateUI(elapsed);
             animationFrame = requestAnimationFrame(updateProgress);
         }
-        
         updateProgress();
     }
 
-    // --- Event Listeners ---
-    playBtn.addEventListener('click', startAnimation);
+    function initTutorial() {
+        setTimeout(() => {
+            splashScreen.classList.add('fade-out');
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                startAnimation();
+            }, 1000);
+        }, 3000);
+    }
 
-    // Cleanup on page unload
+    replayBtn.addEventListener('click', startAnimation);
+    window.addEventListener('load', initTutorial);
     window.addEventListener('beforeunload', resetAnimation);
 </script>
-
 </body>
-
 </html>
+
+
