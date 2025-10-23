@@ -3,584 +3,572 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earth Conductor Sizing - Whiteboard Tutorial</title>
+    <title>Earthing Sizing - The Unsung Guardian v9</title> <!-- Version Updated -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --board-bg: #f8f9fa;
-            --draw-color: #1a1a1a;
-            --primary-blue: #0056b3;
-            --danger-red: #dc3545;
-            --success-green: #28a745;
-            --warning-orange: #fd7e14;
-            --info-purple: #6f42c1;
-            --earth-green: #198754;
-            --font-main: 'Kalam', cursive;
-            --font-alt: 'Architects Daughter', cursive;
+            /* Palette: Safety Green, Warning Yellow, Tech Blue, Danger Red */
+            --primary: #00e676; /* Vibrant Safety Green */
+            --accent: #ff1744; /* Intense Danger Red */
+            --warning: #ffc400; /* Bright Yellow/Gold */
+            --info: #2979ff;   /* Bright Tech Blue */
+            --purple: #d500f9; /* Vivid Purple for Standards */
+            --dark-bg: #121212; /* Near Black */
+            --card-bg: #212121; /* Very Dark Gray */
+            --text-main: #e0e0e0; /* Light Gray */
+            --text-dim: #bdbdbd; /* Medium Gray */
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            background-color: #2c3e50;
+            background: linear-gradient(145deg, var(--dark-bg) 0%, #1a1a1a 50%, var(--dark-bg) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            font-family: var(--font-main);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
         }
 
-        #whiteboard-container {
-            position: relative;
+        #container {
             width: 95vw;
+            height: auto;
             max-width: 1600px;
-            aspect-ratio: 16 / 9;
-        }
-
-        #whiteboard {
-            width: 100%;
-            height: 100%;
-            background-color: var(--board-bg);
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            position: relative;
+            max-height: 95vh;
+            aspect-ratio: 16/9;
+            background: var(--dark-bg);
+            border-radius: 20px;
+            box-shadow: 0 0 100px rgba(0, 230, 118, 0.4), inset 0 0 50px rgba(0, 230, 118, 0.1); /* Green shadow */
             overflow: hidden;
-            border: 20px solid #8b7355;
-            border-bottom-width: 60px;
-        }
-
-        #animation-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .anim-element {
-            opacity: 0;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        
-        .text-anim {
-            font-family: var(--font-main);
-        }
-
-        #controls {
-            position: absolute;
-            top: -70px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-        }
-
-        #play-btn {
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 20px;
-            padding: 15px 40px;
-            cursor: pointer;
-            border: 3px solid var(--primary-blue);
-            background-color: #fff;
-            color: var(--primary-blue);
-            border-radius: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        #play-btn:hover { 
-            background-color: var(--primary-blue); 
-            color: #fff;
-            transform: scale(1.05);
-        }
-
-        #play-btn:disabled { 
-            cursor: not-allowed; 
-            opacity: 0.6;
-            transform: scale(1);
-        }
-
-        #voiceover-display {
-            position: absolute;
-            bottom: -80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 1.8vw;
-            line-height: 1.5;
-            color: #ecf0f1;
-            padding: 10px 20px;
-            font-family: var(--font-alt);
-            background: rgba(44, 62, 80, 0.9);
-            border-radius: 8px;
-            min-height: 60px;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(0, 230, 118, 0.2); /* Subtle green border */
+        }
+
+        /* --- Progress Bar Removed --- */
+
+        .scene {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
+            /* Readjusted padding now that progress bar is gone */
+            padding: 2% 4%;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInScene 0.7s ease-out forwards;
+            overflow-y: auto;
+            position: relative;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        #progress-bar-container {
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            right: 0;
-            height: 8px;
-            background: rgba(0, 0, 0, 0.1);
+        .scene::-webkit-scrollbar { display: none; }
+
+        /* --- Animations --- */
+        @keyframes fadeInScene { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUpIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.04); filter: brightness(1.25);} }
+        @keyframes glow-primary { /* Green glow */
+             0%, 100% { text-shadow: 0 0 10px rgba(0, 230, 118, 0.7), 0 0 25px rgba(0, 230, 118, 0.4); }
+             50% { text-shadow: 0 0 25px rgba(0, 230, 118, 1), 0 0 50px rgba(0, 230, 118, 0.6); }
+        }
+        @keyframes glow-accent { /* Red glow */
+             0%, 100% { text-shadow: 0 0 10px rgba(255, 23, 68, 0.7), 0 0 25px rgba(255, 23, 68, 0.4); }
+             50% { text-shadow: 0 0 25px rgba(255, 23, 68, 1), 0 0 50px rgba(255, 23, 68, 0.6); }
+        }
+        @keyframes shake { 0%, 100% { transform: translate(0, 0); } 10%, 90% { transform: translate(-3px, -2px); } 20%, 80% { transform: translate(3px, 2px); } 30%, 50%, 70% { transform: translate(-4px, 3px); } 40%, 60% { transform: translate(4px, -3px); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); animation-timing-function: ease-out; } 50% { transform: translateY(-15px); animation-timing-function: ease-in; } }
+        @keyframes alert-glow { /* Pulsing red background */
+             0%, 100% { background-color: rgba(255, 23, 68, 0.1); border-color: rgba(255, 23, 68, 0.5); }
+             50% { background-color: rgba(255, 23, 68, 0.25); border-color: rgba(255, 23, 68, 1); }
         }
 
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--success-green), var(--primary-blue));
-            transition: width 0.3s ease;
+
+        /* --- Font Sizes --- */
+        .title {
+            font-size: clamp(2.8rem, 7.5vw, 4.8rem);
+            font-weight: 800; margin-bottom: 1rem; line-height: 1.05; animation: slideDownIn 0.8s ease-out; letter-spacing: 1.5px; text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: clamp(2.2rem, 6vw, 3.8rem);
+            font-weight: 700; margin-bottom: 1rem; line-height: 1.1; animation: slideUpIn 0.8s ease-out 0.1s forwards; opacity: 0; letter-spacing: 0.5px;
+        }
+        .punchy-headline {
+            font-size: clamp(2rem, 5.5vw, 3.2rem);
+            font-weight: 700; margin: 1rem 0; line-height: 1.2; animation: slideUpIn 0.8s ease-out 0.15s forwards; opacity: 0; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .content-text {
+            font-size: clamp(1.5rem, 3.8vw, 2.3rem);
+            color: var(--text-dim); line-height: 1.8; margin: 1rem auto; animation: slideUpIn 0.9s ease-out 0.2s forwards; max-width: 85%; opacity: 0;
+        }
+        /* Text Colors */
+        .text-primary { color: var(--primary); animation: glow-primary 1.8s infinite; font-weight: 700; }
+        .text-accent { color: var(--accent); animation: glow-accent 1.5s infinite; font-weight: 700; }
+        .text-warning { color: var(--warning); font-weight: 700; filter: brightness(1.2); }
+        .text-success { color: var(--primary); font-weight: 700; } /* Success = Primary Green */
+        .text-danger { color: var(--accent); font-weight: 700; } /* Danger = Accent Red */
+        .text-info { color: var(--info); font-weight: 700; }
+        .text-purple { color: var(--purple); font-weight: 700; }
+        .text-white { color: var(--text-main); }
+        .text-dim { color: var(--text-dim); }
+
+        .icon-large {
+            font-size: clamp(5rem, 12vw, 8rem);
+            animation: pulse 1.8s infinite; margin: 1.5rem 0;
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in forwards;
+        .card {
+            background: var(--card-bg); border: 2px solid rgba(255, 255, 255, 0.1); border-left: 10px solid var(--primary);
+            border-radius: 10px; padding: 2rem; margin: 1rem auto; /* Adjusted margin */ animation: scaleUpIn 0.6s ease-out; width: 96%; max-width: 1050px; /* Adjusted max-width */
+            text-align: left; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        }
+        /* Card variations */
+        .card.accent { border-left-color: var(--accent); background: rgba(255, 23, 68, 0.08); }
+        .card.warning { border-left-color: var(--warning); background: rgba(255, 196, 0, 0.08); }
+        .card.info { border-left-color: var(--info); background: rgba(41, 121, 255, 0.08); }
+        .card.purple { border-left-color: var(--purple); background: rgba(213, 0, 249, 0.08); }
+        .card.success { border-left-color: var(--success); background: rgba(0, 230, 118, 0.08); }
+
+
+        .card-title {
+            font-size: clamp(1.9rem, 4.2vw, 2.7rem);
+            font-weight: 700; margin-bottom: 1.2rem; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .card-text {
+            font-size: clamp(1.4rem, 3.1vw, 2rem);
+            color: var(--text-dim); line-height: 1.85;
+        }
+        .card-text strong { color: var(--success); font-weight: 700; }
+        .card-text .highlight { color: var(--warning); font-weight: 700; }
+        .card-text .critical { color: var(--accent); font-weight: 700; text-transform: uppercase; }
+
+        .code-text {
+            font-family: 'Consolas', 'Monaco', monospace; background: rgba(0,0,0,0.7); padding: 0.7rem 1.4rem; border-radius: 5px; border: 1px solid rgba(0, 230, 118, 0.4); /* Green border */
+            font-size: clamp(1.2rem, 2.6vw, 1.8rem);
+            display: inline-block; margin: 0.6rem 0; color: #b9f6ca; /* Light green */ letter-spacing: 1.5px;
+        }
+        .formula-font {
+            font-family: 'Consolas', 'Monaco', monospace; line-height: 1.9;
+            font-size: clamp(1.4rem, 3.1vw, 2rem);
+            color: var(--text-main); word-wrap: break-word; /* Ensure formulas wrap */
+            text-align: left; /* Keep formulas aligned left in boxes */
+        }
+        .formula-box {
+            background: rgba(0, 0, 0, 0.85); border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(0, 230, 118, 0.5); padding: 2rem; margin: 1.5rem auto; /* Adjusted margin */ border-radius: 10px; font-family: 'Consolas', 'Monaco', monospace;
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            line-height: 1.9; text-align: center; animation: slideUpIn 0.9s ease-out; width: fit-content; max-width: 95%; color: #e0e0e0;
+        }
+        .formula-box .highlight { color: var(--primary); filter: brightness(1.2); }
+
+        .two-col-grid, .three-col-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; /* Adjusted gap */ width: 98%; max-width: 1400px; /* Adjusted max-width */ margin: 1.5rem auto; /* Adjusted margin */ animation: slideUpIn 0.9s ease-out;
+        }
+        @media (max-width: 1200px) {
+            .three-col-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        .checklist-item {
+            display: flex; align-items: center; margin: 1.2rem 0; color: var(--text-dim); line-height: 1.9;
+            font-size: clamp(1.4rem, 3vw, 1.9rem);
+            animation: slideUpIn 1s ease-out; text-align: left;
         }
+        .checklist-item strong { color: var(--success); font-weight: 700; }
+        .check-icon {
+            color: var(--success); font-weight: 900; margin-right: 1.5rem; font-size: 1.8em; line-height: 1;
+        }
+
+        .key-point {
+            background: rgba(0, 230, 118, 0.1); border-left: 8px solid var(--primary); padding: 1.8rem; margin: 1.5rem auto; /* Adjusted margin */ border-radius: 8px;
+            font-size: clamp(1.4rem, 3.1vw, 2rem);
+            line-height: 1.85; animation: slideUpIn 0.8s ease-out; text-align: left; color: var(--text-dim);
+        }
+        .key-point strong { color: var(--primary); }
+
+        /* --- Footer --- */
+        .footer-wrapper {
+            width: 100%; text-align: center; padding: 12px 0 15px 0; /* Adjusted padding */ background: #000;
+            font-size: clamp(1.1rem, 2vw, 1.4rem); color: rgba(204, 204, 204, 0.75); flex-shrink: 0; animation: slideUpIn 1.2s ease-out; position: relative; z-index: 10;
+        }
+        .footer-line { border: 0; height: 1px; background: rgba(0, 230, 118, 0.5); width: 70%; margin: 0 auto 10px auto; } /* Green line */
+        .footer-wrapper a { color: var(--warning); text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        .footer-wrapper a:hover { color: #fff; text-shadow: 0 0 10px var(--warning); }
+
     </style>
 </head>
 <body>
 
-    <div id="whiteboard-container">
-        <div id="controls">
-            <button id="play-btn">▶ Start Tutorial</button>
-        </div>
-        <div id="whiteboard">
-            <svg id="animation-svg" viewBox="0 0 1600 900">
-                <!-- All SVG elements will be dynamically created by JavaScript -->
-            </svg>
-            <div id="progress-bar-container">
-                <div id="progress-bar"></div>
-            </div>
-        </div>
-        <div id="voiceover-display">Click "Start Tutorial" to begin...</div>
-    </div>
+<div id="container">
+    <!-- Progress Bar Removed -->
+    <!-- Scene content will be loaded here -->
+</div>
 
 <script>
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.getElementById('animation-svg');
-    const playBtn = document.getElementById('play-btn');
-    const progressBar = document.getElementById('progress-bar');
-    const voDisplay = document.getElementById('voiceover-display');
-    
-    let activeElements = [];
-    let animationFrame;
-    let timeouts = [];
-    let isPlaying = false;
+    const container = document.getElementById('container');
+    // Progress Bar variable removed
+    let currentSceneIndex = 0;
+    let sceneInterval;
+    let totalScenes = 0; // Initialize total scenes
 
-    const TOTAL_DURATION = 180; // 3 minutes
-
-    const timeline = [
-        // SECTION 1: TITLE (0-12s)
-        { 
-            time: 0.5, type: 'text', id: 'title1', text: 'Sizing Your Safety Line', 
-            x: 800, y: 300, fontSize: 100, anchor: 'middle', weight: 'bold', 
-            duration: 2.5,
-            voiceover: 'Welcome, everyone! Today, we will learn about a critical safety component.'
+    // --- EARTH SIZING SCENES (v9 - Progress Bar Removed, Layout adjusted) ---
+    // Total Duration aims for ~9-10+ minutes
+    const sceneConfig = [
+        // SCENE 1: THE INVISIBLE DANGER (12s)
+        { id: 1, duration: 12000, content: `
+            <div class="title text-primary" style="animation: pulse 2s infinite;">THE UNSUNG GUARDIAN</div>
+            <div class="subtitle text-warning">Exposing the Invisible Shield: EARTHING</div>
+            <div class="punchy-headline text-white">When Electricity Attacks...</div>
+            <div class="icon-large" style="color: var(--warning); animation: shake 0.5s infinite;">⚡</div>
+            <div class="content-text text-dim">Faults. Surges. Lightning. Without GROUNDING... Chaos.</div>`
         },
-        { 
-            time: 3.5, type: 'text', id: 'title2', text: 'EARTH CONDUCTOR SIZING', 
-            x: 800, y: 440, fontSize: 110, anchor: 'middle', weight: 'bold',
-            fill: 'var(--earth-green)', duration: 3,
-            voiceover: 'How to correctly size an Earth Conductor.'
+        // SCENE 2: WHY GROUND? CORE MISSION (15s)
+        { id: 2, duration: 15000, content: `
+            <div class="title text-info">MISSION CRITICAL: WHY GROUND?</div>
+            <div class="punchy-headline text-success">Your System's Bodyguard!</div>
+            <div class="two-col-grid">
+                 <div class="card success"> <div class="card-title text-success">🛡️ SAVES LIVES!</div> <div class="card-text">Gives deadly fault current a SAFE path away from people touching equipment.</div> </div>
+                 <div class="card success"> <div class="card-title text-success">🔥 SAVES GEAR!</div> <div class="card-text">Directs fault energy to ground, stopping fires & explosions. Helps breakers trip FAST.</div> </div>
+                 <div class="card success" style="grid-column: span 2;"> <div class="card-title text-success">⚙️ KEEPS THINGS STABLE!</div> <div class="card-text">Provides a solid zero-volt reference, vital for electronics & controls. Quiets electrical noise.</div> </div>
+            </div>`
         },
-        { 
-            time: 7, type: 'text', id: 'subtitle', text: 'The Guardian of Your Electrical System!', 
-            x: 800, y: 560, fontSize: 60, anchor: 'middle',
-            duration: 3,
-            voiceover: 'Think of it as the guardian of your entire electrical system.'
+        // --- NEW SLIDES START ---
+        // SCENE 2.1: EARTHING SYSTEM TYPES (18s) - NEW
+        { id: 2.1, duration: 18000, content: `
+            <div class="title text-purple">INTEL: EARTHING SYSTEM TYPES</div>
+            <div class="punchy-headline text-white">Different Setups, Different Rules! (Brief Overview)</div>
+            <div class="three-col-grid">
+                 <div class="card purple">
+                    <div class="card-title text-purple">TN Systems (T=Terra, N=Neutral)</div>
+                    <div class="card-text">Supply Neutral is Earthed. Equipment connected to Neutral/Earth.<br><span class="highlight">TN-S:</span> Separate N & PE wires.<br><span class="highlight">TN-C-S:</span> Combined PEN, splits later. <br>(Most common in many areas).</div>
+                 </div>
+                 <div class="card purple">
+                    <div class="card-title text-purple">TT Systems (T=Terra, T=Terra)</div>
+                    <div class="card-text">Supply Neutral Earthed. Equipment connected to <span class="critical">its OWN local earth rod</span>. Needs RCDs for safety!</div>
+                 </div>
+                 <div class="card purple">
+                    <div class="card-title text-purple">IT Systems (I=Isolated)</div>
+                    <div class="card-text">Supply NOT earthed (or high impedance). Equipment earthed locally. Used where continuity is vital (e.g., hospitals). Needs monitoring!</div>
+                 </div>
+            </div>
+             <div class="key-point">System type affects fault current paths & protection needs! Know your system!</div>`
         },
-        { 
-            time: 10.5, type: 'path', id: 'title-underline', d: 'M 200 590 H 1400', 
-            stroke: 'var(--earth-green)', strokeWidth: 6, duration: 1.5,
-            voiceover: ''
+        // SCENE 2.2: PROTECTIVE BONDING (15s) - NEW
+        { id: 2.2, duration: 15000, content: `
+            <div class="title text-info">CRITICAL LINK: PROTECTIVE BONDING</div>
+            <div class="punchy-headline text-success">Connecting ALL Metalwork for Safety!</div>
+            <div class="card info">
+                 <div class="card-title text-info">Main Protective Bonding:</div>
+                 <div class="card-text">
+                    <span class="critical">VITAL!</span> Connects non-electrical metal parts (water pipes, gas pipes, structural steel) to the <span class="highlight">Main Earthing Terminal (MET)</span>.<br>
+                    Ensures everything is at the same potential during a fault, preventing dangerous voltage differences someone could touch!
+                 </div>
+                  <div class="card-title text-info" style="margin-top: 1rem;">Supplementary Bonding:</div>
+                  <div class="card-text"> Extra local bonding in high-risk areas (e.g., bathrooms) to ensure *local* potential equalization.</div>
+             </div>`
         },
-        
-        { time: 13, type: 'clear', voiceover: 'First, let\'s understand its vital role.' },
-        
-        // SECTION 2: THE "WHY" (14-40s)
-        { 
-            time: 14, type: 'text', id: 'concept-q', text: 'Why is it so Important?', 
-            x: 800, y: 120, fontSize: 80, weight: 'bold', anchor: 'middle',
-            duration: 3,
-            voiceover: 'Why is this conductor so incredibly important?'
+        // --- NEW SLIDES END ---
+        // SCENE 3: THE ENEMY: FAULT CURRENT (15s)
+        { id: 3, duration: 15000, content: `
+            <div class="title text-accent">KNOW YOUR ENEMY: FAULT CURRENT!</div>
+            <div class="punchy-headline text-warning">The Uncontrolled Electrical Tsunami</div>
+            <div class="card accent">
+                <div class="card-title text-accent">What is Fault Current (I<sub>sc</sub>)?</div>
+                <div class="card-text">
+                    The <span class="critical">GIGANTIC</span> surge of amps during a short (e.g., wire touches metal case).<br>
+                    Limited ONLY by the power source strength.<br>
+                    Lasts only until the breaker/fuse cuts it off!
+                </div>
+                 <div class="card-title text-accent" style="margin-top: 1rem;">The Weapon: <span class="highlight">I²t (Energy)</span></div>
+                 <div class="card-text">This is the <span class="critical">HEAT BOMB</span> the fault delivers (Current² × Time). Your earth wire must contain this blast!</div>
+            </div>`
         },
-        { // Appliance
-            time: 18, type: 'rect', id: 'appliance', x: 400, y: 300, width: 250, height: 250,
-            stroke: 'var(--primary-blue)', strokeWidth: 8, fill: 'rgba(0, 86, 179, 0.05)', duration: 1,
-            voiceover: 'Consider any metal appliance, like this washing machine.'
+        // SCENE 4: SIZING WEAPON: ADIABATIC EQUATION (18s)
+        { id: 4, duration: 18000, content: `
+            <div class="title text-info">SIZING PROTOCOL: THE GUARDIAN FORMULA</div>
+            <div class="punchy-headline text-success">Calculating the Minimum Shield Strength</div>
+             <div class="formula-box text-white" style="border-color: var(--primary); box-shadow: 0 0 25px var(--primary);">
+                Min Earth Size (<span class="highlight">S<sub>mm²</sub></span>) = √(<span class="highlight">I<sub>sc</sub>² × t</span>) / <span class="highlight">k</span>
+             </div>
+             <div class="card info">
+                 <div class="card-title text-info">Decoding the Intel:</div>
+                 <div class="card-text" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem);"> {/* Increased font */}
+                    • <strong class="highlight">S<sub>mm²</sub></strong> = Minimum SAFE wire thickness (mm²).<br>
+                    • <strong class="highlight">I<sub>sc</sub></strong> = <span class="critical">MAX</span> Fault Current (Amps).<br>
+                    • <strong class="highlight">t</strong> = <span class="critical">LONGEST</span> Breaker Trip Time (seconds).<br>
+                    • <strong class="highlight">k</strong> = Wire's Heat Resistance Factor.
+                </div>
+            </div>`
         },
-        { time: 19, type: 'text', id: 'app-label', text: 'Appliance', x: 525, y: 435, fontSize: 40, anchor: 'middle', duration: 1},
-        { // Faulty wire touching case
-            time: 21, type: 'path', id: 'fault-wire', d: 'M 525 350 C 550 380, 450 400, 400 420',
-            stroke: 'var(--danger-red)', strokeWidth: 8, fill: 'none', duration: 1.5,
-            voiceover: 'If a live wire inside breaks and touches the metal case...'
+        // SCENE 5: INTEL: FAULT CURRENT (Isc) (15s)
+        { id: 5, duration: 15000, content: `
+            <div class="title text-warning">INTEL RECON: FIND FAULT CURRENT (I<sub>sc</sub>)</div>
+            <div class="punchy-headline text-accent">Accuracy Here is Non-Negotiable!</div>
+            <div class="card warning">
+                <div class="card-title text-warning">Your Sources:</div>
+                <div class="card-text">
+                    <span class="check-icon">✓</span> <strong class="highlight">System Study Report:</strong> Best Source! (Ask the Engineers!).<br>
+                    <span class="check-icon">✓</span> <strong class="highlight">Utility Bill/Contact:</strong> Fault level at building entry.<br>
+                    <span class="check-icon">✓</span> <strong class="highlight">Transformer %Z:</strong> Estimate current right after it.<br>
+                    <span class="critical">KEY:</span> Use the <span class="highlight">Phase-to-GROUND</span> fault value for equipment earthing!
+                </div>
+            </div>`
         },
-        { // Human touching it
-            time: 23, type: 'path', id: 'human', d: 'M 750 550 V 375 H 800 M 775 375 V 300 A 40 40 0 1 1 775 220',
-            stroke: 'var(--draw-color)', strokeWidth: 8, fill: 'none', duration: 2,
-            voiceover: '...the whole machine becomes live! If someone touches it...'
+        // SCENE 6: INTEL: CLEARING TIME (t) (15s)
+        { id: 6, duration: 15000, content: `
+            <div class="title text-warning">INTEL RECON: FIND CLEARING TIME (t)</div>
+            <div class="punchy-headline text-accent">How Quick is Your Backup?</div>
+            <div class="card warning">
+                <div class="card-title text-warning">Finding 't':</div>
+                <div class="card-text">
+                    • ID the upstream breaker/fuse.<br>
+                    • Get its <span class="highlight">Time-Current Curve (TCC)</span> graph. <br>
+                    • Find your <span class="highlight">I<sub>sc</sub></span> on the graph.<br>
+                    • Read the corresponding <span class="critical">TIME</span> in seconds.<br>
+                    • <span class="critical">IMPORTANT: Use the SLOWEST time</span> shown on the curve's band! Safety first!
+                </div>
+            </div>
+             <div class="key-point">Slower Breaker = <span class="critical">More I²t Heat</span> = <span class="highlight">Needs Bigger Earth Wire!</span></div>`
         },
-        { // DANGER text
-            time: 25.5, type: 'text', id: 'danger-text', text: 'DANGER!', x: 800, y: 350, fontSize: 70, weight: 'bold', fill: 'var(--danger-red)',
-            duration: 2, voiceover: '...they could receive a fatal electric shock.'
-        },
-        { // Earth wire appears
-            time: 28, type: 'path', id: 'earth-wire', d: 'M 650 450 H 1100 V 600 H 1200',
-            stroke: 'var(--earth-green)', strokeWidth: 10, duration: 2,
-            voiceover: 'But, the earth wire provides a safe path for this fault current.'
-        },
-        { // Earth symbol
-            time: 30, type: 'path', id: 'earth-symbol', d: 'M 1200 600 V 650 M 1150 650 H 1250 M 1170 680 H 1230 M 1190 710 H 1210',
-            stroke: 'var(--earth-green)', strokeWidth: 8, duration: 1.5
-        },
-        {
-             time: 33, type: 'text', id: 'safety-text', text: 'It carries the fault current safely to the ground, tripping the breaker!', 
-             x: 800, y: 800, fontSize: 45, anchor: 'middle', fill: 'var(--earth-green)',
-             duration: 5,
-             voiceover: 'It carries the dangerous current safely to the ground, which trips the circuit breaker instantly!'
-        },
-
-        { time: 41, type: 'clear', voiceover: 'To do this job, it must be the correct size. Here is the formula.' },
-
-        // SECTION 3: THE ADIABATIC EQUATION (42-75s)
-        { 
-            time: 42, type: 'text', id: 'formula-title', text: 'The Sizing Formula (IEC Standard)', 
-            x: 800, y: 100, fontSize: 80, weight: 'bold', anchor: 'middle',
-            duration: 3,
-            voiceover: 'We use a special formula called the Adiabatic Equation from the IEC standards.'
-        },
-        { 
-            time: 46, type: 'text', id: 'formula', text: 'S = √(I²t) / k', 
-            x: 800, y: 280, fontSize: 130, anchor: 'middle',
-            duration: 4,
-            voiceover: 'S equals the square root of I squared times t, all divided by k.'
-        },
-        { 
-            time: 51, type: 'text', id: 's-def', text: '• S = Minimum Size of Earth Wire (mm²)', 
-            x: 150, y: 450, fontSize: 50, 
-            duration: 3,
-            voiceover: 'S is the minimum cross-sectional area of the conductor in square millimeters.'
-        },
-         { 
-            time: 55, type: 'text', id: 'i-def', text: '• I = Fault Current (Amperes)', 
-            x: 150, y: 550, fontSize: 50, 
-            duration: 3,
-            voiceover: 'I is the fault current in amps, which we learned to calculate previously.'
-        },
-        { 
-            time: 59, type: 'text', id: 't-def', text: '• t = Breaker Disconnection Time (seconds)', 
-            x: 150, y: 650, fontSize: 50, 
-            duration: 4,
-            voiceover: 't is the time it takes for your protective device, like a circuit breaker, to operate.'
-        },
-        { 
-            time: 64, type: 'text', id: 'k-def', text: '• k = A Material Constant (from tables)', 
-            x: 150, y: 750, fontSize: 50, 
-            duration: 4,
-            voiceover: 'And k is a special factor that depends on the wire material and its insulation.'
-        },
-
-        { time: 70, type: 'clear', voiceover: 'Let\'s take a closer look at that k-factor.' },
-        
-        // SECTION 4: THE 'k' FACTOR (71-95s)
-        { 
-            time: 71, type: 'text', id: 'k-title', text: 'Finding the \'k\' Factor', 
-            x: 800, y: 120, fontSize: 80, weight: 'bold', anchor: 'middle', fill: 'var(--info-purple)',
-            duration: 3, voiceover: 'Finding the correct k-factor is easy. You just look it up in a table.'
-        },
-        { // Table outline
-            time: 75, type: 'rect', id: 'k-table-box', x: 200, y: 200, width: 1200, height: 450,
-            stroke: 'var(--draw-color)', strokeWidth: 6, fill: 'none', duration: 1
-        },
-        { // Table headers
-            time: 76, type: 'path', id: 'k-table-lines', d: 'M 200 300 H 1400 M 600 200 V 650 M 1000 200 V 650',
-            stroke: 'var(--draw-color)', strokeWidth: 4, duration: 1.5
-        },
-        { 
-            time: 78, type: 'text', id: 'th1', text: 'Material', x: 400, y: 265, fontSize: 55, weight: 'bold', anchor: 'middle',
-            duration: 2
-        },
-        { 
-            time: 79, type: 'text', id: 'th2', text: 'Insulation', x: 800, y: 265, fontSize: 55, weight: 'bold', anchor: 'middle',
-            duration: 2
-        },
-        { 
-            time: 80, type: 'text', id: 'th3', text: 'k-Value', x: 1200, y: 265, fontSize: 55, weight: 'bold', anchor: 'middle',
-            duration: 2, voiceover: 'The table has columns for material, insulation, and the k-value itself.'
-        },
-        // Table rows
-        { time: 83, type: 'text', id: 'row1', text: 'Copper', x: 400, y: 360, fontSize: 50, anchor: 'middle', duration: 2 },
-        { time: 83.5, type: 'text', id: 'row1b', text: 'PVC', x: 800, y: 360, fontSize: 50, anchor: 'middle', duration: 2 },
-        { time: 84, type: 'text', id: 'row1c', text: '115', x: 1200, y: 360, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 2, voiceover: 'For example, for a copper wire with PVC insulation, k is 115.' },
-        
-        { time: 87, type: 'text', id: 'row2', text: 'Copper', x: 400, y: 460, fontSize: 50, anchor: 'middle', duration: 2 },
-        { time: 87.5, type: 'text', id: 'row2b', text: 'XLPE', x: 800, y: 460, fontSize: 50, anchor: 'middle', duration: 2 },
-        { time: 88, type: 'text', id: 'row2c', text: '143', x: 1200, y: 460, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 2, voiceover: 'For copper with better XLPE insulation, k is higher, at 143.' },
-
-        { time: 91, type: 'text', id: 'row3', text: 'Aluminum', x: 400, y: 560, fontSize: 50, anchor: 'middle', duration: 2 },
-        { time: 91.5, type: 'text', id: 'row3b', text: 'PVC / XLPE', x: 800, y: 560, fontSize: 50, anchor: 'middle', duration: 2 },
-        { time: 92, type: 'text', id: 'row3c', text: '76', x: 1200, y: 560, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)', duration: 2, voiceover: 'For aluminum, it\'s 76.' },
-
-        { time: 96, type: 'text', id: 'k-note', text: '(These are common values from IEC standards)', x: 800, y: 750, fontSize: 45, anchor: 'middle', fill: '#555', duration: 3, voiceover: ''},
-
-
-        { time: 100, type: 'clear', voiceover: 'Excellent! Let\'s put it all together in a practical example.' },
-
-        // SECTION 5: PRACTICAL EXAMPLE (101-145s)
-        { 
-            time: 101, type: 'text', id: 'ex-title', text: 'Practical Example', 
-            x: 800, y: 90, fontSize: 75, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)',
-            duration: 2
-        },
-        { 
-            time: 104, type: 'text', id: 'ex-given-title', text: 'Given:', x: 150, y: 180, fontSize: 55, weight: 'bold', duration: 1.5, voiceover: 'Here is our problem.'
-        },
-        { time: 106, type: 'text', id: 'ex-given1', text: '• Fault Current (I) = 5000 A', x: 200, y: 260, fontSize: 50, duration: 2.5, voiceover: 'A potential fault current of 5000 amps.'},
-        { time: 109, type: 'text', id: 'ex-given2', text: '• Breaker Time (t) = 0.2 seconds', x: 200, y: 330, fontSize: 50, duration: 3, voiceover: 'The breaker will trip in 0.2 seconds.'},
-        { time: 112.5, type: 'text', id: 'ex-given3', text: '• Wire is Copper with PVC insulation', x: 200, y: 400, fontSize: 50, duration: 3, voiceover: 'And we are using a copper wire with PVC insulation.'},
-        
-        { 
-            time: 116, type: 'text', id: 'ex-step1', text: 'Step 1: Find k', x: 150, y: 500, fontSize: 55, weight: 'bold', duration: 2,
-            voiceover: 'Step one is to find our k-value.'
-        },
-        { 
-            time: 118.5, type: 'text', id: 'ex-k-val', text: 'From the table, for Copper/PVC, k = 115', x: 200, y: 580, fontSize: 50, duration: 3.5,
-            voiceover: 'Looking at our table, for copper with PVC, k is 115.'
-        },
-        
-        { 
-            time: 122.5, type: 'text', id: 'ex-step2', text: 'Step 2: Apply the Formula', x: 150, y: 680, fontSize: 55, weight: 'bold', duration: 2.5,
-            voiceover: 'Now, we apply the master formula.'
-        },
-        { 
-            time: 125.5, type: 'text', id: 'ex-calc1', text: 'S = √(5000² × 0.2) / 115', x: 200, y: 770, fontSize: 50, duration: 4,
-            voiceover: 'S equals the square root of 5000 squared times 0.2, divided by 115.'
-        },
-        
-        { time: 130, type: 'clear', voiceover: 'Let\'s solve this calculation.'},
-
-        // Calculation continuation
-        { time: 130.5, type: 'text', id: 'ex-calc2', text: 'S = √ (25,000,000 × 0.2) / 115', x: 800, y: 150, fontSize: 60, anchor: 'middle', duration: 4},
-        { time: 135, type: 'text', id: 'ex-calc3', text: 'S = √ (5,000,000) / 115', x: 800, y: 280, fontSize: 60, anchor: 'middle', duration: 4},
-        { time: 139.5, type: 'text', id: 'ex-calc4', text: 'S = 2236 / 115', x: 800, y: 410, fontSize: 60, anchor: 'middle', duration: 3},
-        { 
-            time: 143, type: 'text', id: 'ex-result', text: 'S = 19.44 mm²', 
-            x: 800, y: 560, fontSize: 90, anchor: 'middle', weight: 'bold', fill: 'var(--primary-blue)',
-            duration: 3, voiceover: 'Our calculated minimum size is 19.44 square millimeters.'
-        },
-        { 
-            time: 147, type: 'text', id: 'ex-final', text: 'We must choose the NEXT STANDARD SIZE UP!', 
-            x: 800, y: 700, fontSize: 50, anchor: 'middle', weight: 'bold', fill: 'var(--danger-red)',
-            duration: 4, voiceover: 'But we can\'t buy a 19.44 wire. We must always choose the next standard size UP.'
-        },
-        { 
-            time: 151.5, type: 'text', id: 'ex-answer', text: 'Final Answer: Choose 25 mm²', 
-            x: 800, y: 800, fontSize: 70, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)',
-            duration: 4, voiceover: 'So our final, safe answer is to use a 25 square millimeter conductor.'
-        },
-        { 
-            time: 152, type: 'rect', id: 'final-box', x: 400, y: 750, width: 800, height: 90,
-            stroke: 'var(--success-green)', strokeWidth: 8, fill: 'none',
-            duration: 1
+        // SCENE 7: INTEL: MATERIAL FACTOR (k) (18s)
+        { id: 7, duration: 18000, content: `
+            <div class="title text-warning">INTEL RECON: FIND MATERIAL FACTOR (k)</div>
+            <div class="punchy-headline text-purple">Your Wire's Resistance to Heat Damage!</div>
+            <div class="card purple">
+                <div class="card-title text-purple">'k' Explained:</div>
+                <div class="card-text">
+                    Represents the wire's ability to absorb the <span class="critical">fault heat blast</span> without melting insulation or failing.<br>
+                    Based on Conductor (Cu/Al) & Insulation Type (PVC/XLPE).<br>
+                    <span class="highlight">Higher 'k' = Tougher Wire = Smaller size possible.</span>
+                </div>
+                 <div class="card-title text-purple" style="margin-top: 1rem;">Common 'k' Values (Examples - CHECK YOUR STANDARD!):</div>
+                 <div class="card-text formula-font" style="font-size: clamp(1.5rem, 3.3vw, 2.1rem);"> {/* Increased font */}
+                    <span class="highlight">Copper (Cu):</span> PVC ≈ <span class="highlight">115</span> | XLPE ≈ <span class="highlight">143</span><br>
+                    <span class="highlight">Aluminum (Al):</span> PVC ≈ <span class="highlight">76</span> | XLPE ≈ <span class="highlight">94</span><br>
+                    <span class="highlight">Steel (Conduit):</span> k ≈ <span class="highlight">50-80</span> (Varies!)
+                </div>
+                 <div class="content-text text-accent" style="font-weight: bold; margin-top: 1rem;">Using the WRONG 'k' is like using the wrong armor!</div>`
         },
 
-
-        { time: 157, type: 'clear', voiceover: 'Let\'s quickly summarize what we learned.' },
-
-        // SECTION 6: CONCLUSION (158-180s)
-        { 
-            time: 158, type: 'text', id: 'summary-title', text: 'Summary: The 4 Key Steps', 
-            x: 800, y: 150, fontSize: 80, weight: 'bold', anchor: 'middle', fill: 'var(--info-purple)',
-            duration: 3, voiceover: 'Remember these four key steps to safety.'
+        // --- SPLIT CALCULATION SLIDES ---
+        // SCENE 8: EXECUTION: MISSION PARAMETERS (15s) - Split 1
+        { id: 8, duration: 15000, content: `
+            <div class="title text-success">EXECUTION: SIZING THE GUARDIAN</div>
+            <div class="punchy-headline text-info">Example Scenario: Earthing a Motor</div>
+            <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.08);">
+                 <div class="card-title text-success">MISSION PARAMETERS:</div>
+                 <div class="card-text formula-font">
+                    • Max Ground Fault (I<sub>sc</sub>): <span class="highlight">8,000 Amps</span><br>
+                    • Breaker Max Time (t): <span class="highlight">0.2 seconds</span><br>
+                    • Wire: Copper (Cu)<br>
+                    • Insulation: PVC<br>
+                    • Factor 'k' (PVC Cu): <span class="highlight">115</span>
+                 </div>
+            </div>`
         },
-        { 
-            time: 162, type: 'text', id: 'sum1', text: '1. The Earth wire\'s job is YOUR SAFETY.', 
-            x: 200, y: 300, fontSize: 50, 
-            duration: 3, voiceover: 'One: The earth conductor exists for your safety.'
+        // SCENE 8.1: EXECUTION: CALCULATION STEP 1 (I²t) (15s) - Split 2
+        { id: 8.1, duration: 15000, content: `
+            <div class="title text-success">EXECUTION: STEP 1 - CALCULATE ENERGY</div>
+            <div class="punchy-headline text-info">Quantifying the Heat Blast (I²t)</div>
+             <div class="formula-box text-white" style="border-color: var(--primary); box-shadow: 0 0 25px var(--primary);">
+                Energy (I²t) = I<sub>sc</sub>² × t<br>
+                Energy = 8000² × 0.2<br>
+                Energy = 64,000,000 × 0.2<br>
+                Energy = <span class="highlight">12,800,000 A²s</span>
+             </div>
+             <div class="content-text text-warning">This is the thermal energy the wire must safely absorb!</div>`
         },
-        { 
-            time: 165.5, type: 'text', id: 'sum2', text: '2. Use the formula: S = √(I²t) / k', 
-            x: 200, y: 420, fontSize: 50, 
-            duration: 4, voiceover: 'Two: Always use the adiabatic equation to calculate the minimum size.'
+        // SCENE 8.2: EXECUTION: CALCULATION STEP 2 (Size) (15s) - Split 3
+        { id: 8.2, duration: 15000, content: `
+            <div class="title text-success">EXECUTION: STEP 2 - CALCULATE MIN SIZE</div>
+            <div class="punchy-headline text-info">Applying the Guardian Formula</div>
+             <div class="formula-box text-white" style="border-color: var(--primary); box-shadow: 0 0 25px var(--primary);">
+                S<sub>mm²</sub> = √(<span class="highlight">I²t</span>) / k<br>
+                S<sub>mm²</sub> = √(<span class="highlight">12,800,000</span>) / 115<br>
+                S<sub>mm²</sub> = 3577.7 / 115<br>
+                S<sub>mm²</sub> ≈ <span class="highlight">31.1 mm²</span> (Minimum Required)
+             </div>
+             <div class="content-text text-warning">This is the SMALLEST size theoretically safe for the heat.</div>`
         },
-        { 
-            time: 170, type: 'text', id: 'sum3', text: '3. Find the correct \'k\' value from tables.', 
-            x: 200, y: 540, fontSize: 50, 
-            duration: 3.5, voiceover: 'Three: Be sure to select the correct k-value for your material.'
+        // SCENE 8.3: EXECUTION: SELECT STANDARD SIZE (15s) - Split 4
+        { id: 8.3, duration: 15000, content: `
+            <div class="title text-success">EXECUTION: STEP 3 - SELECT STANDARD SIZE</div>
+            <div class="punchy-headline text-info">Always Round UP! Choose Your Weapon!</div>
+             <div class="card success">
+                 <div class="card-title text-success">Calculated Minimum: <span class="highlight">31.1 mm²</span></div>
+                 <div class="card-text">
+                    Find next standard size ≥ 31.1 mm².<br>
+                    Sizes (mm²): ... 16 ... 25 ... <span class="critical">35</span> ... 50 ...<br>
+                 </div>
+                  <div class="card-title text-success" style="margin-top: 1rem;">FINAL SELECTION:</div>
+                  <div class="card-text" style="font-size: clamp(2rem, 4.5vw, 2.8rem);"> {/* Increased font */}
+                     Deploy <span class="text-success" style="font-size: 1.3em; filter: drop-shadow(0 0 6px var(--success));">✅ 35mm²</span> Copper Earth Conductor.
+                 </div>
+             </div>`
         },
-        { 
-            time: 174, type: 'text', id: 'sum4', text: '4. ALWAYS round UP to the next standard size.', 
-            x: 200, y: 660, fontSize: 50, fill: 'var(--danger-red)', weight: 'bold',
-            duration: 4, voiceover: 'And four, the most important rule: always round your answer UP to the next standard size.'
+        // SCENE 9: BEYOND THE FORMULA (18s)
+        { id: 9, duration: 18000, content: `
+            <div class="title text-warning">CRITICAL INTEL: SIZE ISN'T ENOUGH!</div>
+            <div class="punchy-headline text-purple">Installation Flaws Defeat the Guardian!</div>
+             <div class="three-col-grid">
+                 <div class="card warning"> <div class="card-title text-warning">🔗 BAD CONNECTIONS!</div> <div class="card-text"><span class="critical">HIGH RESISTANCE!</span> Fault current can't flow! Use proper, TIGHT connections!</div> </div>
+                 <div class="card warning"> <div class="card-title text-warning">🛡️ TOO FLIMSY!</div> <div class="card-text">Needs strength! Min sizes often apply (<span class="highlight">≥2.5mm² Cu</span>) to avoid physical breaks.</div> </div>
+                 <div class="card warning"> <div class="card-title text-warning">🧪 CORROSION ATTACK!</div> <div class="card-text">Rust/corrosion blocks the path! Use right materials & protect connections!</div> </div>
+            </div>
+             <div class="key-point">Perfect size, bad install = <span class="critical">ZERO PROTECTION!</span></div>`
         },
-        { 
-            time: 178.5, type: 'text', id: 'end-text', text: 'Stay safe, and keep learning!', 
-            x: 800, y: 820, fontSize: 70, weight: 'bold', anchor: 'middle',
-            duration: 3, voiceover: 'Excellent job today. Stay safe, and keep learning!'
+        // SCENE 9.5: EARTH ELECTRODE RESISTANCE (15s) - NEW
+        { id: 9.5, duration: 15000, content: `
+            <div class="title text-info">THE FINAL LINK: EARTH ELECTRODE</div>
+            <div class="punchy-headline text-warning">Connecting Your System to Planet Earth!</div>
+            <div class="card info">
+                 <div class="card-title text-info">What is it?</div>
+                 <div class="card-text">
+                    The physical connection to the ground (earth rods, plates, mats). <br>
+                    Its job is to dissipate fault current safely into the earth mass.
+                 </div>
+                  <div class="card-title text-info" style="margin-top: 1rem;">Why Resistance Matters:</div>
+                  <div class="card-text"> <span class="highlight">Lower resistance = Better connection = Faster fault clearing & Lower touch voltages!</span> Standards often require low values (e.g., < 10 Ohms, < 5 Ohms, or even < 1 Ohm for critical sites). Needs proper design & testing!</div>
+             </div>`
         },
-    ];
-
-    // --- Helper Functions ---
-    function resetAnimation() {
-        timeouts.forEach(t => clearTimeout(t));
-        timeouts = [];
-        if (animationFrame) cancelAnimationFrame(animationFrame);
-        while(svg.firstChild) svg.removeChild(svg.firstChild);
-        activeElements = [];
-        progressBar.style.width = '0%';
-        voDisplay.textContent = 'Click "Start Tutorial" to begin...';
-        playBtn.disabled = false;
-        playBtn.textContent = '▶ Start Tutorial';
-        isPlaying = false;
-    }
-
-    // --- Element & Animation Creation ---
-    function createElement(item) {
-        let el;
-        if (item.type === 'text') {
-            el = document.createElementNS(svgNS, 'text');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('font-size', item.fontSize);
-            el.setAttribute('fill', item.fill || 'var(--draw-color)');
-            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
-            if(item.weight) el.setAttribute('font-weight', item.weight);
-            el.textContent = ''; 
-            el.setAttribute('data-text', item.text);
-            el.classList.add('text-anim', 'anim-element');
-        } else if (item.type === 'path' || item.type === 'rect') {
-            el = document.createElementNS(svgNS, item.type);
-            Object.keys(item).forEach(key => {
-                if (['type', 'id', 'time', 'duration', 'voiceover', 'rx'].indexOf(key) === -1) {
-                     el.setAttribute(key.replace(/[A-Z]/g, m => "-" + m.toLowerCase()), item[key]);
-                } else if(key === 'rx') {
-                    el.setAttribute('rx', item[key]);
-                }
-            });
-            el.classList.add('anim-element');
+        // SCENE 10: COMMON MISSION FAILURES (18s)
+        { id: 10, duration: 18000, content: `
+            <div class="title text-accent">TOP SECRET: AVOID THESE FAILURES!</div>
+            <div class="punchy-headline text-warning">Mistakes That Lead to Disaster!</div>
+             <div class="card accent" style="animation: alert-glow 1.5s infinite;">
+                 <div class="card-title text-accent">MISSION ABORT TRIGGERS:</div>
+                 <div class="card-text formula-font" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem);"> {/* Increased font */}
+                    <span class="critical">❌ GUESSING I<sub>sc</sub>!</span><br>
+                    <span class="critical">❌ WRONG TIME (t)!</span><br>
+                    <span class="critical">❌ WRONG 'k' VALUE!</span><br>
+                    <span class="critical">❌ POOR CONNECTIONS!</span><br>
+                    <span class="critical">❌ IGNORING MINIMUM SIZES!</span><br>
+                    <span class="critical">❌ NEGLECTING BONDING!</span>
+                 </div>
+             </div>`
+        },
+        // SCENE 11: VERIFICATION: MISSION SUCCESS? (15s)
+        { id: 11, duration: 15000, content: `
+            <div class="title text-success">MISSION VERIFICATION: FINAL CHECKS</div>
+            <div class="punchy-headline text-info">Confirming Guardian Readiness!</div>
+             <div class="card success">
+                 <div class="card-title text-success">Confirm Installation Integrity:</div>
+                 <div class="card-text">
+                    <span class="check-icon">✓</span> <strong class="highlight">Visual Check:</strong> Connections TIGHT & Secure?<br>
+                    <span class="check-icon">✓</span> <strong class="highlight">Continuity Test:</strong> Clear, LOW Resistance Path?<br>
+                    <span class="check-icon">✓</span> <strong class="highlight">Loop Impedance Test:</strong> Confirms FAST Fault Clearing?
+                 </div>
+             </div>
+             <div class="content-text text-success">Trust, but VERIFY! Testing proves safety.</div>`
+        },
+        // SCENE 12: TOOLS & RESOURCES (15s)
+        { id: 12, duration: 15000, content: `
+            <div class="title text-purple">YOUR FIELD MANUAL & TECH</div>
+            <div class="punchy-headline text-info">Use Standards! Use Calculators!</div>
+             <div class="two-col-grid">
+                 <div class="card purple">
+                    <div class="card-title text-purple">Key Standards:</div>
+                    <div class="card-text" style="font-size: clamp(1.5rem, 3.3vw, 2.1rem);"> {/* Increased */}
+                        • <span class="highlight">IEC 60364</span> | <span class="highlight">IEEE 80 / 142</span><br>
+                        • <span class="highlight">NEC Art. 250</span> | <span class="highlight">BS 7671</span><br>
+                        (Know YOUR local rules!)
+                    </div>
+                 </div>
+                 <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.1);">
+                    <div class="card-title text-success">Digital Assistant:</div>
+                     <div class="card-text" style="text-align: center; font-size: 2.3em;"> {/* Increased */}
+                        <a href="https://designcalculators.co.in" target="_blank" style="color: var(--warning); text-decoration: none; animation: pulse 1.5s infinite;">designcalculators.co.in</a><br>
+                        <span class="text-dim">(FREE Earthing Calculators!)</span>
+                     </div>
+                 </div>
+            </div>`
+        },
+        // SCENE 13: MISSION SUMMARY (15s)
+        { id: 13, duration: 15000, content: `
+            <div class="title text-success">MISSION RECAP: GUARDIAN DEPLOYED!</div>
+            <div class="punchy-headline text-primary">Earthing Protocol: MASTERED!</div>
+            <div class="card success" style="max-width: 1500px;"> {/* Wider */}
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Earthing = SAFE PATH! Saves Lives & Gear!</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>SIZE using S = √(I²t)/k (Heat Blast Formula).</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Need ACCURATE <span class="highlight">Isc, Time(t), Material(k)</span>.</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>ALWAYS pick next STANDARD size UP!</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div><span class="critical">CONNECTIONS</span>, <span class="critical">BONDING</span> & <span class="critical">STRENGTH</span> are vital!</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div><span class="highlight">TEST</span> your installation!</div></div>
+            </div>`
+        },
+        // SCENE 14: FINAL TRANSMISSION (10s)
+        { id: 14, duration: 10000, content: `
+            <div class="title text-success">END TRANSMISSION</div>
+            <div class="subtitle text-info">ACCESS FREE TOOLS & STAY SAFE:</div>
+            <div class="subtitle text-warning" style="animation: pulse 1.8s infinite; font-size: clamp(2.8rem, 7.5vw, 4rem); margin-top: 2.5rem;"> {/* Increased */}
+                 <a href="https://designcalculators.co.in" target="_blank" style="color: var(--warning); text-decoration: none;">https://designcalculators.co.in</a>
+            </div>
+            <div class="content-text text-dim" style="margin-top: 4rem;">
+                Install the Guardian Correctly. Protect Lives. Mission Complete. 🙏
+            </div>`
         }
-        if (el) {
-            el.id = item.id;
-            svg.appendChild(el);
-        }
-        return el;
-    }
+    ]; // Total 44 Scenes
 
-    function typeText(el, text, duration) {
-        if (!text || text.length === 0) {
-            el.style.opacity = 1;
-            return;
-        }
-        let charIndex = 0;
-        const chars = text.split('');
-        const charDelay = Math.max(50, (duration * 1000) / chars.length);
-        el.style.opacity = 1;
+    // --- JAVASCRIPT LOGIC ---
+    // Calculate total scenes *after* defining sceneConfig
+    totalScenes = sceneConfig.length;
 
-        function addNextChar() {
-            if (charIndex < chars.length && isPlaying) {
-                el.textContent += chars[charIndex++];
-                const timeout = setTimeout(addNextChar, charDelay);
-                timeouts.push(timeout);
-            }
-        }
-        addNextChar();
-    }
+    function showScene(index) {
+        // Clear previous scene content specifically
+        const sceneContainer = container.querySelector('.scene');
+        if (sceneContainer) { container.removeChild(sceneContainer); }
+        // Remove footer temporarily too
+         const footerContainer = container.querySelector('.footer-wrapper');
+        if (footerContainer) { container.removeChild(footerContainer); }
 
-    function drawShape(el) {
-        el.style.opacity = 1;
-        el.classList.add('fade-in');
-    }
+        if (sceneConfig[index]) {
+            const sceneData = sceneConfig[index];
+            const sceneElement = document.createElement('div');
+            sceneElement.id = `scene${sceneData.id}`;
+            sceneElement.className = 'scene';
+            sceneElement.innerHTML = sceneData.content;
+            container.appendChild(sceneElement); // Add scene first
 
-    function animateItem(item) {
-        if (item.type === 'clear') {
-            // Clear with a slight fade
-            let nodes = Array.from(svg.childNodes);
-            nodes.forEach((el, i) => {
-                setTimeout(() => {
-                    if(el) el.style.opacity = 0;
-                }, i * 15);
-            });
+            // Progress Bar Logic Removed
 
-            setTimeout(() => {
-                activeElements.forEach(el => {
-                    if (el && el.parentNode) svg.removeChild(el);
-                });
-                activeElements = [];
-                 if (item.voiceover) voDisplay.textContent = item.voiceover;
-            }, nodes.length * 15 + 200);
-            return;
-        }
+             // Re-add Footer
+            const footerEl = document.createElement('div');
+            footerEl.className = 'footer-wrapper';
+            footerEl.innerHTML = `<hr class="footer-line"><div>prepared by <a href="https://designcalculators.co.in" target="_blank">https://designcalculators.co.in</a></div>`;
+            container.appendChild(footerEl); // Add footer last
 
-        if (item.voiceover) voDisplay.textContent = item.voiceover;
-
-        const el = createElement(item);
-        if (!el) return;
-        
-        activeElements.push(el);
-
-        if (item.type === 'text') {
-            typeText(el, el.getAttribute('data-text'), item.duration);
+            requestAnimationFrame(() => { sceneElement.scrollTop = 0; });
         } else {
-            drawShape(el);
+            console.error(`Invalid scene index: ${index}`);
+            currentSceneIndex = 0; showScene(0);
         }
     }
 
-    // --- Main Controller ---
-    function startAnimation() {
-        if (isPlaying) return;
-        
-        resetAnimation();
-        isPlaying = true;
-        playBtn.disabled = true;
-        playBtn.textContent = '▶ Playing...';
-        
-        const startTime = Date.now();
+    // --- Rest of JS Logic (Unchanged except progress bar update removed) ---
+    function nextScene() { currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function prevScene() { currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function resetInterval() { clearInterval(sceneInterval); let duration = 17000; /* Default */ if (sceneConfig[currentSceneIndex]?.duration) { duration = sceneConfig[currentSceneIndex].duration; } sceneInterval = setInterval(nextScene, duration); }
+    if (sceneConfig.length > 0) { showScene(0); resetInterval(); } // Initial call
+    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextScene(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); prevScene(); } });
+    container.addEventListener('click', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; nextScene(); });
+    let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0; const swipeThreshold = 50, tapThreshold = 10; let touchStartTime = 0; const tapTimeThreshold = 200;
+    container.addEventListener('touchstart', (e) => { let target = e.target; let isScrollable = false; while(target && target !== container) { if (target.scrollHeight > target.clientHeight && target.classList.contains('scene')) { const style = window.getComputedStyle(target); if (style.overflowY === 'auto' || style.overflowY === 'scroll') { isScrollable = true; break; } } target = target.parentNode; } if (isScrollable) { touchStartX = 0; return; } touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; touchStartTime = new Date().getTime(); }, { passive: true });
+    container.addEventListener('touchend', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; if (touchStartX === 0) { touchStartY = 0; touchStartTime = 0; return; } touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY; const touchTime = new Date().getTime() - touchStartTime; const diffX = touchEndX - touchStartX; const diffY = touchEndY - touchStartY; const absDiffX = Math.abs(diffX); const absDiffY = Math.abs(diffY); touchStartX = 0; touchStartY = 0; touchStartTime = 0; if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) return; if (absDiffX > swipeThreshold && absDiffX > absDiffY) { e.stopPropagation(); if (diffX < 0) { nextScene(); } else { prevScene(); } } });
 
-        timeline.forEach(item => {
-            const timeout = setTimeout(() => {
-                if (isPlaying) animateItem(item);
-            }, item.time * 1000);
-            timeouts.push(timeout);
-        });
-
-        function updateProgress() {
-            if (!isPlaying) return;
-            const elapsed = (Date.now() - startTime) / 1000;
-            
-            if (elapsed >= TOTAL_DURATION) {
-                progressBar.style.width = '100%';
-                const timeout = setTimeout(() => {
-                    resetAnimation();
-                    voDisplay.textContent = 'Tutorial complete! Click to replay.';
-                }, 2000);
-                timeouts.push(timeout);
-                return;
-            }
-            
-            progressBar.style.width = (elapsed / TOTAL_DURATION) * 100 + '%';
-            animationFrame = requestAnimationFrame(updateProgress);
-        }
-        
-        updateProgress();
-    }
-
-    playBtn.addEventListener('click', startAnimation);
-    window.addEventListener('beforeunload', resetAnimation);
 </script>
 
 </body>
