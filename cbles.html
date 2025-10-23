@@ -6,19 +6,18 @@
     <title>Cable Sizing - CODE RED v2: The Ultimate Mission</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Intense, Cinematic Palette - Kept the same */
-            --primary: #ff003c; /* Intense Red for Danger/Primary Action */
-            --accent: #ffc400; /* Bright Yellow/Gold for Warnings/Highlights */
-            --success: #00ff7f; /* Spring Green for Success/Go */
-            --info: #00a8ff;   /* Electric Blue for Info/Tech */
-            --purple: #a300ff; /* Deep Purple for Intel/Secrets */
-            --dark-bg: #0d0d1a; /* Very Dark Navy/Black */
-            --card-bg: #1a1a2e; /* Dark Indigo */
-            --text-main: #f0f0f0; /* Off-White */
-            --text-dim: #b0b0d0; /* Adjusted Muted Lavender/Gray */
+            --primary: #ff003c;
+            --accent: #ffc400;
+            --success: #00ff7f;
+            --info: #00a8ff;
+            --purple: #a300ff;
+            --dark-bg: #0d0d1a;
+            --card-bg: #1a1a2e;
+            --text-main: #f0f0f0;
+            --text-dim: #b0b0d0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,6 +25,8 @@
         html, body {
             height: 100%;
             overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
         }
 
         body {
@@ -34,16 +35,14 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-main);
+            padding: 10px;
         }
 
         #container {
-            width: 95vw;
+            width: 100%;
+            max-width: 1400px;
             height: auto;
-            max-width: 1600px;
-            max-height: 95vh; /* Ensure it fits vertically */
-            aspect-ratio: 16/9;
+            max-height: 90vh;
             background: var(--dark-bg);
             border-radius: 20px;
             box-shadow: 0 0 100px rgba(255, 0, 60, 0.5), inset 0 0 50px rgba(255, 0, 60, 0.1);
@@ -52,7 +51,6 @@
             flex-direction: column;
             position: relative;
             cursor: pointer;
-            /* border removed */
         }
 
         .scene {
@@ -60,52 +58,117 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            /* Reduced padding slightly to accommodate larger fonts */
-            padding: 1.5% 3%;
+            padding: 20px;
             text-align: center;
             opacity: 0;
             animation: fadeInScene 0.7s ease-out forwards;
-            overflow-y: auto; /* Allow scrolling within scene if content overflows */
+            overflow-y: auto;
             position: relative;
             -ms-overflow-style: none;
             scrollbar-width: none;
+            min-height: 0;
         }
 
         .scene::-webkit-scrollbar { display: none; }
 
-        /* --- Animations (Kept the same cinematic style) --- */
-        @keyframes fadeInScene { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideUpIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } } /* Slightly more travel */
-        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.03); filter: brightness(1.2);} }
-        @keyframes glow-primary { 0%, 100% { text-shadow: 0 0 10px rgba(255, 0, 60, 0.7), 0 0 25px rgba(255, 0, 60, 0.4); } 50% { text-shadow: 0 0 25px rgba(255, 0, 60, 1), 0 0 50px rgba(255, 0, 60, 0.6); } }
-        @keyframes shake { 0%, 100% { transform: translate(0, 0); } 10%, 90% { transform: translate(-2px, -1px); } 20%, 80% { transform: translate(2px, 1px); } 30%, 50%, 70% { transform: translate(-3px, 2px); } 40%, 60% { transform: translate(3px, -2px); } }
-        @keyframes fire-flicker { 0% { opacity: 0.8; transform: skewX(-2deg) scale(1.01); filter: brightness(1.1);} 25% { opacity: 1; transform: skewX(2deg) scale(1);} 50% { opacity: 0.7; transform: skewX(-1deg) scale(1.02); filter: brightness(1.2);} 75% { opacity: 0.9; transform: skewX(1deg) scale(1);} 100% { opacity: 0.8; transform: skewX(-2deg) scale(1.01); filter: brightness(1.1);} }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); animation-timing-function: ease-out; } 50% { transform: translateY(-15px); animation-timing-function: ease-in; } }
-        @keyframes alert-glow { 0%, 100% { background-color: rgba(255, 0, 60, 0.1); border-color: rgba(255, 0, 60, 0.5); } 50% { background-color: rgba(255, 0, 60, 0.25); border-color: rgba(255, 0, 60, 1); } }
+        @keyframes fadeInScene { 
+            from { opacity: 0; transform: scale(0.98); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+        
+        @keyframes slideUpIn { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        @keyframes slideDownIn { 
+            from { opacity: 0; transform: translateY(-30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        @keyframes scaleUpIn { 
+            from { opacity: 0; transform: scale(0.8); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+        
+        @keyframes pulse { 
+            0%, 100% { transform: scale(1); filter: brightness(1); } 
+            50% { transform: scale(1.03); filter: brightness(1.2);} 
+        }
+        
+        @keyframes glow-primary { 
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 0, 60, 0.7), 0 0 25px rgba(255, 0, 60, 0.4); } 
+            50% { text-shadow: 0 0 25px rgba(255, 0, 60, 1), 0 0 50px rgba(255, 0, 60, 0.6); } 
+        }
+        
+        @keyframes shake { 
+            0%, 100% { transform: translate(0, 0); } 
+            10%, 90% { transform: translate(-2px, -1px); } 
+            20%, 80% { transform: translate(2px, 1px); } 
+            30%, 50%, 70% { transform: translate(-3px, 2px); } 
+            40%, 60% { transform: translate(3px, -2px); } 
+        }
+        
+        @keyframes fire-flicker { 
+            0% { opacity: 0.8; transform: skewX(-2deg) scale(1.01); filter: brightness(1.1);} 
+            25% { opacity: 1; transform: skewX(2deg) scale(1);} 
+            50% { opacity: 0.7; transform: skewX(-1deg) scale(1.02); filter: brightness(1.2);} 
+            75% { opacity: 0.9; transform: skewX(1deg) scale(1);} 
+            100% { opacity: 0.8; transform: skewX(-2deg) scale(1.01); filter: brightness(1.1);} 
+        }
+        
+        @keyframes alert-glow { 
+            0%, 100% { background-color: rgba(255, 0, 60, 0.1); border-color: rgba(255, 0, 60, 0.5); } 
+            50% { background-color: rgba(255, 0, 60, 0.25); border-color: rgba(255, 0, 60, 1); } 
+        }
 
-
-        /* --- FONT SIZE INCREASES --- */
+        /* Improved text sizing for better fit */
         .title {
-            font-size: clamp(2.4rem, 6vw, 4rem); /* Increased */
-            font-weight: 800; margin-bottom: 1rem; line-height: 1.1; animation: slideDownIn 0.8s ease-out; letter-spacing: 1px; text-transform: uppercase;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800; 
+            margin-bottom: 0.8rem; 
+            line-height: 1.1; 
+            animation: slideDownIn 0.8s ease-out; 
+            letter-spacing: 1px; 
+            text-transform: uppercase;
+            width: 100%;
         }
+        
         .subtitle {
-            font-size: clamp(1.8rem, 4.5vw, 3rem); /* Increased */
-            font-weight: 700; margin-bottom: 1rem; line-height: 1.15; animation: slideUpIn 0.8s ease-out 0.1s forwards; opacity: 0; letter-spacing: 0.5px;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700; 
+            margin-bottom: 0.8rem; 
+            line-height: 1.15; 
+            animation: slideUpIn 0.8s ease-out 0.1s forwards; 
+            opacity: 0; 
+            letter-spacing: 0.5px;
+            width: 100%;
         }
+        
         .punchy-headline {
-            font-size: clamp(1.6rem, 4vw, 2.6rem); /* Increased */
-            font-weight: 700; margin: 0.8rem 0; line-height: 1.25; animation: slideUpIn 0.8s ease-out 0.15s forwards; opacity: 0; letter-spacing: 0.5px; text-transform: uppercase;
+            font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+            font-weight: 700; 
+            margin: 0.6rem 0; 
+            line-height: 1.25; 
+            animation: slideUpIn 0.8s ease-out 0.15s forwards; 
+            opacity: 0; 
+            letter-spacing: 0.5px; 
+            text-transform: uppercase;
+            width: 100%;
         }
+        
         .content-text {
-            font-size: clamp(1.1rem, 2.8vw, 1.7rem); /* Increased */
-            color: var(--text-dim); line-height: 1.75; margin: 0.8rem auto; animation: slideUpIn 0.9s ease-out 0.2s forwards; max-width: 90%; opacity: 0;
+            font-size: clamp(0.9rem, 2.5vw, 1.4rem);
+            color: var(--text-dim); 
+            line-height: 1.6; 
+            margin: 0.6rem auto; 
+            animation: slideUpIn 0.9s ease-out 0.2s forwards; 
+            max-width: 95%; 
+            opacity: 0;
         }
-        /* Text Colors - Kept the same */
+
         .text-primary { color: var(--primary); animation: glow-primary 1.5s infinite; font-weight: 700; }
         .text-accent { color: var(--accent); font-weight: 700; filter: brightness(1.1); }
         .text-success { color: var(--success); font-weight: 700; }
@@ -116,72 +179,138 @@
         .text-dim { color: var(--text-dim); }
 
         .icon-large {
-            font-size: clamp(4rem, 9vw, 6.5rem); /* Increased */
-            animation: pulse 1.8s infinite; margin: 1rem 0;
+            font-size: clamp(3rem, 8vw, 5rem);
+            animation: pulse 1.8s infinite; 
+            margin: 0.8rem 0;
         }
 
         .card {
-            background: var(--card-bg); border: 2px solid rgba(255, 255, 255, 0.1); border-left: 6px solid var(--primary); /* Thicker accent border */
-            border-radius: 8px; padding: 1.5rem; /* Increased padding */ margin: 0.8rem auto; animation: scaleUpIn 0.6s ease-out; width: 96%; max-width: 950px; /* Wider */
-            text-align: left; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            background: var(--card-bg); 
+            border: 2px solid rgba(255, 255, 255, 0.1); 
+            border-left: 6px solid var(--primary);
+            border-radius: 8px; 
+            padding: 1.2rem; 
+            margin: 0.6rem auto; 
+            animation: scaleUpIn 0.6s ease-out; 
+            width: 98%; 
+            max-width: 900px;
+            text-align: left; 
+            backdrop-filter: blur(5px); 
+            -webkit-backdrop-filter: blur(5px);
         }
-        .card.accent { border-left-color: var(--accent); background: rgba(255, 196, 0, 0.07); } /* Slightly more bg */
+        
+        .card.accent { border-left-color: var(--accent); background: rgba(255, 196, 0, 0.07); }
         .card.warning { border-left-color: var(--warning); background: rgba(253, 126, 20, 0.07); }
         .card.info { border-left-color: var(--info); background: rgba(0, 168, 255, 0.07); }
         .card.purple { border-left-color: var(--purple); background: rgba(163, 0, 255, 0.07); }
         .card.success { border-left-color: var(--success); background: rgba(0, 255, 127, 0.07); }
 
         .card-title {
-            font-size: clamp(1.3rem, 3vw, 1.9rem); /* Increased */
-            font-weight: 700; margin-bottom: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;
+            font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+            font-weight: 700; 
+            margin-bottom: 0.6rem; 
+            letter-spacing: 0.5px; 
+            text-transform: uppercase;
         }
+        
         .card-text {
-            font-size: clamp(1rem, 2.2vw, 1.5rem); /* Increased */
-            color: var(--text-dim); line-height: 1.8; /* More spacing */
+            font-size: clamp(0.9rem, 2vw, 1.3rem);
+            color: var(--text-dim); 
+            line-height: 1.6;
         }
+        
         .card-text strong { color: var(--success); font-weight: 700; }
         .card-text .highlight { color: var(--accent); font-weight: 700; }
         .card-text .critical { color: var(--primary); font-weight: 700; text-transform: uppercase; }
 
         .code-text {
-            font-family: 'Consolas', 'Monaco', monospace; background: rgba(0,0,0,0.6); padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.15);
-            font-size: clamp(0.9rem, 2vw, 1.3rem); /* Increased */
-            display: inline-block; margin: 0.4rem 0; color: #00ff7f; letter-spacing: 1px;
+            font-family: 'Consolas', 'Monaco', monospace; 
+            background: rgba(0,0,0,0.6); 
+            padding: 0.4rem 0.8rem; 
+            border-radius: 4px; 
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+            display: inline-block; 
+            margin: 0.3rem 0; 
+            color: #00ff7f; 
+            letter-spacing: 1px;
         }
+        
         .formula-font {
-            font-family: 'Consolas', 'Monaco', monospace; line-height: 1.8;
-            font-size: clamp(1rem, 2.3vw, 1.5rem); /* Increased */
+            font-family: 'Consolas', 'Monaco', monospace; 
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2vw, 1.3rem);
             color: var(--text-main);
         }
+        
         .formula-box {
-            background: rgba(0, 0, 0, 0.7); border: 2px solid var(--accent); box-shadow: 0 0 20px rgba(255, 196, 0, 0.4); padding: 1.5rem; margin: 1.2rem auto; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace;
-            font-size: clamp(1.1rem, 2.5vw, 1.6rem); /* Increased */
-            line-height: 1.8; text-align: center; animation: slideUpIn 0.9s ease-out; width: fit-content; max-width: 95%; color: #f0f0f0;
+            background: rgba(0, 0, 0, 0.7); 
+            border: 2px solid var(--accent); 
+            box-shadow: 0 0 20px rgba(255, 196, 0, 0.4); 
+            padding: 1.2rem; 
+            margin: 1rem auto; 
+            border-radius: 8px; 
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: clamp(0.9rem, 2.2vw, 1.4rem);
+            line-height: 1.6; 
+            text-align: center; 
+            animation: slideUpIn 0.9s ease-out; 
+            width: fit-content; 
+            max-width: 95%; 
+            color: #f0f0f0;
         }
+        
         .formula-box .highlight { color: var(--accent); }
 
         .two-col-grid, .three-col-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Larger min size */ gap: 1.2rem; width: 98%; max-width: 1400px; /* Wider */ margin: 1.2rem auto; animation: slideUpIn 0.9s ease-out;
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 1rem; 
+            width: 98%; 
+            max-width: 1200px; 
+            margin: 1rem auto; 
+            animation: slideUpIn 0.9s ease-out;
         }
 
-        /* Rule Boxes Styling */
+        /* Improved rule boxes for better fit */
         .rule-box {
-            border-radius: 8px; padding: 1.8rem; margin: 1rem 0; animation: scaleUpIn 0.7s ease-out forwards; opacity: 0; width: 95%; max-width: 1400px; display: flex; align-items: center; gap: 2rem; /* More gap */
+            border-radius: 8px; 
+            padding: 1.5rem; 
+            margin: 0.8rem 0; 
+            animation: scaleUpIn 0.7s ease-out forwards; 
+            opacity: 0; 
+            width: 98%; 
+            max-width: 1200px; 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 1.5rem;
         }
+        
         .rule-box-num {
-            font-size: clamp(4rem, 10vw, 7rem); /* Increased */
-            font-weight: 800; flex-shrink: 0; filter: drop-shadow(0 0 8px currentColor); /* More glow */
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800; 
+            flex-shrink: 0; 
+            filter: drop-shadow(0 0 8px currentColor);
         }
-        .rule-box-content { text-align: left; }
+        
+        .rule-box-content { 
+            text-align: left; 
+            flex: 1;
+        }
+        
         .rule-box-title {
-            font-size: clamp(1.6rem, 4vw, 2.4rem); /* Increased */
-            font-weight: 700; margin-bottom: 0.7rem; text-transform: uppercase;
+            font-size: clamp(1.3rem, 3.5vw, 2rem);
+            font-weight: 700; 
+            margin-bottom: 0.5rem; 
+            text-transform: uppercase;
         }
+        
         .rule-box-detail {
-            font-size: clamp(1.05rem, 2.6vw, 1.6rem); /* Increased */
-            color: var(--text-dim); line-height: 1.7;
+            font-size: clamp(0.9rem, 2.3vw, 1.4rem);
+            color: var(--text-dim); 
+            line-height: 1.6;
         }
-        /* Specific colors remain the same */
+        
         .rule-box.ampacity { border-left: 10px solid var(--info); background: rgba(0, 168, 255, 0.07); }
         .rule-box.ampacity .rule-box-num, .rule-box.ampacity .rule-box-title { color: var(--info); }
         .rule-box.voltagedrop { border-left: 10px solid var(--success); background: rgba(0, 255, 127, 0.07); }
@@ -189,34 +318,98 @@
         .rule-box.shortcircuit { border-left: 10px solid var(--primary); background: rgba(255, 0, 60, 0.07); }
         .rule-box.shortcircuit .rule-box-num, .rule-box.shortcircuit .rule-box-title { color: var(--primary); }
 
-
         .checklist-item {
-            display: flex; align-items: center; margin: 0.9rem 0; color: var(--text-dim); line-height: 1.7; /* Increased line-height */
-            font-size: clamp(1rem, 2.3vw, 1.4rem); /* Increased */
-            animation: slideUpIn 1s ease-out; text-align: left;
+            display: flex; 
+            align-items: flex-start; 
+            margin: 0.7rem 0; 
+            color: var(--text-dim); 
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            animation: slideUpIn 1s ease-out; 
+            text-align: left;
         }
-        .checklist-item strong { color: var(--success); font-weight: 700; }
+        
         .check-icon {
-            color: var(--success); font-weight: 900; margin-right: 1rem; /* More margin */ font-size: 1.5em; /* Larger */ line-height: 1;
+            color: var(--success); 
+            font-weight: 900; 
+            margin-right: 0.8rem; 
+            font-size: 1.3em; 
+            line-height: 1;
+            flex-shrink: 0;
         }
 
         .key-point {
-            background: rgba(255, 196, 0, 0.12); border-left: 6px solid var(--accent); padding: 1.2rem; margin: 1.2rem auto; border-radius: 6px;
-            font-size: clamp(1rem, 2.5vw, 1.5rem); /* Increased */
-            line-height: 1.7; animation: slideUpIn 0.8s ease-out; text-align: left; color: var(--text-dim);
+            background: rgba(255, 196, 0, 0.12); 
+            border-left: 6px solid var(--accent); 
+            padding: 1rem; 
+            margin: 1rem auto; 
+            border-radius: 6px;
+            font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+            line-height: 1.6; 
+            animation: slideUpIn 0.8s ease-out; 
+            text-align: left; 
+            color: var(--text-dim);
+            width: 98%;
+            max-width: 1000px;
         }
+        
         .key-point strong { color: var(--accent); }
 
-        /* --- Footer --- */
+        /* Improved footer */
         .footer-wrapper {
-            width: 100%; text-align: center; padding: 12px 0 15px 0; /* More padding */ background: #000;
-            font-size: clamp(1rem, 1.8vw, 1.2rem); /* Increased */
-            color: rgba(204, 204, 204, 0.7); flex-shrink: 0; animation: slideUpIn 1.2s ease-out; position: relative; z-index: 10;
+            width: 100%; 
+            text-align: center; 
+            padding: 10px 0 12px 0;
+            background: #000;
+            font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+            color: rgba(204, 204, 204, 0.7); 
+            flex-shrink: 0; 
+            animation: slideUpIn 1.2s ease-out; 
+            position: relative; 
+            z-index: 10;
         }
-        .footer-line { border: 0; height: 1px; background: rgba(255, 0, 60, 0.4); width: 70%; margin: 0 auto 10px auto; } /* More margin */
-        .footer-wrapper a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
-        .footer-wrapper a:hover { color: #fff; text-shadow: 0 0 8px var(--accent); } /* More glow on hover */
+        
+        .footer-line { 
+            border: 0; 
+            height: 1px; 
+            background: rgba(255, 0, 60, 0.4); 
+            width: 70%; 
+            margin: 0 auto 8px auto; 
+        }
+        
+        .footer-wrapper a { 
+            color: var(--accent); 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: color 0.3s ease; 
+        }
+        
+        .footer-wrapper a:hover { 
+            color: #fff; 
+            text-shadow: 0 0 8px var(--accent); 
+        }
 
+        /* Media query for very small screens */
+        @media (max-width: 480px) {
+            .scene {
+                padding: 15px 10px;
+            }
+            
+            .rule-box {
+                flex-direction: column;
+                gap: 0.8rem;
+                padding: 1rem;
+            }
+            
+            .two-col-grid, .three-col-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -224,21 +417,21 @@
 <div id="container"></div>
 
 <script>
+    // JavaScript remains the same as in the original
     const container = document.getElementById('container');
     let currentSceneIndex = 0;
     let sceneInterval;
 
-    // --- CINEMATIC SCENE CONFIGURATION (Expanded & Refined) ---
     const sceneConfig = [
-        // SCENE 1: CODE RED ALERT (9s) - Kept punchy
+        // SCENE 1: CODE RED ALERT (9s)
         { id: 1, duration: 9000, content: `
             <div class="title text-primary" style="animation: alert-glow 1s infinite;">🚨 CODE RED: CABLE FAILURE IMMINENT! 🚨</div>
-            <div class="punchy-headline text-accent" style="font-size: 3em; animation: shake 0.4s infinite alternate;">40%</div>
-            <div class="subtitle text-white" style="margin-top: -15px;">OF ELECTRICAL FIRES IGNITE FROM A SINGLE, FATAL FLAW...</div>
-            <div class="punchy-headline text-primary" style="font-size: 2.8em; animation: fire-flicker 0.3s infinite alternate;">🔥 UNDERRATED CABLES! 🔥</div>
+            <div class="punchy-headline text-accent" style="animation: shake 0.4s infinite alternate;">40%</div>
+            <div class="subtitle text-white" style="margin-top: -10px;">OF ELECTRICAL FIRES IGNITE FROM A SINGLE, FATAL FLAW...</div>
+            <div class="punchy-headline text-primary" style="animation: fire-flicker 0.3s infinite alternate;">🔥 UNDERRATED CABLES! 🔥</div>
             <div class="content-text text-dim">This isn't just about codes. It's about preventing meltdown. Ignore the rules, invite disaster.</div>`
         },
-        // SCENE 2: MISSION BRIEFING (10s) - Added clarity
+        // SCENE 2: MISSION BRIEFING (10s)
         { id: 2, duration: 10000, content: `
             <div class="title text-accent">YOUR MISSION: CABLE SIZING MASTERY</div>
             <div class="subtitle text-info">OBJECTIVE: FLAWLESS POWER DELIVERY. ZERO CATASTROPHE.</div>
@@ -246,17 +439,17 @@
             <div class="content-text text-dim">Standard training ends here. We expose the hidden dangers and arm you with the protocols to size cables like a seasoned field operative. Your systems depend on it.</div>
             <div class="icon-large" style="color: var(--info);">📡</div>`
         },
-        // SCENE 3: CABLE ANATOMY (13s) - Slightly longer for clarity
+        // SCENE 3: CABLE ANATOMY (13s)
         { id: 3, duration: 13000, content: `
             <div class="title text-purple">TARGET ANALYSIS: KNOW YOUR ASSET</div>
             <div class="punchy-headline text-white">Deconstructing the Power Conduit</div>
-            <div class="two-col-grid" style="align-items: center; max-width: 1200px;">
+            <div class="two-col-grid" style="align-items: center; max-width: 1000px;">
                 <div style="text-align:center;">
-                     <svg viewBox="0 0 200 200" width="300" height="300">
+                     <svg viewBox="0 0 200 200" width="250" height="250">
                          <defs><filter id="glow"><feGaussianBlur stdDeviation="4" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-                        <circle cx="100" cy="100" r="95" fill="#222" stroke="#444" stroke-width="5"/> <!-- Sheath -->
-                        <circle cx="100" cy="100" r="75" fill="#1f1f3d" stroke="#6f42c1" stroke-width="4"/> <!-- Insulation (Purple highlight) -->
-                        <circle cx="100" cy="100" r="50" fill="#ffc400" filter="url(#glow)"/> <!-- Conductor (Gold) -->
+                        <circle cx="100" cy="100" r="95" fill="#222" stroke="#444" stroke-width="5"/>
+                        <circle cx="100" cy="100" r="75" fill="#1f1f3d" stroke="#6f42c1" stroke-width="4"/>
+                        <circle cx="100" cy="100" r="50" fill="#ffc400" filter="url(#glow)"/>
                     </svg>
                 </div>
                 <div class="card purple">
@@ -291,14 +484,14 @@
                  </div>
             </div>`
         },
-        // SCENE 4: THE TRIAD PROTOCOL (10s) - Kept punchy
+        // SCENE 4: THE TRIAD PROTOCOL (10s)
         { id: 4, duration: 10000, content: `
             <div class="title text-accent">THE TRIAD PROTOCOL</div>
             <div class="punchy-headline text-primary">THREE CRITICAL CHECKS. MANDATORY COMPLIANCE.</div>
             <div class="icon-large" style="color: var(--accent);">⚖️</div>
-            <div class="content-text text-dim" style="font-size: 1.8em; line-height: 1.5;"> Pass Ampacity. Pass Voltage Drop. Pass Short Circuit. <br><span class="critical">NO COMPROMISE.</span></div>`
+            <div class="content-text text-dim"> Pass Ampacity. Pass Voltage Drop. Pass Short Circuit. <br><span class="critical">NO COMPROMISE.</span></div>`
         },
-        // SCENE 5: DIRECTIVE ALPHA: AMPACITY (15s) - More detail
+        // SCENE 5: DIRECTIVE ALPHA: AMPACITY (15s)
         { id: 5, duration: 15000, content: `
             <div class="rule-box ampacity">
                 <div class="rule-box-num">①</div>
@@ -312,7 +505,7 @@
             </div>
             <div class="punchy-headline text-accent" style="margin-top: 1rem; animation: shake 0.6s infinite alternate;">Catalog ratings are useless without derating!</div>`
         },
-        // SCENE 6: DERATING FACTORS (18s) - More visual impact
+        // SCENE 6: DERATING FACTORS (18s)
         { id: 6, duration: 18000, content: `
             <div class="title text-accent">DERATING: THE REAL-WORLD PENALTY</div>
             <div class="punchy-headline text-primary">Factors That Steal Your Cable's Capacity!</div>
@@ -322,7 +515,7 @@
                  <div class="card accent"> <div class="card-title text-accent">⛏️ DEEP BURIAL (Cd)</div> <div class="card-text">Heat Can't Escape!</div> </div>
                  <div class="card accent"> <div class="card-title text-accent">🏜️ POOR SOIL (Cs)</div> <div class="card-text">Nowhere for Heat to Go!</div> </div>
             </div>
-             <div class="formula-box text-white" style="border-color: var(--accent); box-shadow: 0 0 20px var(--accent);">
+             <div class="formula-box text-white">
                 <span class="highlight">Required Rating (I<sub>req</sub>)</span> = I<sub>load</sub> / (<span class="highlight">Ca × Cg × Cd × Cs...</span>)
              </div>
              <div class="content-text text-accent" style="font-weight: bold;">Cable's <span class="highlight">RATED</span> Ampacity (from tables) MUST BE ≥ I<sub>req</sub>!</div>`
@@ -347,7 +540,7 @@
             </div>
             <div class="key-point" style="border-left-color: var(--info);">Consult specific tables in <span class="highlight">NEC/IEC/BS</span> for your exact installation method!</div>`
         },
-        // SCENE 7: DIRECTIVE BRAVO: VOLTAGE DROP (15s) - Added consequence focus
+        // SCENE 7: DIRECTIVE BRAVO: VOLTAGE DROP (15s)
         { id: 7, duration: 15000, content: `
              <div class="rule-box voltagedrop">
                 <div class="rule-box-num">②</div>
@@ -377,7 +570,7 @@
             </div>
             <div class="content-text text-accent" style="font-weight: bold;">Voltage Drop isn't just inefficiency, it's a direct threat to your equipment!</div>`
         },
-        // SCENE 8: VD CALCULATION INTEL (18s) - Emphasis on parameters
+        // SCENE 8: VD CALCULATION INTEL (18s)
         { id: 8, duration: 18000, content: `
             <div class="title text-success">VOLTAGE DROP: THE CALCULATION</div>
             <div class="punchy-headline text-info">Predicting the Power Loss</div>
@@ -387,13 +580,13 @@
                      VD ≈ (√3 × <span class="highlight">L</span> × <span class="highlight">I</span> × <span class="highlight">Z</span>) / 1000<br>
                      <span style="font-size: 0.9em; color: var(--text-dim);">(Use Z = R×cosφ + X×sinφ for higher accuracy)</span>
                  </div>
-                  <div class="card-text" style="margin-top: 0.5rem; font-size: 0.95em;">
+                  <div class="card-text" style="margin-top: 0.5rem;">
                      <span class="highlight">CRITICAL INPUTS:</span> Correct <span class="highlight">L</span>ength(m/ft), Load <span class="highlight">I</span>(A), Cable <span class="highlight">R</span>esistance & <span class="highlight">X</span>Reactance (Ω/km or Ω/kft from tables!), Load Power Factor (<span class="highlight">cosφ</span>). Accuracy here is vital!
                  </div>
             </div>
              <div class="key-point" style="border-left-color: var(--success);"><strong>Combat Tip:</strong> Long runs are voltage drop enemies! If %VD fails, <span class="highlight">UPSIZE THE CABLE</span> - lower R means less drop.</div>`
         },
-        // SCENE 9: DIRECTIVE CHARLIE: SHORT CIRCUIT (15s) - Kept punchy
+        // SCENE 9: DIRECTIVE CHARLIE: SHORT CIRCUIT (15s)
         { id: 9, duration: 15000, content: `
             <div class="rule-box shortcircuit">
                 <div class="rule-box-num">③</div>
@@ -422,7 +615,7 @@
             </div>
             <div class="content-text text-primary" style="font-weight: bold;">Withstand calculation focuses on heat, but physical bracing is also critical!</div>`
         },
-        // SCENE 10: SHORT CIRCUIT SURVIVAL FORMULA (18s) - More visual emphasis
+        // SCENE 10: SHORT CIRCUIT SURVIVAL FORMULA (18s)
         { id: 10, duration: 18000, content: `
             <div class="title text-primary">SHORT CIRCUIT: THE SURVIVAL EQUATION</div>
             <div class="punchy-headline text-accent">Calculating Minimum Blast Resistance (Adiabatic)</div>
@@ -440,20 +633,20 @@
             </div>
              <div class="key-point" style="border-left-color: var(--primary);">Your <span class="highlight">Selected Cable Size (S)</span> MUST BE ≥ <span class="critical">S<sub>min</sub></span>! Size UP if needed!</div>`
         },
-        // SCENE 11: MISSION BRIEFING (10s) - Updated title
+        // SCENE 11: MISSION BRIEFING (10s)
         { id: 11, duration: 10000, content: `
             <div class="title text-success">FIELD EXERCISE: SIZE THAT CABLE!</div>
             <div class="punchy-headline text-info">Applying the Triad Protocol Under Pressure</div>
             <div class="icon-large" style="color: var(--success);">⚙️</div>
             <div class="content-text text-dim">Operation: Safely power a 45kW motor through hostile territory (heat, grouping). Failure is unacceptable. Let's execute.</div>`
         },
-        // SCENE 12: MISSION PARAMETERS (15s) - Kept data clear
+        // SCENE 12: MISSION PARAMETERS (15s)
         { id: 12, duration: 15000, content: `
             <div class="subtitle text-info">FIELD EXERCISE: PARAMETERS</div>
             <div class="punchy-headline text-white">Target & Environmental Intel</div>
             <div class="card info">
                 <div class="card-title text-info">📋 MISSION DATA:</div>
-                <div class="card-text formula-font" style="font-size: clamp(1rem, 2.2vw, 1.4rem);"> {/* Slightly smaller for fit */}
+                <div class="card-text formula-font">
                     • TARGET: 45 kW Motor, 400V, 3Ø (FLC = <span class="highlight">78A</span> @ PF=0.88, Eff=0.94)<br>
                     • DISTANCE (L): 95 meters<br>
                     • DEPLOYMENT: Cable Tray, Grouped (6 circuits total)<br>
@@ -464,7 +657,7 @@
                 </div>
             </div>`
         },
-        // SCENE 13: EXECUTION 1: AMPACITY (20s) - Clearer explanation
+        // SCENE 13: EXECUTION 1: AMPACITY (20s)
         { id: 13, duration: 20000, content: `
             <div class="subtitle text-info">EXECUTION 1: AMPACITY CHECK</div>
             <div class="punchy-headline text-warning">Calculating True Current Requirement!</div>
@@ -481,7 +674,7 @@
                  </div>
             </div>`
         },
-        // SCENE 14: EXECUTION 2: VOLTAGE DROP (20s) - Clearer steps
+        // SCENE 14: EXECUTION 2: VOLTAGE DROP (20s)
         { id: 14, duration: 20000, content: `
             <div class="subtitle text-success">EXECUTION 2: VOLTAGE DROP CHECK (for 50mm²)</div>
             <div class="punchy-headline text-info">Confirming Power Reaches the Target!</div>
@@ -496,7 +689,7 @@
                  </div>
             </div>`
         },
-        // SCENE 15: EXECUTION 3: SHORT CIRCUIT (20s) - Clearer result
+        // SCENE 15: EXECUTION 3: SHORT CIRCUIT (20s)
         { id: 15, duration: 20000, content: `
             <div class="subtitle text-primary">EXECUTION 3: SHORT CIRCUIT CHECK (for 50mm²)</div>
             <div class="punchy-headline text-accent">Verifying Blast Resistance!</div>
@@ -513,14 +706,14 @@
                  </div>
              </div>`
         },
-        // SCENE 16: MISSION DEBRIEF (10s) - Clearer outcome
+        // SCENE 16: MISSION DEBRIEF (10s)
         { id: 16, duration: 10000, content: `
             <div class="title text-success">MISSION DEBRIEF: TARGET SECURED</div>
             <div class="punchy-headline text-primary">Triad Protocol Complete. Asset Confirmed.</div>
             <div class="card success">
                 <div class="card-title text-success">FINAL ASSET SPECIFICATION:</div>
-                <div class="card-text" style="font-size: 1.4em; text-align: center; font-weight: bold; padding: 10px 0;">
-                    <span style="color: var(--success); font-size: 1.5em; filter: drop-shadow(0 0 5px var(--success));">✅ 50mm² Copper XLPE Cable ✅</span>
+                <div class="card-text" style="text-align: center; font-weight: bold; padding: 10px 0;">
+                    <span style="color: var(--success); filter: drop-shadow(0 0 5px var(--success));">✅ 50mm² Copper XLPE Cable ✅</span>
                 </div>
                  <div class="card-text" style="text-align: center; margin-top: 0.5rem;"> All checks passed: Ampacity (derated), Voltage Drop, Short Circuit Withstand. Ready for deployment.</div>
             </div>`
@@ -531,7 +724,7 @@
             <div class="punchy-headline text-info">ALWAYS Consult Local & International Standards!</div>
             <div class="card purple">
                 <div class="card-title text-purple">Key Directives:</div>
-                <div class="card-text" style="text-align: center; font-size: 1.1em;">
+                <div class="card-text" style="text-align: center;">
                      <span class="highlight">IEC 60364</span> (Global Baseline) <br>
                      <span class="highlight">NEC (NFPA 70)</span> (USA) <br>
                      <span class="highlight">BS 7671</span> (UK) <br>
@@ -541,13 +734,13 @@
             </div>
             <div class="content-text text-accent">Standards provide the specific tables for Ampacity, Derating, R, X, k values!</div>`
         },
-        // SCENE 17: LETHAL ERRORS (12s) - Kept punchy
+        // SCENE 17: LETHAL ERRORS (12s)
         { id: 17, duration: 12000, content: `
             <div class="title text-primary">TOP SECRET: LETHAL ERRORS TO AVOID!</div>
             <div class="punchy-headline text-accent">Mission Failure Points!</div>
              <div class="card accent" style="animation: alert-glow 1.5s infinite;">
                  <div class="card-title text-primary">CLASSIFIED ABORTS:</div>
-                 <div class="card-text formula-font" style="font-size: clamp(1rem, 2.2vw, 1.4rem);"> {/* Increased */ }
+                 <div class="card-text formula-font">
                     <span class="critical">❌ IGNORING DERATING = MELTDOWN</span><br>
                     <span class="critical">❌ SKIPPING VOLTAGE DROP = EQUIPMENT FAILURE</span><br>
                     <span class="critical">❌ FORGETTING SHORT CIRCUIT = EXPLOSION RISK</span><br>
@@ -556,12 +749,12 @@
                  </div>
              </div>`
         },
-        // SCENE 18: Q-BRANCH: TOOLS (12s) - Kept emphasis
+        // SCENE 18: Q-BRANCH: TOOLS (12s)
         { id: 18, duration: 12000, content: `
             <div class="title text-purple">YOUR Q-BRANCH: CALCULATION ARSENAL</div>
             <div class="punchy-headline text-info">High-Tech Gear for Precision Sizing</div>
              <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.1);">
-                <div class="card-title text-success" style="text-align: center; font-size: 1.8em; animation: pulse 1.5s infinite;">designcalculators.co.in</div>
+                <div class="card-title text-success" style="text-align: center; animation: pulse 1.5s infinite;">designcalculators.co.in</div>
                 <div class="card-text" style="text-align: center; margin-top: 1rem;">
                     <span class="highlight">Your FREE Tactical Advantage:</span><br>
                     <strong>✓ ALL-IN-ONE CABLE SIZER (Triad Protocol!)</strong><br>
@@ -572,31 +765,30 @@
                 </div>
              </div>`
         },
-        // SCENE 19: AGENT STATUS: MASTER (10s) - Kept concise
+        // SCENE 19: AGENT STATUS: MASTER (10s)
         { id: 19, duration: 10000, content: `
             <div class="title text-success">AGENT STATUS: CERTIFIED CABLE MASTER</div>
             <div class="punchy-headline text-primary">You Have the Intel. Execute with Precision.</div>
-            <div class="content-text text-dim" style="font-size: clamp(1.2rem, 3vw, 1.8rem); line-height: 1.8;"> {/* Increased */}
+            <div class="content-text text-dim">
                 Master the Triad. Apply Derating. Verify VD & SC.<br>
                 Utilize your tools. Adhere to standards. Ensure System Integrity.
             </div>
             <div class="icon-large" style="color: var(--accent);">🏆</div>`
         },
-        // SCENE 20: FINAL TRANSMISSION (10s) - Kept concise
+        // SCENE 20: FINAL TRANSMISSION (10s)
         { id: 20, duration: 10000, content: `
             <div class="title text-success">END TRANSMISSION</div>
             <div class="subtitle text-info">ACCESS FREE TOOLS & MISSION UPDATES:</div>
-            <div class="subtitle text-accent" style="animation: pulse 1.8s infinite; font-size: clamp(1.6rem, 4.5vw, 2.5rem); margin-top: 1rem;"> {/* Increased */}
+            <div class="subtitle text-accent" style="animation: pulse 1.8s infinite; margin-top: 1rem;">
                  <a href="https://designcalculators.co.in" target="_blank" style="color: var(--accent); text-decoration: none;">https://designcalculators.co.in</a>
             </div>
             <div class="content-text text-dim" style="margin-top: 2rem;">
                 Disseminate this Briefing. Eliminate Cable Failures. Mission Complete. 🙏
             </div>`
         }
-    ]; // Total 23 Scenes (Added 3 new slides)
+    ];
 
-    // --- JAVASCRIPT LOGIC (Unchanged) ---
-     function showScene(index) {
+    function showScene(index) {
         container.innerHTML = '';
         if (sceneConfig[index]) {
             const sceneData = sceneConfig[index];
@@ -618,21 +810,102 @@
             currentSceneIndex = 0; showScene(0);
         }
     }
-    function nextScene() { currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
-    function prevScene() { currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    
+    function nextScene() { 
+        currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length; 
+        showScene(currentSceneIndex); 
+        resetInterval(); 
+    }
+    
+    function prevScene() { 
+        currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length; 
+        showScene(currentSceneIndex); 
+        resetInterval(); 
+    }
+    
     function resetInterval() {
         clearInterval(sceneInterval);
-        let duration = 13000; // Increased default slightly
-        if (sceneConfig[currentSceneIndex]?.duration) { duration = sceneConfig[currentSceneIndex].duration; }
+        let duration = 13000;
+        if (sceneConfig[currentSceneIndex]?.duration) { 
+            duration = sceneConfig[currentSceneIndex].duration; 
+        }
         sceneInterval = setInterval(nextScene, duration);
     }
-    if (sceneConfig.length > 0) { showScene(0); resetInterval(); }
-    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextScene(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); prevScene(); } });
-    container.addEventListener('click', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; nextScene(); });
-    let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0; const swipeThreshold = 50, tapThreshold = 10; let touchStartTime = 0; const tapTimeThreshold = 200;
-    container.addEventListener('touchstart', (e) => { let target = e.target; let isScrollable = false; while(target && target !== container) { if (target.scrollHeight > target.clientHeight && target.classList.contains('scene')) { const style = window.getComputedStyle(target); if (style.overflowY === 'auto' || style.overflowY === 'scroll') { isScrollable = true; break; } } target = target.parentNode; } if (isScrollable) { touchStartX = 0; return; } touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; touchStartTime = new Date().getTime(); }, { passive: true });
-    container.addEventListener('touchend', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; if (touchStartX === 0) { touchStartY = 0; touchStartTime = 0; return; } touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY; const touchTime = new Date().getTime() - touchStartTime; const diffX = touchEndX - touchStartX; const diffY = touchEndY - touchStartY; const absDiffX = Math.abs(diffX); const absDiffY = Math.abs(diffY); touchStartX = 0; touchStartY = 0; touchStartTime = 0; if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) return; if (absDiffX > swipeThreshold && absDiffX > absDiffY) { e.stopPropagation(); if (diffX < 0) { nextScene(); } else { prevScene(); } } });
-
+    
+    if (sceneConfig.length > 0) { 
+        showScene(0); 
+        resetInterval(); 
+    }
+    
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'ArrowRight' || e.key === ' ') { 
+            e.preventDefault(); 
+            nextScene(); 
+        } else if (e.key === 'ArrowLeft') { 
+            e.preventDefault(); 
+            prevScene(); 
+        } 
+    });
+    
+    container.addEventListener('click', (e) => { 
+        if (e.target.tagName === 'A' || e.target.closest('a')) return; 
+        nextScene(); 
+    });
+    
+    let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0; 
+    const swipeThreshold = 50, tapThreshold = 10; 
+    let touchStartTime = 0; 
+    const tapTimeThreshold = 200;
+    
+    container.addEventListener('touchstart', (e) => { 
+        let target = e.target; 
+        let isScrollable = false; 
+        while(target && target !== container) { 
+            if (target.scrollHeight > target.clientHeight && target.classList.contains('scene')) { 
+                const style = window.getComputedStyle(target); 
+                if (style.overflowY === 'auto' || style.overflowY === 'scroll') { 
+                    isScrollable = true; 
+                    break; 
+                } 
+            } 
+            target = target.parentNode; 
+        } 
+        if (isScrollable) { 
+            touchStartX = 0; 
+            return; 
+        } 
+        touchStartX = e.changedTouches[0].screenX; 
+        touchStartY = e.changedTouches[0].screenY; 
+        touchStartTime = new Date().getTime(); 
+    }, { passive: true });
+    
+    container.addEventListener('touchend', (e) => { 
+        if (e.target.tagName === 'A' || e.target.closest('a')) return; 
+        if (touchStartX === 0) { 
+            touchStartY = 0; 
+            touchStartTime = 0; 
+            return; 
+        } 
+        touchEndX = e.changedTouches[0].screenX; 
+        touchEndY = e.changedTouches[0].screenY; 
+        const touchTime = new Date().getTime() - touchStartTime; 
+        const diffX = touchEndX - touchStartX; 
+        const diffY = touchEndY - touchStartY; 
+        const absDiffX = Math.abs(diffX); 
+        const absDiffY = Math.abs(diffY); 
+        touchStartX = 0; 
+        touchStartY = 0; 
+        touchStartTime = 0; 
+        if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) return; 
+        if (absDiffX > swipeThreshold && absDiffX > absDiffY) { 
+            e.stopPropagation(); 
+            if (diffX < 0) { 
+                nextScene(); 
+            } else { 
+                prevScene(); 
+            } 
+        } 
+    });
 </script>
 
 </body>
