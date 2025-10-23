@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VFD Selection Mastery - Complete Masterclass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --accent: #ff2e63;
+            --success: #39ff14;
+            --warning: #ffb700;
+            --dark-bg: #0a0e27;
+            --card-bg: #1a2847;
+            --text-main: #ffffff;
+            --text-dim: #b0c4de;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a2847 50%, #0a0e27 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+        }
+
+        #container {
+            width: 95vw;
+            height: auto; 
+            max-width: 1600px;
+            max-height: 95vh;
+            aspect-ratio: 16/9;
+            background: var(--dark-bg);
+            /* --- CHANGE: Removed the 3px blue border --- */
+            /* border: 3px solid var(--primary); */ 
+            border-radius: 30px;
+            box-shadow: 0 0 80px rgba(0, 212, 255, 0.4), inset 0 0 40px rgba(0, 212, 255, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column; 
+            position: relative;
+            cursor: pointer;
+        }
+
+        .scene {
+            width: 100%;
+            flex-grow: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3% 5%; 
+            text-align: center;
+            opacity: 0;
+            animation: fadeInScene 0.8s ease-out forwards;
+            overflow-y: auto;
+            position: relative; 
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .scene::-webkit-scrollbar { display: none; }
+
+        @keyframes fadeInScene { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUpIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        @keyframes glow { 0%, 100% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.3); } 50% { text-shadow: 0 0 40px rgba(0, 212, 255, 1), 0 0 60px rgba(0, 212, 255, 0.5); } }
+
+        .title {
+            font-size: clamp(2rem, 5.5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            line-height: 1.1;
+            animation: slideDownIn 0.9s ease-out;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            font-size: clamp(1.5rem, 4.2vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            line-height: 1.15;
+            animation: slideUpIn 0.9s ease-out 0.15s forwards;
+            opacity: 0;
+        }
+        
+        .punchy-headline {
+            font-size: clamp(1.3rem, 3.8vw, 2.4rem);
+            font-weight: 800;
+            margin: 1rem 0;
+            line-height: 1.25;
+            animation: slideUpIn 0.9s ease-out 0.1s forwards;
+            opacity: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .content-text {
+            font-size: clamp(1rem, 2.8vw, 1.6rem);
+            color: var(--text-dim);
+            line-height: 1.75;
+            margin: 0.8rem auto;
+            animation: slideUpIn 1s ease-out 0.2s forwards;
+            max-width: 90%;
+            opacity: 0;
+        }
+
+        .text-primary { color: var(--primary); animation: glow 2.5s infinite; font-weight: 700; }
+        .text-accent { color: var(--accent); font-weight: 700; }
+        .text-success { color: var(--success); font-weight: 700; }
+        .text-warning { color: var(--warning); font-weight: 700; }
+        .text-white { color: white; }
+
+        .icon-large {
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            animation: pulse 2.2s infinite;
+            margin: 1rem 0;
+        }
+
+        .card {
+            background: rgba(0, 212, 255, 0.08);
+            border: 2px solid var(--primary);
+            border-radius: 18px;
+            padding: 1.5rem;
+            margin: 1rem auto;
+            animation: scaleUpIn 0.8s ease-out;
+            width: 95%;
+            max-width: 900px;
+            text-align: left;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); 
+        }
+
+        .card.accent { background: rgba(255, 46, 99, 0.08); border-color: var(--accent); }
+        .card.success { background: rgba(57, 255, 20, 0.08); border-color: var(--success); }
+        .card.warning { background: rgba(255, 183, 0, 0.08); border-color: var(--warning); }
+
+        .card-title {
+            font-size: clamp(1.1rem, 3vw, 1.8rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: 0.3px;
+        }
+
+        .card-text {
+            font-size: clamp(0.95rem, 2.2vw, 1.4rem);
+            color: #e0e8f0;
+            line-height: 1.85;
+        }
+
+        .card-text strong { color: var(--success); font-weight: 800; }
+        .card-text .highlight { color: var(--primary); font-weight: 800; }
+        .card-text .critical { color: var(--accent); font-weight: 800; }
+        
+        .code-text { 
+            font-family: 'Courier New', monospace; 
+            background: rgba(0,0,0,0.3); 
+            padding: 0.3rem 0.6rem; 
+            border-radius: 4px;
+            font-size: 0.9em; 
+        }
+        
+        .formula-font {
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+            font-size: clamp(0.9rem, 2.1vw, 1.3rem);
+        }
+
+        .stat-box {
+            display: inline-block;
+            background: rgba(57, 255, 20, 0.15);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem;
+            animation: scaleUpIn 0.9s ease-out;
+        }
+
+        .stat-number {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 900;
+            color: var(--success);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.2rem;
+            width: 98%;
+            max-width: 1300px;
+            margin: 1.2rem auto;
+            animation: slideUpIn 1.1s ease-out;
+        }
+
+        .three-col-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            width: 98%;
+            max-width: 1300px;
+            margin: 1.2rem auto;
+            animation: slideUpIn 1.1s ease-out;
+        }
+
+        .comparison-table {
+            width: 95%;
+            max-width: 1000px;
+            margin: 1.5rem auto;
+            border-collapse: collapse;
+            animation: scaleUpIn 0.9s ease-out;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--text-dim);
+        }
+
+        .comparison-table th {
+            background: rgba(0, 212, 255, 0.15);
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .comparison-table tr td:first-child {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(0, 212, 255, 0.08);
+        }
+
+        .formula-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 4px solid var(--warning);
+            padding: 1.2rem;
+            margin: 1rem auto;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(1rem, 2.3vw, 1.4rem);
+            line-height: 1.8;
+            text-align: center;
+            animation: slideUpIn 1s ease-out;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 0.9rem 0;
+            color: var(--text-dim);
+            line-height: 1.7;
+            font-size: clamp(0.95rem, 2.3vw, 1.3rem);
+            animation: slideUpIn 1.2s ease-out;
+            text-align: left;
+        }
+
+        .checklist-item strong { color: var(--success); font-weight: 800; }
+        .check-icon { 
+            color: var(--success); 
+            font-weight: 900; 
+            margin-right: 1rem; 
+            font-size: 1.3em;
+            line-height: 1.1;
+        }
+
+        .key-point {
+            background: linear-gradient(90deg, rgba(255, 46, 99, 0.2) 0%, rgba(255, 183, 0, 0.1) 100%);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem auto;
+            border-radius: 8px;
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            line-height: 1.7;
+            animation: slideUpIn 0.9s ease-out;
+            text-align: left;
+        }
+
+        .footer-wrapper {
+            width: 100%;
+            text-align: center;
+            padding: 10px 0 12px 0;
+            background: var(--dark-bg); 
+            font-size: clamp(0.75rem, 1.3vw, 0.9rem);
+            color: rgba(176, 196, 222, 0.6);
+            flex-shrink: 0; 
+            animation: slideUpIn 1.5s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+        .footer-line {
+            border: 0;
+            height: 1px;
+            background: rgba(0, 212, 255, 0.2); 
+            width: 80%;
+            margin: 0 auto 8px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script>
+    const container = document.getElementById('container');
+    let currentSceneIndex = 0;
+    let sceneInterval;
+
+    // --- UPDATED SCENE CONFIG WITH PUNCHY HEADLINES (48 SCENES) ---
+    const sceneConfig = [
+        // SCENE 1: Title Card (8s)
+        { id: 1, duration: 8000, content: `
+            <div class="title text-primary">⚡ VFD SELECTION MASTERY ⚡</div>
+            <div class="subtitle text-success">Industrial Engineering Excellence</div>
+            <div class="punchy-headline text-warning">Master the 7 Factors 99% of Engineers Overlook</div>
+            <div class="icon-large">🎯</div>`
+        },
+        // SCENE 2: The Crisis (7s)
+        { id: 2, duration: 7000, content: `
+            <div class="title text-accent">🔴 The High Cost of Getting It Wrong</div>
+            <div class="punchy-headline text-warning">$2.3M lost. 47 days downtime. One wrong VFD.</div>
+            <div class="content-text text-white">This is a real case study. It happens every week.</div>
+            <div class="key-point">
+                A 100kW standard VFD was used for a constant-torque load at 1800m altitude and 50°C. It failed in 90 days.
+            </div>`
+        },
+        // SCENE 3: Why This Video (6s)
+        { id: 3, duration: 6000, content: `
+            <div class="title text-success">Why This Masterclass Exists</div>
+            <div class="punchy-headline text-primary">OEM Datasheets Don't Tell You The Whole Story.</div>
+            <div class="content-text">Manufacturers sell VFDs. Engineers design systems. This teaches you to think like a system designer, not a catalog reader.</div>`
+        },
+        // SCENE 4: The 7 Critical Factors (9s)
+        { id: 4, duration: 9000, content: `
+            <div class="title text-primary">The 7 Critical Selection Factors</div>
+            <div class="punchy-headline text-warning">Your new engineering checklist.</div>
+            <div class="content-text" style="font-size: clamp(1.1rem, 3vw, 1.7rem); line-height: 1.9; text-align: left; display: inline-block;">
+                1️⃣ Load Profile (VT vs. CT)<br>
+                2️⃣ Motor Characteristics (FLA, PF, Frame)<br>
+                3️⃣ Environmental De-rating (Altitude & Temperature)<br>
+                4️⃣ Power Quality (Harmonics & IEEE 519)<br>
+                5️⃣ Motor Protection (Reflected Waves & Bearing Damage)<br>
+                6️⃣ Regenerative Energy (Braking Strategy)<br>
+                7️⃣ Topology Selection (VSI, AFE, or LCI)
+            </div>`
+        },
+        
+        // --- FACTOR 1 ---
+        // SCENE 5: Variable Torque Loads (10s)
+        { id: 5, duration: 10000, content: `
+            <div class="title text-accent">FACTOR #1: The "Easy" Load (Variable Torque)</div>
+            <div class="punchy-headline text-success">Fans & Pumps: Where VFDs are Energy Heroes</div>
+            <div class="card success">
+                <div class="card-title text-success">Applications:</div>
+                <div class="card-text">Centrifugal Fans, Pumps, Blowers, HVAC systems</div>
+                <div class="card-title text-success" style="margin-top: 1.5rem;">The Physics (The Cube Law):</div>
+                <div class="card-text">
+                    Power ∝ Speed³ — <span class="text-white" style="font-weight: 700;">At 80% speed → 51% power!</span>
+                </div>
+            </div>`
+        },
+        // SCENE 6: Constant Torque Loads (10s)
+        { id: 6, duration: 10000, content: `
+            <div class="subtitle text-accent">The "VFD Killer" Load (Constant Torque)</div>
+            <div class="punchy-headline text-warning">Conveyors, Mixers, Cranes: Max Torque at Any Speed</div>
+            <div class="card accent">
+                <div class="card-title text-accent">Applications:</div>
+                <div class="card-text">Conveyors, Mixers, Extruders, Cranes, Hoists, Compressors</div>
+                <div class="card-title text-accent" style="margin-top: 1.5rem;">The Physics:</div>
+                <div class="card-text">
+                    Requires <span class="critical">100% Torque at 1% Speed.</span> This generates immense heat and demands massive starting current.
+                </div>
+            </div>`
+        },
+        // SCENE 7: ND vs HD Rating (11s)
+        { id: 7, duration: 11000, content: `
+            <div class="subtitle text-primary">The "Secret Menu": Normal vs. Heavy Duty</div>
+            <div class="punchy-headline text-warning">Are you buying a VFD for VT or CT?</div>
+            <div class="two-col-grid">
+                <div class="card">
+                    <div class="card-title text-primary">Normal Duty (ND)</div>
+                    <div class="card-text">
+                        <strong>Overload:</strong> 110% for 60s<br>
+                        <strong>Best For:</strong> VT Loads (Fans)
+                    </div>
+                </div>
+                <div class="card accent">
+                    <div class="card-title text-accent">Heavy Duty (HD)</div>
+                    <div class="card-text">
+                        <strong>Overload:</strong> 150% for 60s<br>
+                        <strong>Best For:</strong> CT Loads (Conveyors)
+                    </div>
+                </div>
+            </div>
+            <div class="key-point" style="margin-top: 1.5rem;">
+                A 100kW HD drive is often a 125kW ND drive. Choose wrong and your drive will trip on overload.
+            </div>`
+        },
+
+        // --- FACTOR 2 ---
+        // SCENE 8: FLA vs. kW (9s)
+        { id: 8, duration: 9000, content: `
+            <div class="title text-primary">FACTOR #2: Stop Sizing by kW. Use Amps.</div>
+            <div class="punchy-headline text-warning">VFDs are Current-Rated. Motors are Not Equal.</div>
+            <div class="card">
+                <div class="card-title text-primary">The Critical Truth:</div>
+                <div class="card-text">
+                    <div class="code-text" style="font-size: 1.1em;">kW = (V × I × PF × √3) ÷ 1000</div><br>
+                    Two 100kW motors can have different FLAs (Amps) due to efficiency (PF).
+                </div>
+            </div>
+            <div class="content-text text-white">Always size your VFD to the motor's <span class="text-warning">FLA Nameplate Rating</span>.</div>`
+        },
+        // SCENE 9: Power Factor Impact (10s)
+        { id: 9, duration: 10000, content: `
+            <div class="subtitle text-warning">Power Factor: The Hidden Current Multiplier</div>
+            <div class="punchy-headline text-accent">Low PF = Higher Amps = Bigger VFD</div>
+            <div class="card warning">
+                <div class="card-title text-warning">Why PF Matters:</div>
+                <div class="card-text">
+                    A motor with PF 0.85 requires <span class="text-accent">17.6% more current</span> than a motor with PF 0.95 for the same kW output.<br><br>
+                    <span class="text-white" style="font-weight: 700;">Old, rewound motors often have terrible PF. Check the nameplate!</span>
+                </div>
+            </div>`
+        },
+        // SCENE 10: Cooling Methods (9s)
+        { id: 10, duration: 9000, content: `
+            <div class="subtitle text-success">Motor Cooling: Will Your Motor Overheat?</div>
+            <div class="punchy-headline text-warning">VFDs at low speed = No cooling fan!</div>
+            <div class="card success">
+                <div class="card-title text-success">Check the Motor's IC Code:</div>
+                <div class="card-text">
+                    <strong>IC411 (Self-Cooled):</strong> Fan is on the motor shaft. <span class="critical">PROBLEM:</span> At low VFD speed, the fan stops. Motor overheats.<br><br>
+                    <strong>IC416 (Blower-Cooled):</strong> Has its own separate fan. <span class="text-success">IDEAL for VFD operation</span>.
+                </div>
+            </div>`
+        },
+
+        // --- FACTOR 3 ---
+        // SCENE 11: Altitude De-rating (11s)
+        { id: 11, duration: 11000, content: `
+            <div class="title text-accent">FACTOR #3: De-Rating for Reality</div>
+            <div class="punchy-headline text-warning">Your 100kW VFD is NOT 100kW at 3000m.</div>
+            <div class="card warning">
+                <div class="card-title text-warning">Altitude De-Rating (IEC 60721):</div>
+                <div class="card-text">
+                    Thin air cannot cool components. <br>
+                    <div class="code-text" style="font-size: 1.1em;">De-rate = 1% per 100m above 1000m</div><br>
+                    <strong>Example:</strong> At 3000m, a 100kW VFD is rated only 80kW.
+                </div>
+            </div>`
+        },
+        // SCENE 12: Temperature De-rating (11s)
+        { id: 12, duration: 11000, content: `
+            <div class="subtitle text-warning">Temperature De-Rating (IEC 60721)</div>
+            <div class="punchy-headline text-accent">Hot Factories Kill VFDs.</div>
+            <div class="card warning">
+                <div class="card-title text-warning">The Rule:</div>
+                <div class="card-text">
+                    Ratings are based on 40°C. <br>
+                    <div class="code-text" style="font-size: 1.1em;">De-rate = 1.5% per 1°C above 40°C</div><br>
+                    <strong>Example:</strong> At 50°C, your VFD loses 15% of its capacity.
+                </div>
+            </div>`
+        },
+        // SCENE 13: Combined De-rating Example (10s)
+        { id: 13, duration: 10000, content: `
+            <div class="subtitle text-accent">Real-World De-Rating: The One-Two Punch</div>
+            <div class="punchy-headline text-warning">Altitude + Temperature = Massive Oversizing</div>
+            <div class="card accent">
+                <div class="card-title text-accent">Scenario: Mining site at 2500m, 55°C heat.</div>
+                <div class="card-text">
+                    <strong>Altitude De-rate:</strong> (2500 - 1000) / 100 = <span class="critical">15%</span><br>
+                    <strong>Temp De-rate:</strong> (55 - 40) × 1.5 = <span class="critical">22.5%</span><br>
+                    <strong>TOTAL De-rate:</strong> <span class="critical">37.5%</span><br><br>
+                    <span class="text-white" style="font-weight: 700;">Your 100kW VFD is now a 62.5kW VFD. You MUST buy a 160kW model.</span>
+                </div>
+            </div>`
+        },
+
+        // --- FACTOR 4 ---
+        // SCENE 14: What Are Harmonics (12s)
+        { id: 14, duration: 12000, content: `
+            <div class="title text-accent">FACTOR #4: Power Quality & Harmonics</div>
+            <div class="punchy-headline text-warning">VFDs are "Dirty" Loads That Poison Your Grid.</div>
+            <div class="card warning">
+                <div class="card-title text-warning">The Physics:</div>
+                <div class="card-text">
+                    Standard 6-pulse VFDs "gulp" power, creating <span class="critical">harmonic distortion (THD)</span>.<br><br>
+                    <strong>Industry Standard (IEEE 519):</strong> THD must be < 5-8%.<br>
+                    <strong>Your VFD:</strong> Creates 40%+ THD.
+                </div>
+            </div>`
+        },
+        // SCENE 15: Harmonic Damage (11s)
+        { id: 15, duration: 11000, content: `
+            <div class="subtitle text-accent">Silent Killers: What Harmonics Destroy</div>
+            <div class="punchy-headline text-warning">It's not just "noise." It's costing you millions.</div>
+            <div class="card accent">
+                <div class="card-title text-accent">Harmonics Destroy:</div>
+                <div class="card-text">
+                    🔥 <strong>Transformers:</strong> Excess heating. Lifespan cut from 30 to 5 years.<br><br>
+                    💻 <strong>PLC/DCS Systems:</strong> High-frequency noise trips analog inputs.<br><br>
+                    ⚖️ <strong>Utility Penalties:</strong> Massive reactive power fees.
+                </div>
+            </div>`
+        },
+        // SCENE 16: Harmonics Solutions (12s)
+        { id: 16, duration: 12000, content: `
+            <div class="subtitle text-success">Harmonic Mitigation: Good, Better, Best</div>
+            <div class="punchy-headline text-warning">How to Clean Up Your "Dirty" VFDs</div>
+            <div class="three-col-grid">
+                <div class="card">
+                    <div class="card-title text-primary">DFE + Reactor</div>
+                    <div class="card-text">THD: 40% (BAD)<br>Use: Small drives only</div>
+                </div>
+                <div class="card warning">
+                    <div class="card-title text-warning">18-Pulse Rectifier</div>
+                    <div class="card-text">THD: 10-15% (BETTER)<br>Use: Medium installations</div>
+                </div>
+                <div class="card success">
+                    <div class="card-title text-success">AFE (Active Front End)</div>
+                    <div class="card-text">THD: &lt;3% (EXCELLENT)<br>Use: Mission-critical</div>
+                </div>
+            </div>`
+        },
+
+        // --- FACTOR 5 ---
+        // SCENE 17: Reflected Waves Problem (12s)
+        { id: 17, duration: 12000, content: `
+            <div class="title text-accent">FACTOR #5: The Reflected Wave Crisis (dV/dt)</div>
+            <div class="punchy-headline text-warning">Long Motor Cables Will Destroy Your Motor. Here's Why.</div>
+            <div class="card accent">
+                <div class="card-title text-accent">What Happens:</div>
+                <div class="card-text">
+                    1. VFD outputs a fast-switching PWM signal.<br>
+                    2. With long cables (>30m), this wave reflects at the motor.<br>
+                    3. <span class="critical">Voltage DOUBLES: 415V becomes 830V spike</span><br>
+                    4. Motor insulation designed for 415V is destroyed.
+                </div>
+            </div>`
+        },
+        // SCENE 18: Bearing Fluting Damage (11s)
+        { id: 18, duration: 11000, content: `
+            <div class="subtitle text-accent">Bearing Fluting: The Secret Killer</div>
+            <div class="punchy-headline text-warning">It's Not Just Insulation. VFDs Kill Bearings, Too.</div>
+            <div class="card accent">
+                <div class="card-title text-accent">The Hidden Mechanism:</div>
+                <div class="card-text">
+                    The 830V spikes induce <span class="critical">shaft voltage</span> → This voltage arcs through the bearings to ground → Result: <span class="critical">"Fluting"</span> damage (microscopic pitting).<br><br>
+                    <span class="text-white" style="font-weight: 700;">Bearing fails catastrophically in 6 months.</span>
+                </div>
+            </div>`
+        },
+        // SCENE 19: Motor Protection Solutions (13s)
+        { id: 19, duration: 13000, content: `
+            <div class="subtitle text-success">The Triple Protection Strategy</div>
+            <div class="punchy-headline text-warning">How to Safely Use VFDs with Long Cables</div>
+            <div class="three-col-grid">
+                <div class="card success">
+                    <div class="card-title text-success">Level 1: dV/dt Filter</div>
+                    <div class="card-text">Slows voltage rise. Mandatory for cable >30m.</div>
+                </div>
+                <div class="card success">
+                    <div class="card-title text-success">Level 2: Shaft Grounding</div>
+                    <div class="card-text">Diverts current from bearings. Mandatory >50kW.</div>
+                </div>
+                <div class="card success">
+                    <div class="card-title text-success">Level 3: Insulated Bearing</div>
+                    <div class="card-text">Electrically isolates the bearing. Best practice.</div>
+                </div>
+            </div>`
+        },
+
+        // --- FACTOR 6 ---
+        // SCENE 20: Overvoltage Fault (11s)
+        { id: 20, duration: 11000, content: `
+            <div class="title text-accent">FACTOR #6: The Overvoltage Trap (Regen)</div>
+            <div class="punchy-headline text-warning">What happens when your load becomes a generator?</div>
+            <div class="card accent">
+                <div class="card-title text-accent">The Crane/Hoist Problem:</div>
+                <div class="card-text">
+                    1. A lowering hoist pushes the motor backward (regen).<br>
+                    2. Motor becomes a generator, pumping current into the VFD.<br>
+                    3. DC Bus voltage spikes → <span class="critical">"Overvoltage" fault trips VFD.</span><br>
+                    4. <span class="critical">Brake releases. Load falls. Catastrophe.</span>
+                </div>
+            </div>`
+        },
+        // SCENE 21: Braking Solutions (13s)
+        { id: 21, duration: 13000, content: `
+            <div class="subtitle text-success">Braking: Waste Heat vs. Recover Energy</div>
+            <div class="punchy-headline text-warning">DBR (Cheap) vs. AFE (Smart)</div>
+            <div class="two-col-grid">
+                <div class="card">
+                    <div class="card-title text-primary">Dynamic Braking (DBR)</div>
+                    <div class="card-text"><strong>How:</strong> Dumps energy into a resistor as heat.<br><strong>Pros:</strong> Simple, cheap.<br><strong>Cons:</strong> Wastes energy.</div>
+                </div>
+                <div class="card success">
+                    <div class="card-title text-success">Active Front End (AFE)</div>
+                    <div class="card-text"><strong>How:</strong> Pushes energy back to the AC grid.<br><strong>Pros:</strong> Zero waste, fixes PF.<br><strong>Cons:</strong> Higher cost.</div>
+                </div>
+            </div>
+            <div class="key-point">
+                <strong>Rule:</strong> For occasional braking, use DBR. For continuous hoisting, AFE pays for itself in 2-3 years.
+            </div>`
+        },
+
+        // --- FACTOR 7 ---
+        // SCENE 22: VSI Standard Drives (11s)
+        { id: 22, duration: 11000, content: `
+            <div class="title text-primary">FACTOR #7: VSI (Voltage Source Inverter)</div>
+            <div class="punchy-headline text-warning">The Standard Workhorse (95% of VFDs)</div>
+            <div class="card success" style="max-width: 1000px;">
+                <div class="card-title text-success">Architecture:</div>
+                <div class="card-text">
+                    - Diode rectifier (AC to DC) → IGBTs (DC to PWM AC)<br>
+                    - DC Bus voltage = 1.35 × Line Voltage
+                </div>
+                <div class="card-title text-success" style="margin-top: 1.5rem;">Best For:</div>
+                <div class="card-text">0.5kW to 5MW. Most fans, pumps, and standard conveyors.</div>
+            </div>`
+        },
+        // SCENE 23: AFE Active Front End (12s)
+        { id: 23, duration: 12000, content: `
+            <div class="subtitle text-success">AFE (Active Front End) - The Premium Solution</div>
+            <div class="punchy-headline text-warning">For Regeneration and Clean Power</div>
+            <div class="card success" style="max-width: 1000px;">
+                <div class="card-title text-success">Architecture:</div>
+                <div class="card-text">
+                    - Active rectifier (IGBTs) instead of diodes<br>
+                    - Bidirectional power flow
+                </div>
+                <div class="card-title text-success" style="margin-top: 1.5rem;">Best For:</div>
+                <div class="card-text">Hoists, cranes, and facilities with strict harmonic limits.</div>
+                <div class="card-title text-success" style="margin-top: 1.5rem;">Key Benefits:</div>
+                <div class="card-text">Unity power factor, <3% THD, regenerative capability.</div>
+            </div>`
+        },
+        // SCENE 24: LCI Load Commutated Inverter (13s)
+        { id: 24, duration: 13000, content: `
+            <div class="subtitle text-accent">LCI (Load Commutated Inverter) - The Specialist</div>
+            <div class="punchy-headline text-warning">For Multi-Megawatt Monsters Only</div>
+            <div class="card accent" style="max-width: 1000px;">
+                <div class="card-title text-accent">Architecture:</div>
+                <div class="card-text">
+                    - <span class="critical">Current source</span> (uses Thyristors/SCRs)<br>
+                    - Motor must be a <span class="critical">synchronous machine</span>
+                </div>
+                <div class="card-title text-accent" style="margin-top: 1.5rem;">Best For:</div>
+                <div class="card-text"><span class="critical">Mega-drives: 2MW to 100MW+</span> (Pipelines, Mills)</div>
+            </div>
+            <div class="key-point">
+                <strong>Critical Rule:</strong> LCI can ONLY be used with synchronous motors.
+            </div>`
+        },
+
+        // --- CASE STUDY ---
+        // SCENE 25: Real-World Case (10s)
+        { id: 25, duration: 10000, content: `
+            <div class="title text-success">Case Study: Sizing a Mixer VFD</div>
+            <div class="punchy-headline text-warning">Applying all 7 factors to a real problem.</div>
+            <div class="card">
+                <div class="card-title text-primary">Application Data:</div>
+                <div class="card-text formula-font">
+                    <strong>Location:</strong> 1800m altitude, 48°C Ambient Temp<br>
+                    <strong>Motor:</strong> 75 kW, 130A FLA, PF=0.88<br>
+                    <strong>Load:</strong> Constant Torque (Mixer)<br>
+                    <strong>Cable Run:</strong> 80m from panel to motor<br>
+                    <strong>Utility Limit:</strong> IEEE 519 &lt;5% THD (strict)
+                </div>
+            </div>`
+        },
+        // SCENE 26: Case Study Steps 1 & 2 (11s)
+        { id: 26, duration: 11000, content: `
+            <div class="subtitle text-primary">Case Study: Steps 1 & 2 (Load & De-Rating)</div>
+            <div class="punchy-headline text-warning">First, calculate the *real* amperage required.</div>
+            <div class="two-col-grid">
+                <div class="card">
+                    <div class="card-title text-primary">Step 1: Load Profile</div>
+                    <div class="card-text">Load = CT → <span class="highlight">Heavy Duty (HD)</span><br>Target = 130A × 1.3 (CT) = <span class="critical">169A</span></div>
+                </div>
+                <div class="card warning">
+                    <div class="card-title text-warning">Step 2: De-Rating</div>
+                    <div class="card-text">Altitude (1800m) = <span class="critical">8%</span> loss<br>Temp (48°C) = <span class="critical">12%</span> loss<br><strong>Total = 20% De-rate</strong></div>
+                </div>
+            </div>
+            <div class="formula-box text-white">Required VFD Amps = 169A ÷ (1 - 0.20) = <span class="text-success" style="font-weight: 700;">211A</span></div>`
+        },
+        // SCENE 27: Case Study Steps 3 & 4 (11s)
+        { id: 27, duration: 11000, content: `
+            <div class="subtitle text-primary">Case Study: Steps 3 & 4 (Harmonics & Protection)</div>
+            <div class="punchy-headline text-warning">Now, select the topology and accessories.</div>
+            <div class="two-col-grid">
+                <div class="card accent">
+                    <div class="card-title text-accent">Step 3: Power Quality</div>
+                    <div class="card-text">Req: &lt;5% THD → <span class="highlight">AFE is mandatory.</span></div>
+                </div>
+                <div class="card success">
+                    <div class="card-title text-success">Step 4: Motor Protection</div>
+                    <div class="card-text">Cable = 80m (>30m)<br><strong>Must add:</strong> dV/dt Filter, Shaft Grounding, & Forced Blower.</div>
+                </div>
+            </div>`
+        },
+        // SCENE 28: Case Study - Final Spec (11s)
+        { id: 28, duration: 11000, content: `
+            <div class="subtitle text-success">Case Study: The Final Specification</div>
+            <div class="punchy-headline text-warning">A 75kW motor needs a 250kW VFD.</div>
+            <div class="card success">
+                <div class="card-title text-success">Complete VFD Specification</div>
+                <div class="card-text formula-font">
+                    <strong>VFD Model:</strong> 250kW AFE Drive (HD rated 220A)<br>
+                    <strong>Topology:</strong> Active Front End<br>
+                    <strong>Accessories:</strong> dV/dt filter, bypass, cooling unit<br>
+                    <strong>Motor:</strong> 75kW with shaft grounding + ceramic bearing + forced blower<br><br>
+                    <span class="text-white" style="font-weight: 700;">This is NOT wrong. This is CORRECT engineering.</span>
+                </div>
+            </div>`
+        },
+        
+        // --- INSTALLATION ---
+        // SCENE 29: Installation - Grounding (12s)
+        { id: 29, duration: 12000, content: `
+            <div class="title text-accent">Installation: The #1 Failure Point</div>
+            <div class="punchy-headline text-warning">A perfect design, ruined by bad grounding.</div>
+            <div class="card accent" style="max-width: 1000px;">
+                <div class="card-title text-accent">Non-Negotiable Grounding Rules:</div>
+                <div class="card-text">
+                    <strong>1. Shielded Cable ONLY:</strong> Unshielded = EMI antenna.<br><br>
+                    <strong>2. 360° Termination:</strong> Ground shield at VFD AND motor via 360° EMC glands. <span class="critical">Pigtails = FAILURE.</span><br><br>
+                    <strong>3. Separate Ground Wire:</strong> Run a full-size ground conductor.
+                </div>
+            </div>`
+        },
+        // SCENE 30: Installation - Wiring & Panel (12s)
+        { id: 30, duration: 12000, content: `
+            <div class="subtitle text-warning">Installation: Wiring & Panel Design</div>
+            <div class="punchy-headline text-warning">Segregate power. Manage heat.</div>
+            <div class="two-col-grid">
+                <div class="card warning">
+                    <div class="card-title text-warning">Control Wiring</div>
+                    <div class="card-text">
+                        <strong>✓ Shielded Twisted Pair:</strong> For all 4-20mA/signal lines.<br>
+                        <strong>✓ Separate Routing:</strong> Cross power at 90°. Never run parallel.
+                    </div>
+                </div>
+                <div class="card warning">
+                    <div class="card-title text-warning">Panel Thermal Design</div>
+                    <div class="card-text">
+                        A 100kW VFD = 3-5kW of waste heat.<br>
+                        <strong>✓ Ventilation:</strong> Use filtered intake + exhaust fans.<br>
+                        <strong>✓ Airflow:</strong> Bottom intake → Top exhaust.
+                    </div>
+                </div>
+            </div>`
+        },
+        // SCENE 31: Installation - Commissioning (13s)
+        { id: 31, duration: 13000, content: `
+            <div class="subtitle text-success">Commissioning: The Final Hurdle</div>
+            <div class="punchy-headline text-warning">Verify. Program. Tune.</div>
+            <div class="two-col-grid">
+                <div class="card success">
+                    <div class="card-title text-success">Pre-Power-Up Checks</div>
+                    <div class="card-text" style="font-size: clamp(0.9rem, 2.1vw, 1.3rem);">
+                        <span class="check-icon">✓</span> <strong>Insulation Test:</strong> Motor >100MΩ<br>
+                        <span class="check-icon">✓</span> <strong>Continuity Check:</strong> Ground <1Ω<br>
+                        <span class="check-icon">✓</span> <strong>Lockout/Tagout</strong>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title text-primary">Critical Parameters</div>
+                    <div class="card-text formula-font">
+                        <strong>1. Motor Nameplate:</strong> FLA, Voltage, PF, Poles<br>
+                        <strong>2. Tuning:</strong> Accel/Decel Ramps (5-20s)<br>
+                        <strong>3. Load Type:</strong> V/f (VT) or Vector (CT)
+                    </div>
+                </div>
+            </div>`
+        },
+        
+        // --- FINANCIALS ---
+        // SCENE 32: Financials - VT Loads (12s)
+        { id: 32, duration: 12000, content: `
+            <div class="title text-success">Financials: The "Cube Law" Payback</div>
+            <div class="punchy-headline text-warning">Fans & Pumps are gold mines for VFDs.</div>
+            <div class="card success">
+                <div class="card-title text-success">The Math: P ∝ N³ (Power ∝ Speed³)</div>
+                <div class="card-text formula-font">
+                    Reducing fan speed by 20% (to 80%)<br>
+                    Power reduces to: 0.8³ = 0.512 = <span class="critical">51% of original</span><br><br>
+                    <strong>Example:</strong> 75 kW fan, 24/7. VFD at 75% avg speed.<br>
+                    <span class="text-accent">Annual savings: 323 MWh</span> → <span class="text-success" style="font-size: 1.3em;">$32,300/year</span>
+                </div>
+            </div>`
+        },
+        // SCENE 33: Financials - CT Loads (11s)
+        { id: 33, duration: 11000, content: `
+            <div class="subtitle text-accent">Financials: The Reliability ROI (CT Loads)</div>
+            <div class="punchy-headline text-warning">For conveyors, the ROI isn't energy. It's uptime.</div>
+            <div class="card accent">
+                <div class="card-title text-accent">Why VFDs on Conveyors Pay Off:</div>
+                <div class="card-text">
+                    <span class="critical">The ROI is RELIABILITY.</span><br><br>
+                    <strong>Old Way (Soft Start):</strong> High mechanical stress. Frequent belt/coupling replacement.<br><br>
+                    <strong>VFD Way (Smooth Ramp):</strong> No mechanical shock. Belt/coupling life extends 3-4x.<br>
+                    <span class="text-success" style="font-weight: 700;">Net savings: $50K-100K over 10 years in maintenance.</span>
+                </div>
+            </div>`
+        },
+
+        // --- FAILURES ---
+        // SCENE 34: Failure Mode #1 (11s)
+        { id: 34, duration: 11000, content: `
+            <div class="title text-accent">Troubleshooting: Thermal Runaway</div>
+            <div class="punchy-headline text-warning">"It only trips when the cabinet door is closed."</div>
+            <div class="card accent" style="max-width: 1000px;">
+                <div class="card-title text-accent">Symptoms:</div>
+                <div class="card-text">Over-temperature alarms. Nuisance trips.</div>
+                <div class="card-title text-accent" style="margin-top: 1.5rem;">Root Causes:</div>
+                <div class="card-text">1. Inadequate cabinet ventilation.<br>2. High ambient temp + No de-rating.<br>3. Dust blocking heatsinks.</div>
+            </div>`
+        },
+        // SCENE 35: Failure Modes #2 & #3 (12s)
+        { id: 35, duration: 12000, content: `
+            <div class="subtitle text-accent">Troubleshooting: EMI & Harmonics</div>
+            <div class="punchy-headline text-warning">"My PLC is going crazy and my transformer is humming!"</div>
+            <div class="two-col-grid">
+                <div class="card accent">
+                    <div class="card-title text-accent">Ground Faults & EMI</div>
+                    <div class="card-text"><strong>Symptom:</strong> Random PLC false alarms.<br><strong>Cause:</strong> Bad grounding (pigtails).</div>
+                </div>
+                <div class="card warning">
+                    <div class="card-title text-warning">Harmonic Damage</div>
+                    <div class="card-text"><strong>Symptom:</strong> Transformer overheating.<br><strong>Cause:</strong> No harmonic mitigation.</div>
+                </div>
+            </div>`
+        },
+        // SCENE 36: Failure Modes #4 & #5 (12s)
+        { id: 36, duration: 12000, content: `
+            <div class="subtitle text-accent">Troubleshooting: Bearings & Instability</div>
+            <div class="punchy-headline text-warning">"The motor is squealing and the speed is oscillating."</div>
+            <div class="two-col-grid">
+                <div class="card accent">
+                    <div class="card-title text-accent">Premature Bearing Failure</div>
+                    <div class="card-text"><strong>Symptom:</strong> High-frequency noise. Fails in < 1 year.<br><strong>Cause:</strong> No dV/dt filter or shaft grounding.</div>
+                </div>
+                <div class="card warning">
+                    <div class="card-title text-warning">Control Loop Instability</div>
+                    <div class="card-text"><strong>Symptom:</strong> Speed "hunts" or oscillates.<br><strong>Cause:</strong> PI tuning not matched to load.</div>
+                </div>
+            </div>`
+        },
+        
+        // --- ADVANCED ---
+        // SCENE 37: Advanced - V/f Control (11s)
+        { id: 37, duration: 11000, content: `
+            <div class="title text-primary">Advanced: V/f (Volts-per-Hertz) Control</div>
+            <div class="punchy-headline text-warning">Simple, cheap, and "good enough" for fans.</div>
+            <div class="card" style="max-width: 1000px;">
+                <div class="card-title text-primary">How It Works:</div>
+                <div class="card-text">Maintains a constant Volts-to-Frequency ratio. Simple & robust.</div>
+                <div class="card-title text-primary" style="margin-top: 1.5rem;">Best For:</div>
+                <div class="card-text">Fans and pumps (VT loads).</div>
+                <div class="card-title text-primary" style="margin-top: 1.5rem;">Limitations:</div>
+                <div class="card-text">Poor speed accuracy (±3-5%). Cannot hold constant torque at low speed.</div>
+            </div>`
+        },
+        // SCENE 38: Advanced - Vector Control (12s)
+        { id: 38, duration: 12000, content: `
+            <div class="subtitle text-success">Advanced: Vector Control (FOC)</div>
+            <div class="punchy-headline text-warning">For precision applications that need real torque.</div>
+            <div class="card success" style="max-width: 1000px;">
+                <div class="card-title text-success">How It Works:</div>
+                <div class="card-text">Measures current and calculates flux/torque independently.</div>
+                <div class="card-title text-success" style="margin-top: 1.5rem;">Best For:</div>
+                <div class="card-text">CT loads, Hoists, Machine tools.</div>
+                <div class="card-title text-success" style="margin-top: 1.5rem;">Advantages:</div>
+                <div class="card-text">±0.1% speed accuracy. True constant torque at any speed.</div>
+            </div>`
+        },
+        
+        // --- SUMMARY ---
+        // SCENE 39: Expert Checklist (13s)
+        { id: 39, duration: 13000, content: `
+            <div class="title text-success">Your Expert VFD Specification Checklist</div>
+            <div class="punchy-headline text-warning">Use this. Every. Single. Time.</div>
+            <div class="card success" style="max-width: 1000px; font-size: clamp(0.9rem, 2.1vw, 1.2rem);">
+                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Motor FLA:</strong> Size to Amps, not kW.</div></div>
+                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Load Profile:</strong> Select ND (Fans) or HD (Conveyors).</div></div>
+                <div class="checklist-item"><span class="check-icon">□</span><div><strong>De-Rating:</strong> Calculate for Altitude and Temperature.</div></div>
+                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Harmonics:</strong> Select DFE, 18-Pulse, or AFE.</div></div>
+                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Cable Run:</strong> Add dV/dt filter if >30m.</div></div>
+                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Motor Protection:</strong> Add Shaft Grounding + Insulated Bearing.</div></div>
+                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Braking:</strong> DBR or AFE?</div></div>
+            </div>`
+        },
+        // SCENE 40: Common Mistakes Summary (12s)
+        { id: 40, duration: 12000, content: `
+            <div class="title text-accent">The 9 Mistakes 99% of Engineers Make</div>
+            <div class="punchy-headline text-warning">Don't be one of them.</div>
+            <div class="card accent" style="max-width: 1000px;">
+                <div class="card-text formula-font" style="font-size: clamp(0.9rem, 2.1vw, 1.2rem);">
+                    1️⃣ <strong>Sizing by kW, not FLA</strong><br>
+                    2️⃣ <strong>Forgetting to De-rate</strong><br>
+                    3️⃣ <strong>Ignoring Harmonics</strong><br>
+                    4️⃣ <strong>Long cables, no dV/dt filter</strong><br>
+                    5️⃣ <strong>No Shaft Grounding Ring</strong><br>
+                    6️⃣ <strong>"Pigtail" shield grounding</strong><br>
+                    7️⃣ <strong>No panel ventilation</strong><br>
+                    8️⃣ <strong>Skipping commissioning tuning</strong><br>
+                    9️⃣ <strong>Using ND for CT loads</strong>
+                </div>
+            </div>`
+        },
+        // SCENE 41: Decision Matrix (11s)
+        { id: 41, duration: 11000, content: `
+            <div class="subtitle text-primary">Final Decision Matrix</div>
+            <div class="punchy-headline text-warning">When to use which technology.</div>
+            <div class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Application Type</th>
+                        <th>Recommended</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Centrifugal Fan (VT)</td>
+                        <td class="text-success">Standard DFE + Reactor</td>
+                        <td>No regen, cost-effective</td>
+                    </tr>
+                    <tr>
+                        <td>Conveyor (CT, HD)</td>
+                        <td class="text-primary">Standard DFE (HD)</td>
+                        <td>Reliable, handles load</td>
+                    </tr>
+                    <tr>
+                        <td>Crane/Hoist (Frequent Regen)</td>
+                        <td class="text-warning">DBR + Standard DFE (HD)</td>
+                        <td>Handles regen energy</td>
+                    </tr>
+                    <tr>
+                        <td>High-Cycle Hoist / Strict PQ</td>
+                        <td class="text-success">AFE Topology</td>
+                        <td>Recovers energy, <3% THD</td>
+                    </tr>
+                </tbody>
+            </table>`
+        },
+        // SCENE 42: Maintenance Schedule (11s)
+        { id: 42, duration: 11000, content: `
+            <div class="title text-primary">Preventive Maintenance Schedule</div>
+            <div class="punchy-headline text-warning">Protect your investment.</div>
+            <div class="card" style="max-width: 1000px;">
+                <div class="card-title text-primary">Monthly:</div>
+                <div class="card-text">Thermal imaging scan of motor & VFD terminals.</div>
+                <div class="card-title text-primary" style="margin-top: 1.2rem;">Quarterly:</div>
+                <div class="card-text">Cabinet air filter replacement. Ground continuity check.</div>
+                <div class="card-title text-primary" style="margin-top: 1.2rem;">Annually:</div>
+                <div class="card-text">Full harmonic analysis. Motor insulation test.</div>
+            </div>`
+        },
+        // SCENE 43: Troubleshooting Guide (12s)
+        { id: 43, duration: 12000, content: `
+            <div class="title text-accent">Quick Troubleshooting Guide</div>
+            <div class="punchy-headline text-warning">What to check first.</div>
+            <div class="card accent" style="max-width: 1000px;">
+                <div class="card-title text-accent">Noise in PLC/DCS:</div>
+                <div class="card-text">Check for 360° shield termination. Check for pigtails.</div>
+                <div class="card-title text-accent" style="margin-top: 1.2rem;">Current Limit Tripping:</div>
+                <div class="card-text">Check de-rating calculation. Check cabinet temperature.</div>
+                <div class="card-title text-accent" style="margin-top: 1.2rem;">Motor Overheating:</div>
+                <div class="card-text">Check for forced blower (IC416). Check for dV/dt filter.</div>
+            </div>`
+        },
+        
+        // --- CONCLUSION ---
+        // SCENE 44: What You've Mastered (12s)
+        { id: 44, duration: 12000, content: `
+            <div class="title text-success">Congratulations. You've Mastered VFDs.</div>
+            <div class="punchy-headline text-warning">You are now beyond OEM training level.</div>
+            <div class="card success" style="max-width: 1000px;">
+                <div class="card-text formula-font" style="font-size: clamp(1rem, 2.5vw, 1.4rem);">
+                    ✅ You understand Load Profiles (VT/CT).<br><br>
+                    ✅ You can calculate De-Rating for any environment.<br><br>
+                    ✅ You can specify Motor Protection (Filters/Grounding).<br><br>
+                    ✅ You understand Harmonics (AFE) and Braking (DBR).<br><br>
+                    ✅ You can design installations that work on day one.
+                </div>
+            </div>`
+        },
+        // SCENE 45: The Real-World Impact (10s)
+        { id: 45, duration: 10000, content: `
+            <div class="title text-success">Why This Knowledge Matters</div>
+            <div class="punchy-headline text-warning">This is the difference between an engineer and a technician.</div>
+            <div class="content-text" style="font-size: clamp(1.2rem, 3.2vw, 1.8rem); line-height: 1.8; text-align: left; display: inline-block;">
+                A proper VFD installation:<br><br>
+                💚 <strong>Saves $100K+</strong> in energy and maintenance<br>
+                💚 <strong>Reduces downtime</strong> by over 80%<br>
+                💚 <strong>Extends motor life</strong> to 15+ years<br>
+                💚 <strong>Protects your reputation</strong> as a world-class engineer
+            </div>`
+        },
+        // SCENE 46: Next Steps (11s)
+        { id: 46, duration: 11000, content: `
+            <div class="title text-primary">Your Action Plan</div>
+            <div class="punchy-headline text-warning">Go from theory to practice.</div>
+            <div class="card" style="max-width: 1000px;">
+                <div class="card-title text-primary">This Week:</div>
+                <div class="card-text">Review your plant's VFDs. Identify high-risk units (long cables, hot rooms).</div>
+                <div class="card-title text-primary" style="margin-top: 1.2rem;">This Month:</div>
+                <div class="card-text">Perform a harmonic survey on your main incomer.</div>
+                <div class="card-title text-primary" style="margin-top: 1.2rem;">This Quarter:</div>
+                <div class="card-text">Create a new VFD design standard for your company based on this class.</div>
+            </div>`
+        },
+        // SCENE 47: Final Call-to-Action (10s)
+        { id: 47, duration: 10000, content: `
+            <div class="title text-success">Thank You For Watching This Masterclass</div>
+            <div class="subtitle text-primary">Visit Our Resource Hub</div>
+            <div class="subtitle text-warning" style="animation: pulse 2s infinite; font-size: clamp(1.2rem, 3.5vw, 2rem); margin-top: 1rem;">
+                https://designcalculators.co.in
+            </div>
+            <div class="content-text" style="margin-top: 2rem; color: var(--text-dim);">
+                Free VFD sizing calculators, harmonics audits, and de-rating tools
+            </div>`
+        },
+        // SCENE 48: Closing Frame (8s)
+        { id: 48, duration: 8000, content: `
+            <div class="title text-primary" style="animation: glow 2s infinite;">⚡ VFD Selection Mastery ⚡</div>
+            <div class="subtitle text-success">Complete Masterclass</div>
+            <div class="content-text" style="font-size: clamp(1rem, 2.5vw, 1.5rem); margin-top: 2rem; color: var(--text-dim);">
+                Design with precision. Specify with confidence. Install with mastery.
+            </div>
+            <div class="icon-large" style="margin-top: 1.5rem; animation: pulse 1.5s infinite;">✨</div>`
+        }
+    ];
+
+    // --- JAVASCRIPT LOGIC (Unchanged) ---
+
+    function showScene(index) {
+        container.innerHTML = ''; 
+        
+        if (sceneConfig[index]) {
+            const sceneData = sceneConfig[index];
+            
+            const sceneElement = document.createElement('div');
+            sceneElement.id = `scene${sceneData.id}`;
+            sceneElement.className = 'scene';
+            sceneElement.innerHTML = sceneData.content;
+            container.appendChild(sceneElement);
+
+            const footerEl = document.createElement('div');
+            footerEl.className = 'footer-wrapper';
+            footerEl.innerHTML = `
+                <hr class="footer-line">
+                <div>prepared by https://designcalculators.co.in</div>
+            `;
+            container.appendChild(footerEl);
+            
+            requestAnimationFrame(() => {
+                sceneElement.scrollTop = 0;
+            });
+        } else {
+            console.error(`Invalid scene index: ${index}`);
+            currentSceneIndex = 0;
+            showScene(0);
+        }
+    }
+
+    function nextScene() {
+        currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length;
+        showScene(currentSceneIndex);
+        resetInterval();
+    }
+    
+    function prevScene() {
+        currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length;
+        showScene(currentSceneIndex);
+        resetInterval();
+    }
+    
+    function resetInterval() {
+        clearInterval(sceneInterval);
+        
+        let duration = 7000; 
+        if (sceneConfig[currentSceneIndex] && typeof sceneConfig[currentSceneIndex].duration === 'number') {
+            duration = sceneConfig[currentSceneIndex].duration;
+        }
+        
+        sceneInterval = setInterval(nextScene, duration);
+    }
+
+    // Initial setup
+    if (sceneConfig.length > 0) {
+        showScene(0);
+        resetInterval();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault();
+            nextScene();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevScene();
+        }
+    });
+
+    // Mouse click to advance
+    container.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A' || e.target.closest('a')) {
+            return; 
+        }
+        nextScene();
+    });
+
+    // --- Touch Navigation ---
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    const swipeThreshold = 50; 
+    const tapThreshold = 10;   
+    let touchStartTime = 0;
+    const tapTimeThreshold = 200; 
+
+    container.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.scene') && e.target.closest('.scene').scrollHeight > e.target.closest('.scene').clientHeight) {
+            // Content is scrollable
+        }
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+        touchStartTime = new Date().getTime();
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+        if (e.target.tagName === 'A' || e.target.closest('a')) {
+            return;
+        }
+
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        const touchTime = new Date().getTime() - touchStartTime;
+
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        const absDiffX = Math.abs(diffX);
+        const absDiffY = Math.abs(diffY);
+        
+        if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) {
+            return;
+        }
+
+        if (absDiffX > swipeThreshold && absDiffX > absDiffY) {
+            e.stopPropagation(); 
+            if (diffX < 0) {
+                nextScene();
+            } else {
+                prevScene();
+            }
+        }
+    });
+
+</script>
+
+</body>
+</html>
