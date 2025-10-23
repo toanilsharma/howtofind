@@ -3,2502 +3,636 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cable Sizing - The Ultimate Professional Guide</title>
+    <title>Cable Sizing - CODE RED v2: The Ultimate Mission</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --board-bg: #ffffff;
-            --draw-color: #1a1a1a;
-            --primary-blue: #0056b3;
-            --danger-red: #dc3545;
-            --success-green: #28a745;
-            --warning-orange: #fd7e14;
-            --electric-purple: #6f42c1;
-            --accent-cyan: #17a2b8;
-            --font-main: 'Kalam', cursive;
-            --font-alt: 'Architects Daughter', cursive;
+            /* Intense, Cinematic Palette - Kept the same */
+            --primary: #ff003c; /* Intense Red for Danger/Primary Action */
+            --accent: #ffc400; /* Bright Yellow/Gold for Warnings/Highlights */
+            --success: #00ff7f; /* Spring Green for Success/Go */
+            --info: #00a8ff;   /* Electric Blue for Info/Tech */
+            --purple: #a300ff; /* Deep Purple for Intel/Secrets */
+            --dark-bg: #0d0d1a; /* Very Dark Navy/Black */
+            --card-bg: #1a1a2e; /* Dark Indigo */
+            --text-main: #f0f0f0; /* Off-White */
+            --text-dim: #b0b0d0; /* Adjusted Muted Lavender/Gray */
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            background-color: #ffffff;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #111 50%, var(--dark-bg) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 0;
-            font-family: var(--font-main);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+        }
+
+        #container {
+            width: 95vw;
+            height: auto;
+            max-width: 1600px;
+            max-height: 95vh; /* Ensure it fits vertically */
+            aspect-ratio: 16/9;
+            background: var(--dark-bg);
+            border-radius: 20px;
+            box-shadow: 0 0 100px rgba(255, 0, 60, 0.5), inset 0 0 50px rgba(255, 0, 60, 0.1);
             overflow: hidden;
-        }
-
-        #whiteboard-container {
+            display: flex;
+            flex-direction: column;
             position: relative;
-            width: 100vw;
-            height: 100vh;
+            cursor: pointer;
+            /* border removed */
         }
 
-        #whiteboard {
+        .scene {
             width: 100%;
-            height: 100%;
-            background-color: var(--board-bg);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #animation-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .anim-element {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* Reduced padding slightly to accommodate larger fonts */
+            padding: 1.5% 3%;
+            text-align: center;
             opacity: 0;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        
-        .visible {
-            opacity: 1;
-        }
-
-        .text-anim {
-            font-family: var(--font-main);
+            animation: fadeInScene 0.7s ease-out forwards;
+            overflow-y: auto; /* Allow scrolling within scene if content overflows */
+            position: relative;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        .fade-in {
-            animation: fadeIn 0.4s ease-in forwards;
+        .scene::-webkit-scrollbar { display: none; }
+
+        /* --- Animations (Kept the same cinematic style) --- */
+        @keyframes fadeInScene { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUpIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } } /* Slightly more travel */
+        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.03); filter: brightness(1.2);} }
+        @keyframes glow-primary { 0%, 100% { text-shadow: 0 0 10px rgba(255, 0, 60, 0.7), 0 0 25px rgba(255, 0, 60, 0.4); } 50% { text-shadow: 0 0 25px rgba(255, 0, 60, 1), 0 0 50px rgba(255, 0, 60, 0.6); } }
+        @keyframes shake { 0%, 100% { transform: translate(0, 0); } 10%, 90% { transform: translate(-2px, -1px); } 20%, 80% { transform: translate(2px, 1px); } 30%, 50%, 70% { transform: translate(-3px, 2px); } 40%, 60% { transform: translate(3px, -2px); } }
+        @keyframes fire-flicker { 0% { opacity: 0.8; transform: skewX(-2deg) scale(1.01); filter: brightness(1.1);} 25% { opacity: 1; transform: skewX(2deg) scale(1);} 50% { opacity: 0.7; transform: skewX(-1deg) scale(1.02); filter: brightness(1.2);} 75% { opacity: 0.9; transform: skewX(1deg) scale(1);} 100% { opacity: 0.8; transform: skewX(-2deg) scale(1.01); filter: brightness(1.1);} }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); animation-timing-function: ease-out; } 50% { transform: translateY(-15px); animation-timing-function: ease-in; } }
+        @keyframes alert-glow { 0%, 100% { background-color: rgba(255, 0, 60, 0.1); border-color: rgba(255, 0, 60, 0.5); } 50% { background-color: rgba(255, 0, 60, 0.25); border-color: rgba(255, 0, 60, 1); } }
+
+
+        /* --- FONT SIZE INCREASES --- */
+        .title {
+            font-size: clamp(2.4rem, 6vw, 4rem); /* Increased */
+            font-weight: 800; margin-bottom: 1rem; line-height: 1.1; animation: slideDownIn 0.8s ease-out; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: clamp(1.8rem, 4.5vw, 3rem); /* Increased */
+            font-weight: 700; margin-bottom: 1rem; line-height: 1.15; animation: slideUpIn 0.8s ease-out 0.1s forwards; opacity: 0; letter-spacing: 0.5px;
+        }
+        .punchy-headline {
+            font-size: clamp(1.6rem, 4vw, 2.6rem); /* Increased */
+            font-weight: 700; margin: 0.8rem 0; line-height: 1.25; animation: slideUpIn 0.8s ease-out 0.15s forwards; opacity: 0; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .content-text {
+            font-size: clamp(1.1rem, 2.8vw, 1.7rem); /* Increased */
+            color: var(--text-dim); line-height: 1.75; margin: 0.8rem auto; animation: slideUpIn 0.9s ease-out 0.2s forwards; max-width: 90%; opacity: 0;
+        }
+        /* Text Colors - Kept the same */
+        .text-primary { color: var(--primary); animation: glow-primary 1.5s infinite; font-weight: 700; }
+        .text-accent { color: var(--accent); font-weight: 700; filter: brightness(1.1); }
+        .text-success { color: var(--success); font-weight: 700; }
+        .text-danger { color: var(--primary); font-weight: 700; }
+        .text-info { color: var(--info); font-weight: 700; }
+        .text-purple { color: var(--purple); font-weight: 700; }
+        .text-white { color: var(--text-main); }
+        .text-dim { color: var(--text-dim); }
+
+        .icon-large {
+            font-size: clamp(4rem, 9vw, 6.5rem); /* Increased */
+            animation: pulse 1.8s infinite; margin: 1rem 0;
         }
 
-        .slide-in-left {
-            animation: slideInLeft 0.5s ease-out forwards;
+        .card {
+            background: var(--card-bg); border: 2px solid rgba(255, 255, 255, 0.1); border-left: 6px solid var(--primary); /* Thicker accent border */
+            border-radius: 8px; padding: 1.5rem; /* Increased padding */ margin: 0.8rem auto; animation: scaleUpIn 0.6s ease-out; width: 96%; max-width: 950px; /* Wider */
+            text-align: left; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+        }
+        .card.accent { border-left-color: var(--accent); background: rgba(255, 196, 0, 0.07); } /* Slightly more bg */
+        .card.warning { border-left-color: var(--warning); background: rgba(253, 126, 20, 0.07); }
+        .card.info { border-left-color: var(--info); background: rgba(0, 168, 255, 0.07); }
+        .card.purple { border-left-color: var(--purple); background: rgba(163, 0, 255, 0.07); }
+        .card.success { border-left-color: var(--success); background: rgba(0, 255, 127, 0.07); }
+
+        .card-title {
+            font-size: clamp(1.3rem, 3vw, 1.9rem); /* Increased */
+            font-weight: 700; margin-bottom: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .card-text {
+            font-size: clamp(1rem, 2.2vw, 1.5rem); /* Increased */
+            color: var(--text-dim); line-height: 1.8; /* More spacing */
+        }
+        .card-text strong { color: var(--success); font-weight: 700; }
+        .card-text .highlight { color: var(--accent); font-weight: 700; }
+        .card-text .critical { color: var(--primary); font-weight: 700; text-transform: uppercase; }
+
+        .code-text {
+            font-family: 'Consolas', 'Monaco', monospace; background: rgba(0,0,0,0.6); padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: clamp(0.9rem, 2vw, 1.3rem); /* Increased */
+            display: inline-block; margin: 0.4rem 0; color: #00ff7f; letter-spacing: 1px;
+        }
+        .formula-font {
+            font-family: 'Consolas', 'Monaco', monospace; line-height: 1.8;
+            font-size: clamp(1rem, 2.3vw, 1.5rem); /* Increased */
+            color: var(--text-main);
+        }
+        .formula-box {
+            background: rgba(0, 0, 0, 0.7); border: 2px solid var(--accent); box-shadow: 0 0 20px rgba(255, 196, 0, 0.4); padding: 1.5rem; margin: 1.2rem auto; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace;
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem); /* Increased */
+            line-height: 1.8; text-align: center; animation: slideUpIn 0.9s ease-out; width: fit-content; max-width: 95%; color: #f0f0f0;
+        }
+        .formula-box .highlight { color: var(--accent); }
+
+        .two-col-grid, .three-col-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Larger min size */ gap: 1.2rem; width: 98%; max-width: 1400px; /* Wider */ margin: 1.2rem auto; animation: slideUpIn 0.9s ease-out;
         }
 
-        .slide-in-right {
-            animation: slideInRight 0.5s ease-out forwards;
+        /* Rule Boxes Styling */
+        .rule-box {
+            border-radius: 8px; padding: 1.8rem; margin: 1rem 0; animation: scaleUpIn 0.7s ease-out forwards; opacity: 0; width: 95%; max-width: 1400px; display: flex; align-items: center; gap: 2rem; /* More gap */
+        }
+        .rule-box-num {
+            font-size: clamp(4rem, 10vw, 7rem); /* Increased */
+            font-weight: 800; flex-shrink: 0; filter: drop-shadow(0 0 8px currentColor); /* More glow */
+        }
+        .rule-box-content { text-align: left; }
+        .rule-box-title {
+            font-size: clamp(1.6rem, 4vw, 2.4rem); /* Increased */
+            font-weight: 700; margin-bottom: 0.7rem; text-transform: uppercase;
+        }
+        .rule-box-detail {
+            font-size: clamp(1.05rem, 2.6vw, 1.6rem); /* Increased */
+            color: var(--text-dim); line-height: 1.7;
+        }
+        /* Specific colors remain the same */
+        .rule-box.ampacity { border-left: 10px solid var(--info); background: rgba(0, 168, 255, 0.07); }
+        .rule-box.ampacity .rule-box-num, .rule-box.ampacity .rule-box-title { color: var(--info); }
+        .rule-box.voltagedrop { border-left: 10px solid var(--success); background: rgba(0, 255, 127, 0.07); }
+        .rule-box.voltagedrop .rule-box-num, .rule-box.voltagedrop .rule-box-title { color: var(--success); }
+        .rule-box.shortcircuit { border-left: 10px solid var(--primary); background: rgba(255, 0, 60, 0.07); }
+        .rule-box.shortcircuit .rule-box-num, .rule-box.shortcircuit .rule-box-title { color: var(--primary); }
+
+
+        .checklist-item {
+            display: flex; align-items: center; margin: 0.9rem 0; color: var(--text-dim); line-height: 1.7; /* Increased line-height */
+            font-size: clamp(1rem, 2.3vw, 1.4rem); /* Increased */
+            animation: slideUpIn 1s ease-out; text-align: left;
+        }
+        .checklist-item strong { color: var(--success); font-weight: 700; }
+        .check-icon {
+            color: var(--success); font-weight: 900; margin-right: 1rem; /* More margin */ font-size: 1.5em; /* Larger */ line-height: 1;
         }
 
-        .slide-in-top {
-            animation: slideInTop 0.5s ease-out forwards;
+        .key-point {
+            background: rgba(255, 196, 0, 0.12); border-left: 6px solid var(--accent); padding: 1.2rem; margin: 1.2rem auto; border-radius: 6px;
+            font-size: clamp(1rem, 2.5vw, 1.5rem); /* Increased */
+            line-height: 1.7; animation: slideUpIn 0.8s ease-out; text-align: left; color: var(--text-dim);
         }
+        .key-point strong { color: var(--accent); }
 
-        .slide-in-bottom {
-            animation: slideInBottom 0.5s ease-out forwards;
+        /* --- Footer --- */
+        .footer-wrapper {
+            width: 100%; text-align: center; padding: 12px 0 15px 0; /* More padding */ background: #000;
+            font-size: clamp(1rem, 1.8vw, 1.2rem); /* Increased */
+            color: rgba(204, 204, 204, 0.7); flex-shrink: 0; animation: slideUpIn 1.2s ease-out; position: relative; z-index: 10;
         }
+        .footer-line { border: 0; height: 1px; background: rgba(255, 0, 60, 0.4); width: 70%; margin: 0 auto 10px auto; } /* More margin */
+        .footer-wrapper a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        .footer-wrapper a:hover { color: #fff; text-shadow: 0 0 8px var(--accent); } /* More glow on hover */
 
-        .zoom-in {
-            animation: zoomIn 0.6s ease-out forwards;
-        }
-
-        .pulse-glow {
-            animation: pulseGlow 2s ease-in-out infinite;
-        }
-
-        .draw-line {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: draw 1s ease-out forwards;
-        }
-
-        .shake {
-            animation: shake 0.5s ease-in-out;
-        }
-
-        .bounce {
-            animation: bounce 0.8s ease-out;
-        }
-
-        .rotate-in {
-            animation: rotateIn 0.7s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideInLeft {
-            from { 
-                opacity: 0;
-                transform: translateX(-100px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from { 
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInTop {
-            from { 
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInBottom {
-            from { 
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes zoomIn {
-            from { 
-                opacity: 0;
-                transform: scale(0.3);
-            }
-            to { 
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { 
-                opacity: 1;
-                filter: drop-shadow(0 0 5px currentColor);
-            }
-            50% { 
-                opacity: 0.7;
-                filter: drop-shadow(0 0 20px currentColor);
-            }
-        }
-
-        @keyframes draw {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes rotateIn {
-            from { 
-                opacity: 0;
-                transform: rotate(-180deg) scale(0);
-            }
-            to { 
-                opacity: 1;
-                transform: rotate(0deg) scale(1);
-            }
-        }
-
-        .highlight-box {
-            animation: highlightPulse 1.5s ease-in-out;
-        }
-
-        @keyframes highlightPulse {
-            0%, 100% { 
-                fill-opacity: 0.1;
-                stroke-width: 4;
-            }
-            50% { 
-                fill-opacity: 0.2;
-                stroke-width: 8;
-            }
-        }
-
-        .fire-flicker {
-            animation: fireFlicker 0.3s ease-in-out infinite alternate;
-        }
-
-        @keyframes fireFlicker {
-            from { opacity: 0.8; transform: scale(1); }
-            to { opacity: 1; transform: scale(1.1); }
-        }
     </style>
 </head>
 <body>
 
-    <div id="whiteboard-container">
-        <div id="whiteboard">
-            <svg id="animation-svg" viewBox="0 0 1600 900">
-                <!-- All SVG elements will be dynamically created by JavaScript -->
-            </svg>
-        </div>
-    </div>
+<div id="container"></div>
 
 <script>
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.getElementById('animation-svg');
-    
-    let activeElements = [];
-    let animationFrame;
-    let timeouts = [];
-    let intervals = [];
-    let isPlaying = false;
-
-    // --- Timeline Definition - 5 Minutes (300 seconds) ---
-    const TOTAL_DURATION = 300;
-
-    const timeline = [
-        // SECTION 1: DRAMATIC OPENING (0-15s)
-        { 
-            time: 0.3, 
-            type: 'text', 
-            id: 'shock', 
-            text: '⚡ SHOCKING FACT ⚡', 
-            x: 800, y: 200, 
-            fontSize: 120, 
-            anchor: 'middle', 
-            weight: 'bold',
-            fill: '#fd7e14',
-            duration: 0.8,
-            animation: 'zoom-in pulse-glow'
-        },
-        { 
-            time: 1.5, 
-            type: 'text', 
-            id: 'fact', 
-            text: '40% of Electrical Fires', 
-            x: 800, y: 350, 
-            fontSize: 100, 
-            anchor: 'middle', 
-            weight: 'bold',
-            fill: '#dc3545',
-            duration: 0.9,
-            animation: 'slide-in-left fire-flicker'
-        },
-        { 
-            time: 2.7, 
-            type: 'text', 
-            id: 'fact2', 
-            text: 'are caused by', 
-            x: 800, y: 470, 
-            fontSize: 85, 
-            anchor: 'middle',
-            fill: '#333',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-        { 
-            time: 3.8, 
-            type: 'text', 
-            id: 'culprit', 
-            text: 'WRONG CABLE SIZE!', 
-            x: 800, y: 600, 
-            fontSize: 130, 
-            anchor: 'middle', 
-            weight: 'bold',
-            fill: '#dc3545',
-            duration: 1,
-            animation: 'zoom-in shake fire-flicker'
-        },
-        { 
-            time: 5.2, 
-            type: 'text', 
-            id: 'fire-emoji', 
-            text: '🔥', 
-            x: 250, y: 600, 
-            fontSize: 120,
-            duration: 0.5,
-            animation: 'zoom-in fire-flicker'
-        },
-        { 
-            time: 5.6, 
-            type: 'text', 
-            id: 'fire-emoji2', 
-            text: '🔥', 
-            x: 1350, y: 600, 
-            fontSize: 120,
-            duration: 0.5,
-            animation: 'zoom-in fire-flicker'
-        },
-        { 
-            time: 6.4, 
-            type: 'text', 
-            id: 'subtitle', 
-            text: 'Learn to size cables like a PRO!', 
-            x: 800, y: 760, 
-            fontSize: 75, 
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 1,
-            animation: 'slide-in-bottom'
-        },
-
-        { time: 9, type: 'clear' },
-
-        // TITLE SCREEN (9-13s)
-        { 
-            time: 9.5, 
-            type: 'text', 
-            id: 'main-title', 
-            text: 'CABLE SIZING', 
-            x: 800, y: 300, 
-            fontSize: 160, 
-            anchor: 'middle', 
-            weight: 'bold',
-            fill: '#0056b3',
-            duration: 1,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 10.8, 
-            type: 'text', 
-            id: 'main-subtitle', 
-            text: 'The Complete Professional Guide', 
-            x: 800, y: 450, 
-            fontSize: 90, 
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 1,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 12, 
-            type: 'path', 
-            id: 'title-line', 
-            d: 'M 200 520 H 1400', 
-            stroke: '#fd7e14', 
-            strokeWidth: 10,
-            duration: 0.8,
-            animation: 'draw-line'
-        },
-        { 
-            time: 13, 
-            type: 'text', 
-            id: 'standards', 
-            text: 'IEC • NEC • BS • AS/NZS Standards', 
-            x: 800, y: 650, 
-            fontSize: 65, 
-            anchor: 'middle',
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-        { 
-            time: 14, 
-            type: 'text', 
-            id: 'plug-left', 
-            text: '🔌', 
-            x: 150, y: 450, 
-            fontSize: 110,
-            duration: 0.6,
-            animation: 'rotate-in'
-        },
-        { 
-            time: 14.4, 
-            type: 'text', 
-            id: 'plug-right', 
-            text: '🔌', 
-            x: 1450, y: 450, 
-            fontSize: 110,
-            duration: 0.6,
-            animation: 'rotate-in'
-        },
-
-        { time: 16, type: 'clear' },
-
-        // SECTION 2: CABLE ANATOMY (16-28s)
-        { 
-            time: 16.5, 
-            type: 'text', 
-            id: 'anatomy-title', 
-            text: 'Understanding Cable Anatomy', 
-            x: 800, y: 90, 
-            fontSize: 85, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#6f42c1',
-            duration: 0.8,
-            animation: 'zoom-in'
-        },
-
-        // Cable cross-section visualization
-        { 
-            time: 17.5, 
-            type: 'circle', 
-            id: 'cable-outer', 
-            cx: 400, cy: 350, r: 140,
-            stroke: '#333', 
-            strokeWidth: 6,
-            fill: '#e9ecef',
-            duration: 0.6,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 18.2, 
-            type: 'circle', 
-            id: 'cable-insulation', 
-            cx: 400, cy: 350, r: 100,
-            stroke: '#dc3545', 
-            strokeWidth: 3,
-            fill: 'rgba(220, 53, 69, 0.3)',
-            duration: 0.6,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 18.9, 
-            type: 'circle', 
-            id: 'cable-conductor', 
-            cx: 400, cy: 350, r: 60,
-            stroke: '#fd7e14', 
-            strokeWidth: 3,
-            fill: '#fd7e14',
-            duration: 0.6,
-            animation: 'zoom-in'
-        },
-
-        // Labels
-        { 
-            time: 19.7, 
-            type: 'text', 
-            id: 'label-sheath', 
-            text: '① Sheath', 
-            x: 250, y: 220, 
-            fontSize: 52,
-            fill: '#333',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'slide-in-left'
-        },
-        { 
-            time: 20.4, 
-            type: 'text', 
-            id: 'label-insulation', 
-            text: '② Insulation (PVC/XLPE)', 
-            x: 120, y: 380, 
-            fontSize: 52,
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-left'
-        },
-        { 
-            time: 21.2, 
-            type: 'text', 
-            id: 'label-conductor', 
-            text: '③ Conductor (Cu/Al)', 
-            x: 170, y: 520, 
-            fontSize: 52,
-            fill: '#fd7e14',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-left'
-        },
-
-        // Key points
-        { 
-            time: 22.2, 
-            type: 'text', 
-            id: 'key-title', 
-            text: '🔑 Key Factors:', 
-            x: 850, y: 200, 
-            fontSize: 65,
-            fill: '#0056b3',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 23, 
-            type: 'text', 
-            id: 'key1', 
-            text: '✓ Conductor Size (mm²/AWG)', 
-            x: 880, y: 280, 
-            fontSize: 56,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 23.9, 
-            type: 'text', 
-            id: 'key2', 
-            text: '✓ Material (Copper vs Aluminum)', 
-            x: 880, y: 355, 
-            fontSize: 56,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 24.8, 
-            type: 'text', 
-            id: 'key3', 
-            text: '✓ Insulation Type (Max Temp)', 
-            x: 880, y: 430, 
-            fontSize: 56,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 25.7, 
-            type: 'text', 
-            id: 'key4', 
-            text: '✓ Number of Cores (1, 2, 3, 4)', 
-            x: 880, y: 505, 
-            fontSize: 56,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-
-        { 
-            time: 26.8, 
-            type: 'rect', 
-            id: 'tip-box', 
-            x: 100, y: 600, 
-            width: 1400, 
-            height: 120,
-            stroke: '#28a745', 
-            strokeWidth: 5,
-            fill: 'rgba(40, 167, 69, 0.1)',
-            duration: 0.6,
-            animation: 'fade-in'
-        },
-        { 
-            time: 27.5, 
-            type: 'text', 
-            id: 'tip', 
-            text: '💡 Copper conducts 60% better than Aluminum but costs more!', 
-            x: 800, y: 675, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { time: 30, type: 'clear' },
-
-        // SECTION 3: THE 3 CRITICAL FACTORS (30-52s)
-        { 
-            time: 30.5, 
-            type: 'text', 
-            id: 'factors-title', 
-            text: 'The 3 Golden Rules of Cable Sizing', 
-            x: 800, y: 90, 
-            fontSize: 85, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#fd7e14',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 31.7, 
-            type: 'text', 
-            id: 'rules-subtitle', 
-            text: 'EVERY cable must pass ALL THREE tests!', 
-            x: 800, y: 170, 
-            fontSize: 62,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        // Rule 1: Ampacity
-        { 
-            time: 32.8, 
-            type: 'rect', 
-            id: 'rule1-box', 
-            x: 80, y: 230, 
-            width: 1440, 
-            height: 180,
-            stroke: '#0056b3', 
-            strokeWidth: 7,
-            fill: 'rgba(0, 86, 179, 0.08)',
-            duration: 0.6,
-            animation: 'slide-in-left highlight-box'
-        },
-        { 
-            time: 33.6, 
-            type: 'text', 
-            id: 'rule1-num', 
-            text: '①', 
-            x: 180, y: 335, 
-            fontSize: 90,
-            fill: '#0056b3',
-            weight: 'bold',
-            duration: 0.5,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 34.2, 
-            type: 'text', 
-            id: 'rule1-title', 
-            text: 'CURRENT CAPACITY (Ampacity)', 
-            x: 350, y: 300, 
-            fontSize: 68,
-            fill: '#0056b3',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 35.1, 
-            type: 'text', 
-            id: 'rule1-detail', 
-            text: 'Can it carry the load without overheating? (Apply derating!)', 
-            x: 350, y: 370, 
-            fontSize: 54,
-            fill: '#333',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        // Rule 2: Voltage Drop
-        { 
-            time: 36.2, 
-            type: 'rect', 
-            id: 'rule2-box', 
-            x: 80, y: 430, 
-            width: 1440, 
-            height: 180,
-            stroke: '#28a745', 
-            strokeWidth: 7,
-            fill: 'rgba(40, 167, 69, 0.08)',
-            duration: 0.6,
-            animation: 'slide-in-left highlight-box'
-        },
-        { 
-            time: 37, 
-            type: 'text', 
-            id: 'rule2-num', 
-            text: '②', 
-            x: 180, y: 535, 
-            fontSize: 90,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.5,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 37.6, 
-            type: 'text', 
-            id: 'rule2-title', 
-            text: 'VOLTAGE DROP', 
-            x: 350, y: 500, 
-            fontSize: 68,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 38.5, 
-            type: 'text', 
-            id: 'rule2-detail', 
-            text: 'Is voltage at the end ≥ 95% of source? (3-5% max drop)', 
-            x: 350, y: 570, 
-            fontSize: 54,
-            fill: '#333',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        // Rule 3: Short Circuit
-        { 
-            time: 39.6, 
-            type: 'rect', 
-            id: 'rule3-box', 
-            x: 80, y: 630, 
-            width: 1440, 
-            height: 180,
-            stroke: '#dc3545', 
-            strokeWidth: 7,
-            fill: 'rgba(220, 53, 69, 0.08)',
-            duration: 0.6,
-            animation: 'slide-in-left highlight-box'
-        },
-        { 
-            time: 40.4, 
-            type: 'text', 
-            id: 'rule3-num', 
-            text: '③', 
-            x: 180, y: 735, 
-            fontSize: 90,
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.5,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 41, 
-            type: 'text', 
-            id: 'rule3-title', 
-            text: 'SHORT CIRCUIT WITHSTAND', 
-            x: 350, y: 700, 
-            fontSize: 68,
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-        { 
-            time: 41.9, 
-            type: 'text', 
-            id: 'rule3-detail', 
-            text: 'Can it survive fault current until breaker trips? (Adiabatic eq.)', 
-            x: 350, y: 770, 
-            fontSize: 54,
-            fill: '#333',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 43.2, 
-            type: 'text', 
-            id: 'warning-icon', 
-            text: '⚠️', 
-            x: 800, y: 100, 
-            fontSize: 100,
-            anchor: 'middle',
-            duration: 0.6,
-            animation: 'bounce'
-        },
-        { 
-            time: 44, 
-            type: 'text', 
-            id: 'all-must-pass', 
-            text: 'FAIL ANY ONE = DANGEROUS INSTALLATION!', 
-            x: 800, y: 200, 
-            fontSize: 72,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 1,
-            animation: 'shake'
-        },
-
-        { time: 47, type: 'clear' },
-
-        // SECTION 4: AMPACITY & DERATING (47-72s)
-        { 
-            time: 47.5, 
-            type: 'text', 
-            id: 'amp-title', 
-            text: 'Rule ① Deep Dive: Ampacity & Derating', 
-            x: 800, y: 85, 
-            fontSize: 82, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#0056b3',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 48.7, 
-            type: 'text', 
-            id: 'amp-warn', 
-            text: '🌡️ Ampacity is NOT a fixed number!', 
-            x: 800, y: 175, 
-            fontSize: 65,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 49.8, 
-            type: 'text', 
-            id: 'derating-intro', 
-            text: 'It depends on REAL WORLD conditions:', 
-            x: 150, y: 260, 
-            fontSize: 60,
-            fill: '#333',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-left'
-        },
-
-        // Derating factors with icons
-        { 
-            time: 50.8, 
-            type: 'rect', 
-            id: 'derate1-box', 
-            x: 100, y: 310, 
-            width: 680, 
-            height: 100,
-            stroke: '#fd7e14', 
-            strokeWidth: 4,
-            fill: 'rgba(253, 126, 20, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 51.5, 
-            type: 'text', 
-            id: 'derate1', 
-            text: '🌡️ Temperature (Ca): Hot = Lower capacity', 
-            x: 150, y: 375, 
-            fontSize: 52,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 52.5, 
-            type: 'rect', 
-            id: 'derate2-box', 
-            x: 820, y: 310, 
-            width: 680, 
-            height: 100,
-            stroke: '#fd7e14', 
-            strokeWidth: 4,
-            fill: 'rgba(253, 126, 20, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 53.2, 
-            type: 'text', 
-            id: 'derate2', 
-            text: '📦 Grouping (Cg): Bundled = Heat trapped', 
-            x: 870, y: 375, 
-            fontSize: 52,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-
-        { 
-            time: 54.2, 
-            type: 'rect', 
-            id: 'derate3-box', 
-            x: 100, y: 430, 
-            width: 680, 
-            height: 100,
-            stroke: '#fd7e14', 
-            strokeWidth: 4,
-            fill: 'rgba(253, 126, 20, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 54.9, 
-            type: 'text', 
-            id: 'derate3', 
-            text: '⛏️ Burial Depth (Cd): Deep = Poor cooling', 
-            x: 150, y: 495, 
-            fontSize: 52,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 55.9, 
-            type: 'rect', 
-            id: 'derate4-box', 
-            x: 820, y: 430, 
-            width: 680, 
-            height: 100,
-            stroke: '#fd7e14', 
-            strokeWidth: 4,
-            fill: 'rgba(253, 126, 20, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 56.6, 
-            type: 'text', 
-            id: 'derate4', 
-            text: '🏜️ Soil Type (Cs): Dry soil = Bad heat sink', 
-            x: 870, y: 495, 
-            fontSize: 52,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'slide-in-right'
-        },
-
-        // The formula
-        { 
-            time: 57.8, 
-            type: 'rect', 
-            id: 'formula-ampacity-box', 
-            x: 120, y: 570, 
-            width: 1360, 
-            height: 150,
-            stroke: '#0056b3', 
-            strokeWidth: 7,
-            fill: 'rgba(0, 86, 179, 0.12)',
-            duration: 0.6,
-            animation: 'fade-in highlight-box'
-        },
-        { 
-            time: 58.6, 
-            type: 'text', 
-            id: 'formula-ampacity-title', 
-            text: 'THE DERATING FORMULA:', 
-            x: 800, y: 625, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#0056b3',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'fade-in'
-        },
-        { 
-            time: 59.4, 
-            type: 'text', 
-            id: 'formula-ampacity', 
-            text: 'I_required = I_load / (Ca × Cg × Cd × Cs)', 
-            x: 800, y: 690, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#1a1a1a',
-            weight: 'bold',
-            duration: 1,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 60.8, 
-            type: 'text', 
-            id: 'then-select', 
-            text: 'Then select cable from tables where: Cable Ampacity ≥ I_required', 
-            x: 800, y: 795, 
-            fontSize: 54,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 1,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 62.2, 
-            type: 'text', 
-            id: 'example-derate', 
-            text: '📊 Example: 60A load, Ca=0.8, Cg=0.7 → Need 107A cable!', 
-            x: 800, y: 870, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#fd7e14',
-            weight: 'bold',
-            duration: 1.2,
-            animation: 'bounce'
-        },
-
-        { time: 66, type: 'clear' },
-
-        // SECTION 5: VOLTAGE DROP (66-95s)
-        { 
-            time: 66.5, 
-            type: 'text', 
-            id: 'vd-title', 
-            text: 'Rule ② Deep Dive: Voltage Drop', 
-            x: 800, y: 85, 
-            fontSize: 82, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#28a745',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 67.7, 
-            type: 'text', 
-            id: 'vd-importance', 
-            text: 'Why it matters: Low voltage = Equipment damage & inefficiency!', 
-            x: 800, y: 175, 
-            fontSize: 60,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'fade-in'
-        },
-
-        // Visual diagram
-        { 
-            time: 68.9, 
-            type: 'text', 
-            id: 'source-label', 
-            text: 'SOURCE\n230V', 
-            x: 200, y: 300, 
-            fontSize: 52,
-            anchor: 'middle',
-            fill: '#0056b3',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 69.6, 
-            type: 'path', 
-            id: 'cable-arrow', 
-            d: 'M 300 300 L 1100 300', 
-            stroke: '#dc3545', 
-            strokeWidth: 12,
-            duration: 1,
-            animation: 'draw-line'
-        },
-        { 
-            time: 70.2, 
-            type: 'text', 
-            id: 'cable-label', 
-            text: 'Long Cable → Voltage Drops!', 
-            x: 700, y: 260, 
-            fontSize: 50,
-            anchor: 'middle',
-            fill: '#dc3545',
-            duration: 0.7,
-            animation: 'fade-in'
-        },
-        { 
-            time: 70.9, 
-            type: 'text', 
-            id: 'load-label', 
-            text: 'LOAD\n218V ❌', 
-            x: 1300, y: 300, 
-            fontSize: 52,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'zoom-in shake'
-        },
-
-        // Standard limits
-        { 
-            time: 72, 
-            type: 'rect', 
-            id: 'limits-box', 
-            x: 100, y: 380, 
-            width: 1400, 
-            height: 140,
-            stroke: '#fd7e14', 
-            strokeWidth: 6,
-            fill: 'rgba(253, 126, 20, 0.08)',
-            duration: 0.6,
-            animation: 'fade-in'
-        },
-        { 
-            time: 72.8, 
-            type: 'text', 
-            id: 'limits-title', 
-            text: '📏 Standard Voltage Drop Limits:', 
-            x: 800, y: 430, 
-            fontSize: 62,
-            anchor: 'middle',
-            fill: '#fd7e14',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-top'
-        },
-        { 
-            time: 73.7, 
-            type: 'text', 
-            id: 'limits-detail', 
-            text: 'Lighting: 3% max  |  Power: 5% max  |  Combined: 5-8% max', 
-            x: 800, y: 495, 
-            fontSize: 56,
-            anchor: 'middle',
-            fill: '#333',
-            duration: 0.9,
-            animation: 'fade-in'
-        },
-
-        // Formulas
-        { 
-            time: 75, 
-            type: 'text', 
-            id: 'formulas-title', 
-            text: '⚡ THE FORMULAS:', 
-            x: 150, y: 580, 
-            fontSize: 60,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 75.9, 
-            type: 'text', 
-            id: 'vd-dc', 
-            text: 'DC: VD = (2 × L × I × R) / 1000', 
-            x: 200, y: 655, 
-            fontSize: 54,
-            fill: '#333',
-            duration: 0.8,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 77, 
-            type: 'text', 
-            id: 'vd-ac1', 
-            text: 'AC 1φ: VD = (2 × L × I × (R×cosφ + X×sinφ)) / 1000', 
-            x: 200, y: 720, 
-            fontSize: 54,
-            fill: '#333',
-            duration: 0.9,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 78.2, 
-            type: 'text', 
-            id: 'vd-ac3', 
-            text: 'AC 3φ: VD = (√3 × L × I × (R×cosφ + X×sinφ)) / 1000', 
-            x: 200, y: 785, 
-            fontSize: 54,
-            fill: '#333',
-            duration: 0.9,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 79.5, 
-            type: 'text', 
-            id: 'vd-vars', 
-            text: 'L=length(m), I=current(A), R&X=Ω/km from tables, cosφ=power factor', 
-            x: 800, y: 865, 
-            fontSize: 48,
-            anchor: 'middle',
-            fill: '#888',
-            style: 'italic',
-            duration: 0.9,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 81, 
-            type: 'text', 
-            id: 'pro-tip-vd', 
-            text: '💡 PRO TIP: If VD too high, go up ONE cable size!', 
-            x: 800, y: 60, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 1,
-            animation: 'bounce'
-        },
-
-        { time: 85, type: 'clear' },
-
-        // SECTION 6: SHORT CIRCUIT (85-108s)
-        { 
-            time: 85.5, 
-            type: 'text', 
-            id: 'sc-title', 
-            text: 'Rule ③ Deep Dive: Short Circuit Withstand', 
-            x: 800, y: 85, 
-            fontSize: 82, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#dc3545',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 86.7, 
-            type: 'text', 
-            id: 'sc-scenario', 
-            text: '⚡ The cable must survive MASSIVE fault current!', 
-            x: 800, y: 175, 
-            fontSize: 63,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'shake'
-        },
-
-        // Scenario visualization
-        { 
-            time: 87.8, 
-            type: 'text', 
-            id: 'normal-current', 
-            text: 'Normal: 50A', 
-            x: 300, y: 280, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'zoom-in'
-        },
-        { 
-            time: 88.5, 
-            type: 'text', 
-            id: 'vs', 
-            text: '⚡ VS ⚡', 
-            x: 800, y: 280, 
-            fontSize: 75,
-            anchor: 'middle',
-            fill: '#fd7e14',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'pulse-glow'
-        },
-        { 
-            time: 89.2, 
-            type: 'text', 
-            id: 'fault-current', 
-            text: 'Fault: 10,000A!', 
-            x: 1300, y: 280, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'zoom-in fire-flicker'
-        },
-
-        { 
-            time: 90.2, 
-            type: 'text', 
-            id: 'sc-duration', 
-            text: 'Cable must survive for 0.1 - 0.4 seconds until breaker trips!', 
-            x: 800, y: 380, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#333',
-            duration: 0.9,
-            animation: 'fade-in'
-        },
-
-        // The Adiabatic Equation
-        { 
-            time: 91.5, 
-            type: 'rect', 
-            id: 'adiabatic-box', 
-            x: 120, y: 450, 
-            width: 1360, 
-            height: 220,
-            stroke: '#dc3545', 
-            strokeWidth: 8,
-            fill: 'rgba(220, 53, 69, 0.12)',
-            duration: 0.7,
-            animation: 'fade-in highlight-box'
-        },
-        { 
-            time: 92.4, 
-            type: 'text', 
-            id: 'adiabatic-title', 
-            text: 'THE ADIABATIC EQUATION (IEC 60364):', 
-            x: 800, y: 510, 
-            fontSize: 62,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-top'
-        },
-        { 
-            time: 93.3, 
-            type: 'text', 
-            id: 'adiabatic-formula', 
-            text: 'S = √(I²t) / k', 
-            x: 800, y: 600, 
-            fontSize: 95,
-            anchor: 'middle',
-            fill: '#1a1a1a',
-            weight: 'bold',
-            duration: 1,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 94.7, 
-            type: 'text', 
-            id: 'sc-vars-title', 
-            text: 'Where:', 
-            x: 150, y: 710, 
-            fontSize: 56,
-            fill: '#333',
-            weight: 'bold',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 95.4, 
-            type: 'text', 
-            id: 'sc-var1', 
-            text: 'S = Min cross-section (mm²)  |  I = Short circuit current (A)', 
-            x: 800, y: 770, 
-            fontSize: 50,
-            anchor: 'middle',
-            fill: '#555',
-            duration: 0.8,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 96.4, 
-            type: 'text', 
-            id: 'sc-var2', 
-            text: 't = Clearing time (s)  |  k = Material constant (115 for PVC Cu, 143 for XLPE Cu)', 
-            x: 800, y: 830, 
-            fontSize: 50,
-            anchor: 'middle',
-            fill: '#555',
-            duration: 0.9,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 97.8, 
-            type: 'text', 
-            id: 'sc-example', 
-            text: '📊 Example: I=8000A, t=0.2s, k=143 → S ≥ 16mm²', 
-            x: 800, y: 65, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#fd7e14',
-            weight: 'bold',
-            duration: 1,
-            animation: 'bounce'
-        },
-
-        { time: 102, type: 'clear' },
-
-        // SECTION 7: REAL WORLD EXAMPLE (102-150s)
-        { 
-            time: 102.5, 
-            type: 'text', 
-            id: 'example-title', 
-            text: '🎯 REAL WORLD EXAMPLE', 
-            x: 800, y: 75, 
-            fontSize: 88, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#fd7e14',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 103.7, 
-            type: 'text', 
-            id: 'example-subtitle', 
-            text: 'Sizing a 3-Phase Motor Feeder Cable', 
-            x: 800, y: 155, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        // GIVEN DATA
-        { 
-            time: 104.8, 
-            type: 'rect', 
-            id: 'ex-given-box', 
-            x: 80, y: 210, 
-            width: 650, 
-            height: 530,
-            stroke: '#17a2b8', 
-            strokeWidth: 6,
-            fill: 'rgba(23, 162, 184, 0.05)',
-            duration: 0.6,
-            animation: 'fade-in'
-        },
-        { 
-            time: 105.5, 
-            type: 'text', 
-            id: 'ex-given-title', 
-            text: '📋 GIVEN DATA:', 
-            x: 405, y: 260, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#17a2b8',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'slide-in-top'
-        },
-
-        { time: 106.3, type: 'text', id: 'g1', text: '• Motor: 45 kW, 3-phase', x: 130, y: 325, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-        { time: 107, type: 'text', id: 'g2', text: '• Voltage: 400V', x: 130, y: 380, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-        { time: 107.7, type: 'text', id: 'g3', text: '• Cable Length: 95m', x: 130, y: 435, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-        { time: 108.4, type: 'text', id: 'g4', text: '• Power Factor: 0.88', x: 130, y: 490, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-        { time: 109.1, type: 'text', id: 'g5', text: '• Efficiency: 94%', x: 130, y: 545, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-        { time: 109.8, type: 'text', id: 'g6', text: '• Ambient: 50°C (Ca=0.82)', x: 130, y: 600, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-        { time: 110.5, type: 'text', id: 'g7', text: '• Grouped: 6 cables (Cg=0.65)', x: 130, y: 655, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-        { time: 111.2, type: 'text', id: 'g8', text: '• Fault Current: 12 kA', x: 130, y: 710, fontSize: 48, fill: '#333', duration: 0.6, animation: 'slide-in-left' },
-
-        // STEP 1
-        { 
-            time: 112.2, 
-            type: 'rect', 
-            id: 'step1-box', 
-            x: 770, y: 210, 
-            width: 750, 
-            height: 135,
-            stroke: '#6f42c1', 
-            strokeWidth: 5,
-            fill: 'rgba(111, 66, 193, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 112.9, 
-            type: 'text', 
-            id: 'step1-title', 
-            text: 'STEP 1: Load Current', 
-            x: 800, y: 250, 
-            fontSize: 52,
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'slide-in-left'
-        },
-        { 
-            time: 113.7, 
-            type: 'text', 
-            id: 'step1-calc', 
-            text: 'I = 45000/(√3×400×0.88×0.94) = 78A', 
-            x: 820, y: 310, 
-            fontSize: 46,
-            fill: '#333',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        // STEP 2
-        { 
-            time: 114.8, 
-            type: 'rect', 
-            id: 'step2-box', 
-            x: 770, y: 360, 
-            width: 750, 
-            height: 165,
-            stroke: '#6f42c1', 
-            strokeWidth: 5,
-            fill: 'rgba(111, 66, 193, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 115.5, 
-            type: 'text', 
-            id: 'step2-title', 
-            text: 'STEP 2: Ampacity Check', 
-            x: 800, y: 400, 
-            fontSize: 52,
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'slide-in-left'
-        },
-        { 
-            time: 116.3, 
-            type: 'text', 
-            id: 'step2-calc', 
-            text: 'I_req = 78/(0.82×0.65) = 146A', 
-            x: 820, y: 455, 
-            fontSize: 46,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'fade-in'
-        },
-        { 
-            time: 117.2, 
-            type: 'text', 
-            id: 'step2-result', 
-            text: '→ Try 50mm² Cu (Rated 165A) ✓', 
-            x: 840, y: 505, 
-            fontSize: 46,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        // STEP 3
-        { 
-            time: 118.3, 
-            type: 'rect', 
-            id: 'step3-box', 
-            x: 770, y: 540, 
-            width: 750, 
-            height: 165,
-            stroke: '#6f42c1', 
-            strokeWidth: 5,
-            fill: 'rgba(111, 66, 193, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 119, 
-            type: 'text', 
-            id: 'step3-title', 
-            text: 'STEP 3: Voltage Drop (50mm²)', 
-            x: 800, y: 580, 
-            fontSize: 52,
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 0.6,
-            animation: 'slide-in-left'
-        },
-        { 
-            time: 119.8, 
-            type: 'text', 
-            id: 'step3-calc', 
-            text: 'VD ≈ 7.8V (1.95% of 400V)', 
-            x: 820, y: 635, 
-            fontSize: 46,
-            fill: '#333',
-            duration: 0.7,
-            animation: 'fade-in'
-        },
-        { 
-            time: 120.7, 
-            type: 'text', 
-            id: 'step3-result', 
-            text: '→ OK! (< 5%) ✓', 
-            x: 840, y: 685, 
-            fontSize: 46,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'fade-in'
-        },
-
-        // STEP 4
-        { 
-            time: 121.7, 
-            type: 'rect', 
-            id: 'step4-box', 
-            x: 80, y: 755, 
-            width: 1440, 
-            height: 100,
-            stroke: '#6f42c1', 
-            strokeWidth: 5,
-            fill: 'rgba(111, 66, 193, 0.05)',
-            duration: 0.5,
-            animation: 'fade-in'
-        },
-        { 
-            time: 122.4, 
-            type: 'text', 
-            id: 'step4-title', 
-            text: 'STEP 4: Short Circuit (50mm², XLPE, t=0.15s, k=143)', 
-            x: 110, y: 790, 
-            fontSize: 48,
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-left'
-        },
-        { 
-            time: 123.3, 
-            type: 'text', 
-            id: 'step4-calc', 
-            text: 'S_min = √(12000² × 0.15)/143 = 30.6mm² → 50mm² OK! ✓', 
-            x: 130, y: 835, 
-            fontSize: 48,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'fade-in'
-        },
-
-        // FINAL ANSWER
-        { 
-            time: 124.6, 
-            type: 'rect', 
-            id: 'final-answer-box', 
-            x: 200, y: 50, 
-            width: 1200, 
-            height: 100,
-            stroke: '#28a745', 
-            strokeWidth: 10,
-            fill: 'rgba(40, 167, 69, 0.15)',
-            duration: 0.7,
-            animation: 'fade-in highlight-box'
-        },
-        { 
-            time: 125.5, 
-            type: 'text', 
-            id: 'final-answer', 
-            text: '✅ FINAL: Use 50mm² Copper XLPE Cable', 
-            x: 800, y: 115, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 1,
-            animation: 'zoom-in pulse-glow'
-        },
-
-        { time: 130, type: 'clear' },
-
-        // SECTION 8: COMMON MISTAKES (130-148s)
-        { 
-            time: 130.5, 
-            type: 'text', 
-            id: 'mistakes-title', 
-            text: '❌ 7 DEADLY Cable Sizing Mistakes!', 
-            x: 800, y: 80, 
-            fontSize: 85, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#dc3545',
-            duration: 1,
-            animation: 'zoom-in shake'
-        },
-
-        { time: 131.9, type: 'text', id: 'm1', text: '❌ Ignoring derating factors (Ca, Cg, etc.)', x: 120, y: 180, fontSize: 54, weight: 'bold', fill: '#dc3545', duration: 0.7, animation: 'slide-in-left' },
-        { time: 132.9, type: 'text', id: 'm2', text: '❌ Not checking voltage drop for long runs', x: 120, y: 260, fontSize: 54, weight: 'bold', fill: '#dc3545', duration: 0.7, animation: 'slide-in-left' },
-        { time: 133.9, type: 'text', id: 'm3', text: '❌ Forgetting short circuit withstand calculation', x: 120, y: 340, fontSize: 54, weight: 'bold', fill: '#dc3545', duration: 0.7, animation: 'slide-in-left' },
-        { time: 134.9, type: 'text', id: 'm4', text: '❌ Using wrong R & X values from tables', x: 120, y: 420, fontSize: 54, weight: 'bold', fill: '#dc3545', duration: 0.7, animation: 'slide-in-left' },
-        { time: 135.9, type: 'text', id: 'm5', text: '❌ Sizing for motor nameplate, not FLC × 1.25', x: 120, y: 500, fontSize: 54, weight: 'bold', fill: '#dc3545', duration: 0.7, animation: 'slide-in-left' },
-        { time: 136.9, type: 'text', id: 'm6', text: '❌ Mixing up single-core vs multi-core reactance', x: 120, y: 580, fontSize: 54, weight: 'bold', fill: '#dc3545', duration: 0.7, animation: 'slide-in-left' },
-        { time: 137.9, type: 'text', id: 'm7', text: '❌ Not considering future load growth', x: 120, y: 660, fontSize: 54, weight: 'bold', fill: '#dc3545', duration: 0.7, animation: 'slide-in-left' },
-
-        { 
-            time: 139.2, 
-            type: 'rect', 
-            id: 'warning-box', 
-            x: 120, y: 730, 
-            width: 1360, 
-            height: 120,
-            stroke: '#dc3545', 
-            strokeWidth: 8,
-            fill: 'rgba(220, 53, 69, 0.15)',
-            duration: 0.7,
-            animation: 'fade-in highlight-box'
-        },
-        { 
-            time: 140.2, 
-            type: 'text', 
-            id: 'warning-text', 
-            text: '🔥 ONE mistake = Fire, Injury, or Death! 🔥', 
-            x: 800, y: 810, 
-            fontSize: 70,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 1.2,
-            animation: 'zoom-in shake fire-flicker'
-        },
-
-        { time: 144, type: 'clear' },
-
-        // SECTION 9: QUICK REFERENCE TABLE (144-170s)
-        { 
-            time: 144.5, 
-            type: 'text', 
-            id: 'ref-title', 
-            text: '📊 Quick Reference Guide', 
-            x: 800, y: 75, 
-            fontSize: 85, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#0056b3',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        // Standard cable sizes
-        { 
-            time: 145.7, 
-            type: 'rect', 
-            id: 'ref-box1', 
-            x: 80, y: 150, 
-            width: 1440, 
-            height: 180,
-            stroke: '#17a2b8', 
-            strokeWidth: 5,
-            fill: 'rgba(23, 162, 184, 0.05)',
-            duration: 0.6,
-            animation: 'fade-in'
-        },
-        { 
-            time: 146.5, 
-            type: 'text', 
-            id: 'ref1-title', 
-            text: 'Standard Copper Cable Sizes (IEC):', 
-            x: 800, y: 200, 
-            fontSize: 60,
-            anchor: 'middle',
-            fill: '#17a2b8',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-top'
-        },
-        { 
-            time: 147.4, 
-            type: 'text', 
-            id: 'ref1-detail', 
-            text: '1.5  |  2.5  |  4  |  6  |  10  |  16  |  25  |  35  |  50  |  70  |  95  |  120  |  150  |  185  |  240 mm²', 
-            x: 800, y: 280, 
-            fontSize: 52,
-            anchor: 'middle',
-            fill: '#333',
-            duration: 1,
-            animation: 'fade-in'
-        },
-
-        // Typical ampacity
-        { 
-            time: 148.8, 
-            type: 'rect', 
-            id: 'ref-box2', 
-            x: 80, y: 350, 
-            width: 1440, 
-            height: 180,
-            stroke: '#28a745', 
-            strokeWidth: 5,
-            fill: 'rgba(40, 167, 69, 0.05)',
-            duration: 0.6,
-            animation: 'fade-in'
-        },
-        { 
-            time: 149.6, 
-            type: 'text', 
-            id: 'ref2-title', 
-            text: 'Typical Ampacity (PVC, 30°C ambient, direct burial):', 
-            x: 800, y: 400, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'slide-in-top'
-        },
-        { 
-            time: 150.6, 
-            type: 'text', 
-            id: 'ref2-detail', 
-            text: '2.5mm²→24A  |  4mm²→32A  |  10mm²→57A  |  25mm²→95A  |  50mm²→165A', 
-            x: 800, y: 480, 
-            fontSize: 52,
-            anchor: 'middle',
-            fill: '#333',
-            duration: 1,
-            animation: 'fade-in'
-        },
-
-        // Material constants
-        { 
-            time: 152, 
-            type: 'rect', 
-            id: 'ref-box3', 
-            x: 80, y: 550, 
-            width: 1440, 
-            height: 180,
-            stroke: '#6f42c1', 
-            strokeWidth: 5,
-            fill: 'rgba(111, 66, 193, 0.05)',
-            duration: 0.6,
-            animation: 'fade-in'
-        },
-        { 
-            time: 152.8, 
-            type: 'text', 
-            id: 'ref3-title', 
-            text: 'k-values for Adiabatic Equation:', 
-            x: 800, y: 600, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-top'
-        },
-        { 
-            time: 153.7, 
-            type: 'text', 
-            id: 'ref3-detail', 
-            text: 'PVC Cu: 115  |  XLPE Cu: 143  |  PVC Al: 76  |  XLPE Al: 94', 
-            x: 800, y: 680, 
-            fontSize: 52,
-            anchor: 'middle',
-            fill: '#333',
-            duration: 0.9,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 155, 
-            type: 'text', 
-            id: 'ref-note', 
-            text: '⚠️ Always verify with manufacturer datasheets and local codes!', 
-            x: 800, y: 810, 
-            fontSize: 56,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 1,
-            animation: 'fade-in'
-        },
-
-        { time: 160, type: 'clear' },
-
-        // SECTION 10: PRO TIPS (160-185s)
-        { 
-            time: 160.5, 
-            type: 'text', 
-            id: 'tips-title', 
-            text: '💡 Professional Secrets & Tips', 
-            x: 800, y: 80, 
-            fontSize: 85, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#fd7e14',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 161.7, 
-            type: 'text', 
-            id: 'tip1', 
-            text: '✅ Always round UP to next standard size', 
-            x: 150, y: 190, 
-            fontSize: 58,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 162.8, 
-            type: 'text', 
-            id: 'tip2', 
-            text: '✅ For motors: Use FLC × 1.25 as minimum', 
-            x: 150, y: 280, 
-            fontSize: 58,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 163.9, 
-            type: 'text', 
-            id: 'tip3', 
-            text: '✅ Consider 20-30% future load growth', 
-            x: 150, y: 370, 
-            fontSize: 58,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.8,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 165, 
-            type: 'text', 
-            id: 'tip4', 
-            text: '✅ For long runs (>50m), voltage drop often governs', 
-            x: 150, y: 460, 
-            fontSize: 58,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 166.2, 
-            type: 'text', 
-            id: 'tip5', 
-            text: '✅ XLPE allows higher current than PVC (higher temp)', 
-            x: 150, y: 550, 
-            fontSize: 58,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 167.4, 
-            type: 'text', 
-            id: 'tip6', 
-            text: '✅ Underground burial? Add 15-20% safety margin', 
-            x: 150, y: 640, 
-            fontSize: 58,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 168.6, 
-            type: 'text', 
-            id: 'tip7', 
-            text: '✅ Use software/calculators for complex installations', 
-            x: 150, y: 730, 
-            fontSize: 58,
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'slide-in-left'
-        },
-
-        { 
-            time: 170, 
-            type: 'rect', 
-            id: 'gold-tip-box', 
-            x: 120, y: 800, 
-            width: 1360, 
-            height: 85,
-            stroke: '#fd7e14', 
-            strokeWidth: 6,
-            fill: 'rgba(253, 126, 20, 0.12)',
-            duration: 0.6,
-            animation: 'fade-in highlight-box'
-        },
-        { 
-            time: 170.8, 
-            type: 'text', 
-            id: 'gold-tip', 
-            text: '🏆 GOLDEN RULE: When in doubt, go ONE size up!', 
-            x: 800, y: 860, 
-            fontSize: 62,
-            anchor: 'middle',
-            fill: '#fd7e14',
-            weight: 'bold',
-            duration: 1,
-            animation: 'zoom-in pulse-glow'
-        },
-
-        { time: 175, type: 'clear' },
-
-        // SECTION 11: TOOLS & RESOURCES (175-198s)
-        { 
-            time: 175.5, 
-            type: 'text', 
-            id: 'tools-title', 
-            text: '🛠️ Free Professional Tools', 
-            x: 800, y: 90, 
-            fontSize: 88, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#6f42c1',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 176.7, 
-            type: 'text', 
-            id: 'tools-subtitle', 
-            text: 'Stop manual calculations! Use professional tools:', 
-            x: 800, y: 185, 
-            fontSize: 62,
-            anchor: 'middle',
-            fill: '#333',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 177.8, 
-            type: 'rect', 
-            id: 'url-box', 
-            x: 220, y: 260, 
-            width: 1160, 
-            height: 160,
-            stroke: '#28a745', 
-            strokeWidth: 10,
-            fill: 'rgba(40, 167, 69, 0.15)',
-            duration: 0.7,
-            animation: 'fade-in highlight-box'
-        },
-        { 
-            time: 178.7, 
-            type: 'text', 
-            id: 'url', 
-            text: 'designcalculators.co.in', 
-            x: 800, y: 370, 
-            fontSize: 100,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 1.2,
-            animation: 'zoom-in pulse-glow'
-        },
-
-        { 
-            time: 180.2, 
-            type: 'text', 
-            id: 'features-title', 
-            text: '⚡ Available Calculators:', 
-            x: 200, y: 480, 
-            fontSize: 62,
-            fill: '#0056b3',
-            weight: 'bold',
-            duration: 0.7,
-            animation: 'slide-in-left'
-        },
-
-        { time: 181.2, type: 'text', id: 'feat1', text: '✓ Cable Sizing Calculator (All 3 checks)', x: 250, y: 560, fontSize: 56, fill: '#333', duration: 0.8, animation: 'slide-in-left' },
-        { time: 182.2, type: 'text', id: 'feat2', text: '✓ Voltage Drop Calculator', x: 250, y: 630, fontSize: 56, fill: '#333', duration: 0.8, animation: 'slide-in-left' },
-        { time: 183.2, type: 'text', id: 'feat3', text: '✓ Short Circuit Calculator', x: 250, y: 700, fontSize: 56, fill: '#333', duration: 0.8, animation: 'slide-in-left' },
-        { time: 184.2, type: 'text', id: 'feat4', text: '✓ Derating Factor Selector', x: 250, y: 770, fontSize: 56, fill: '#333', duration: 0.8, animation: 'slide-in-left' },
-
-        { 
-            time: 185.5, 
-            type: 'text', 
-            id: 'free-note', 
-            text: '100% FREE • No Registration • Instant Results', 
-            x: 800, y: 860, 
-            fontSize: 58,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 1,
-            animation: 'bounce'
-        },
-
-        { time: 191, type: 'clear' },
-
-        // SECTION 12: CONCLUSION (191-220s)
-        { 
-            time: 191.5, 
-            type: 'text', 
-            id: 'conclusion-title', 
-            text: '🎓 You Are Now a Cable Sizing EXPERT!', 
-            x: 800, y: 130, 
-            fontSize: 80, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#28a745',
-            duration: 1,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 193, 
-            type: 'text', 
-            id: 'remember', 
-            text: 'Remember the 3 Golden Rules:', 
-            x: 800, y: 240, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#333',
-            duration: 0.8,
-            animation: 'fade-in'
-        },
-
-        { 
-            time: 194.2, 
-            type: 'text', 
-            id: 'rule1-final', 
-            text: '① AMPACITY (with derating)', 
-            x: 350, y: 370, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#0056b3',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 195.4, 
-            type: 'text', 
-            id: 'rule2-final', 
-            text: '② VOLTAGE DROP', 
-            x: 800, y: 370, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 196.6, 
-            type: 'text', 
-            id: 'rule3-final', 
-            text: '③ SHORT CIRCUIT', 
-            x: 1250, y: 370, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 198, 
-            type: 'rect', 
-            id: 'final-message-box', 
-            x: 140, y: 470, 
-            width: 1320, 
-            height: 240,
-            stroke: '#fd7e14', 
-            strokeWidth: 8,
-            fill: 'rgba(253, 126, 20, 0.1)',
-            duration: 0.7,
-            animation: 'fade-in highlight-box'
-        },
-
-        { 
-            time: 199, 
-            type: 'text', 
-            id: 'final-msg1', 
-            text: 'ALL THREE must pass!', 
-            x: 800, y: 560, 
-            fontSize: 75,
-            anchor: 'middle',
-            fill: '#fd7e14',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 200.2, 
-            type: 'text', 
-            id: 'final-msg2', 
-            text: 'Never skip a check!', 
-            x: 800, y: 650, 
-            fontSize: 70,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 0.9,
-            animation: 'shake'
-        },
-
-        { 
-            time: 201.5, 
-            type: 'text', 
-            id: 'lives', 
-            text: '⚡ Lives depend on it! ⚡', 
-            x: 800, y: 780, 
-            fontSize: 75,
-            anchor: 'middle',
-            fill: '#dc3545',
-            weight: 'bold',
-            duration: 1.2,
-            animation: 'pulse-glow fire-flicker'
-        },
-
-        { time: 207, type: 'clear' },
-
-        // CLOSING (207-300s)
-        { 
-            time: 207.5, 
-            type: 'text', 
-            id: 'close1', 
-            text: 'Design Safe', 
-            x: 800, y: 220, 
-            fontSize: 120, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#28a745',
-            duration: 1.5,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 209.5, 
-            type: 'text', 
-            id: 'close2', 
-            text: 'Build Smart', 
-            x: 800, y: 380, 
-            fontSize: 120, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#0056b3',
-            duration: 1.5,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 211.5, 
-            type: 'text', 
-            id: 'close3', 
-            text: 'Save Lives', 
-            x: 800, y: 540, 
-            fontSize: 120, 
-            weight: 'bold',
-            anchor: 'middle',
-            fill: '#dc3545',
-            duration: 1.5,
-            animation: 'zoom-in'
-        },
-
-        { 
-            time: 213.5, 
-            type: 'text', 
-            id: 'shield', 
-            text: '🛡️', 
-            x: 800, y: 700, 
-            fontSize: 140,
-            anchor: 'middle',
-            duration: 1.5,
-            animation: 'rotate-in pulse-glow'
-        },
-
-        { 
-            time: 215.5, 
-            type: 'rect', 
-            id: 'final-url-box', 
-            x: 200, y: 790, 
-            width: 1200, 
-            height: 100,
-            stroke: '#28a745', 
-            strokeWidth: 10,
-            fill: 'rgba(40, 167, 69, 0.15)',
-            duration: 0.8,
-            animation: 'fade-in highlight-box'
-        },
-
-        { 
-            time: 216.5, 
-            type: 'text', 
-            id: 'final-url', 
-            text: 'designcalculators.co.in', 
-            x: 800, y: 860, 
-            fontSize: 85,
-            anchor: 'middle',
-            fill: '#28a745',
-            weight: 'bold',
-            duration: 2,
-            animation: 'zoom-in pulse-glow'
-        },
-
-        { 
-            time: 219, 
-            type: 'text', 
-            id: 'thanks', 
-            text: 'Thank You! Share This to Save Lives! 🙏', 
-            x: 800, y: 100, 
-            fontSize: 68,
-            anchor: 'middle',
-            fill: '#6f42c1',
-            weight: 'bold',
-            duration: 2.5,
-            animation: 'fade-in'
-        },
-    ];
-
-    // --- Helper Functions ---
-    function resetAnimation() {
-        timeouts.forEach(t => clearTimeout(t));
-        intervals.forEach(i => clearInterval(i));
-        timeouts = [];
-        intervals = [];
-        
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
+    const container = document.getElementById('container');
+    let currentSceneIndex = 0;
+    let sceneInterval;
+
+    // --- CINEMATIC SCENE CONFIGURATION (Expanded & Refined) ---
+    const sceneConfig = [
+        // SCENE 1: CODE RED ALERT (9s) - Kept punchy
+        { id: 1, duration: 9000, content: `
+            <div class="title text-primary" style="animation: alert-glow 1s infinite;">🚨 CODE RED: CABLE FAILURE IMMINENT! 🚨</div>
+            <div class="punchy-headline text-accent" style="font-size: 3em; animation: shake 0.4s infinite alternate;">40%</div>
+            <div class="subtitle text-white" style="margin-top: -15px;">OF ELECTRICAL FIRES IGNITE FROM A SINGLE, FATAL FLAW...</div>
+            <div class="punchy-headline text-primary" style="font-size: 2.8em; animation: fire-flicker 0.3s infinite alternate;">🔥 UNDERRATED CABLES! 🔥</div>
+            <div class="content-text text-dim">This isn't just about codes. It's about preventing meltdown. Ignore the rules, invite disaster.</div>`
+        },
+        // SCENE 2: MISSION BRIEFING (10s) - Added clarity
+        { id: 2, duration: 10000, content: `
+            <div class="title text-accent">YOUR MISSION: CABLE SIZING MASTERY</div>
+            <div class="subtitle text-info">OBJECTIVE: FLAWLESS POWER DELIVERY. ZERO CATASTROPHE.</div>
+            <div class="punchy-headline text-purple">INTEL SOURCE: GLOBAL STANDARDS (IEC • NEC • BS...)</div>
+            <div class="content-text text-dim">Standard training ends here. We expose the hidden dangers and arm you with the protocols to size cables like a seasoned field operative. Your systems depend on it.</div>
+            <div class="icon-large" style="color: var(--info);">📡</div>`
+        },
+        // SCENE 3: CABLE ANATOMY (13s) - Slightly longer for clarity
+        { id: 3, duration: 13000, content: `
+            <div class="title text-purple">TARGET ANALYSIS: KNOW YOUR ASSET</div>
+            <div class="punchy-headline text-white">Deconstructing the Power Conduit</div>
+            <div class="two-col-grid" style="align-items: center; max-width: 1200px;">
+                <div style="text-align:center;">
+                     <svg viewBox="0 0 200 200" width="300" height="300">
+                         <defs><filter id="glow"><feGaussianBlur stdDeviation="4" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                        <circle cx="100" cy="100" r="95" fill="#222" stroke="#444" stroke-width="5"/> <!-- Sheath -->
+                        <circle cx="100" cy="100" r="75" fill="#1f1f3d" stroke="#6f42c1" stroke-width="4"/> <!-- Insulation (Purple highlight) -->
+                        <circle cx="100" cy="100" r="50" fill="#ffc400" filter="url(#glow)"/> <!-- Conductor (Gold) -->
+                    </svg>
+                </div>
+                <div class="card purple">
+                    <div class="card-title text-purple">ESSENTIAL COMPONENTS:</div>
+                    <div class="card-text">
+                        <strong><span class="highlight">① CONDUCTOR</span> (Cu/Al):</strong> Carries the Amps. <span class="critical">Size (mm²/AWG) is everything.</span><br>
+                        <strong><span class="text-info">② INSULATION</span> (PVC/XLPE/EPR):</strong> Prevents leaks (shorts!). Dictates <span class="critical">Max Operating Temperature</span>.<br>
+                        <strong><span class="text-dim">③ SHEATH</span>:</strong> External Armor. Shields from physical threats & environment.
+                    </div>
+                </div>
+            </div>
+            <div class="key-point"><strong>INTEL:</strong> Copper = <span class="highlight">Elite Conductor</span> (Expensive). Aluminum = Lighter, needs <span class="highlight">Bigger Size</span> for same job.</div>`
+        },
+        // SCENE 3.5: NEW SLIDE - INSULATION/CONDUCTOR TYPES (12s)
+        { id: 3.5, duration: 12000, content: `
+            <div class="title text-info">INSULATION & CONDUCTOR SHOWDOWN</div>
+            <div class="punchy-headline text-white">Materials Dictate Performance Limits!</div>
+            <div class="two-col-grid">
+                 <div class="card info">
+                    <div class="card-title text-info">INSULATION: The Heat Shield</div>
+                    <div class="card-text">
+                        • <span class="highlight">PVC:</span> Standard, Lower Temp (e.g., 70°C), Cost-effective.<br>
+                        • <span class="highlight">XLPE/EPR:</span> Higher Temp (e.g., 90°C+), Higher Ampacity for same size, Better durability. <span class="critical">Often worth the cost!</span>
+                    </div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-accent">CONDUCTOR: The Power Highway</div>
+                    <div class="card-text">
+                        • <span class="highlight">Copper (Cu):</span> Excellent conductivity (~1.68 µΩ·cm), Higher cost/weight.<br>
+                        • <span class="highlight">Aluminum (Al):</span> Good conductivity (~2.82 µΩ·cm, ~61% of Cu), Lighter, Cheaper, Needs <span class="critical">larger size</span> (~1.6x area) for same ampacity. Watch for termination issues!
+                    </div>
+                 </div>
+            </div>`
+        },
+        // SCENE 4: THE TRIAD PROTOCOL (10s) - Kept punchy
+        { id: 4, duration: 10000, content: `
+            <div class="title text-accent">THE TRIAD PROTOCOL</div>
+            <div class="punchy-headline text-primary">THREE CRITICAL CHECKS. MANDATORY COMPLIANCE.</div>
+            <div class="icon-large" style="color: var(--accent);">⚖️</div>
+            <div class="content-text text-dim" style="font-size: 1.8em; line-height: 1.5;"> Pass Ampacity. Pass Voltage Drop. Pass Short Circuit. <br><span class="critical">NO COMPROMISE.</span></div>`
+        },
+        // SCENE 5: DIRECTIVE ALPHA: AMPACITY (15s) - More detail
+        { id: 5, duration: 15000, content: `
+            <div class="rule-box ampacity">
+                <div class="rule-box-num">①</div>
+                <div class="rule-box-content">
+                    <div class="rule-box-title">DIRECTIVE ALPHA: AMPACITY CHECK - CAN IT TAKE THE HEAT?</div>
+                    <div class="rule-box-detail">
+                        Step 1: Determine the <span class="highlight">continuous load current</span> (Amps). For motors, use Full Load Current (FLC) often with a safety factor (e.g., 1.25x FLC per NEC/IEC).<br>
+                        Step 2: Assess ALL <span class="critical">Derating Factors</span> based on the actual installation environment. This is where most errors occur!
+                    </div>
+                </div>
+            </div>
+            <div class="punchy-headline text-accent" style="margin-top: 1rem; animation: shake 0.6s infinite alternate;">Catalog ratings are useless without derating!</div>`
+        },
+        // SCENE 6: DERATING FACTORS (18s) - More visual impact
+        { id: 6, duration: 18000, content: `
+            <div class="title text-accent">DERATING: THE REAL-WORLD PENALTY</div>
+            <div class="punchy-headline text-primary">Factors That Steal Your Cable's Capacity!</div>
+            <div class="two-col-grid">
+                 <div class="card accent"> <div class="card-title text-accent">🌡️ HIGH TEMP (Ca)</div> <div class="card-text">Heat In = Capacity Out!</div> </div>
+                 <div class="card accent"> <div class="card-title text-accent">📦 BUNDLING (Cg)</div> <div class="card-text">Cables Suffocate Each Other!</div> </div>
+                 <div class="card accent"> <div class="card-title text-accent">⛏️ DEEP BURIAL (Cd)</div> <div class="card-text">Heat Can't Escape!</div> </div>
+                 <div class="card accent"> <div class="card-title text-accent">🏜️ POOR SOIL (Cs)</div> <div class="card-text">Nowhere for Heat to Go!</div> </div>
+            </div>
+             <div class="formula-box text-white" style="border-color: var(--accent); box-shadow: 0 0 20px var(--accent);">
+                <span class="highlight">Required Rating (I<sub>req</sub>)</span> = I<sub>load</sub> / (<span class="highlight">Ca × Cg × Cd × Cs...</span>)
+             </div>
+             <div class="content-text text-accent" style="font-weight: bold;">Cable's <span class="highlight">RATED</span> Ampacity (from tables) MUST BE ≥ I<sub>req</sub>!</div>`
+        },
+         // SCENE 6.5: NEW SLIDE - INSTALLATION METHODS IMPACT (12s)
+        { id: 6.5, duration: 12000, content: `
+            <div class="title text-info">INSTALLATION METHOD MATTERS!</div>
+            <div class="punchy-headline text-white">How You Deploy Affects Ampacity & Derating!</div>
+            <div class="three-col-grid">
+                 <div class="card info">
+                    <div class="card-title text-info">In Free Air / Tray</div>
+                    <div class="card-text">Best cooling = Highest base ampacity. Grouping (Cg) is the main concern.</div>
+                 </div>
+                 <div class="card info">
+                    <div class="card-title text-info">In Conduit</div>
+                    <div class="card-text">Restricts airflow = Lower base ampacity than tray. Grouping (Cg) effect is stronger. Conduit fill limits apply!</div>
+                 </div>
+                 <div class="card info">
+                    <div class="card-title text-info">Direct Burial</div>
+                    <div class="card-text">Depends heavily on soil temp, depth (Cd), and soil type (Cs). Requires careful derating.</div>
+                 </div>
+            </div>
+            <div class="key-point" style="border-left-color: var(--info);">Consult specific tables in <span class="highlight">NEC/IEC/BS</span> for your exact installation method!</div>`
+        },
+        // SCENE 7: DIRECTIVE BRAVO: VOLTAGE DROP (15s) - Added consequence focus
+        { id: 7, duration: 15000, content: `
+             <div class="rule-box voltagedrop">
+                <div class="rule-box-num">②</div>
+                <div class="rule-box-content">
+                    <div class="rule-box-title">DIRECTIVE BRAVO: VOLTAGE INTEGRITY (%VD) - POWER MUST ARRIVE!</div>
+                    <div class="rule-box-detail">
+                        Check the voltage loss from source to load. Cables aren't perfect conductors!<br>
+                        Excessive Drop = <span class="critical">STARVED EQUIPMENT!</span> Motors struggle, lights dim, electronics fail. Efficiency plummets.
+                    </div>
+                </div>
+            </div>
+             <div class="punchy-headline text-accent">TARGET: <span class="critical">LESS THAN 5%</span> Voltage Loss Maximum (often 3% preferred).</div>`
+        },
+        // SCENE 7.5: NEW SLIDE - VOLTAGE DROP CONSEQUENCES (12s)
+        { id: 7.5, duration: 12000, content: `
+            <div class="title text-accent">VOLTAGE DROP: THE SILENT KILLER</div>
+            <div class="punchy-headline text-primary">Why Low Voltage is HIGH RISK!</div>
+            <div class="two-col-grid">
+                 <div class="card accent">
+                    <div class="card-title text-primary">Motors & Inductive Loads</div>
+                    <div class="card-text">Lower Voltage → Higher Current Draw (for same power) → <span class="critical">OVERHEATING</span> → Reduced Lifespan / Burnout! Difficulty starting.</div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-primary">Lighting & Electronics</div>
+                    <div class="card-text">Dim / Flickering Lights. Unreliable operation or damage to sensitive electronics (computers, PLCs). Voltage regulators overworked.</div>
+                 </div>
+            </div>
+            <div class="content-text text-accent" style="font-weight: bold;">Voltage Drop isn't just inefficiency, it's a direct threat to your equipment!</div>`
+        },
+        // SCENE 8: VD CALCULATION INTEL (18s) - Emphasis on parameters
+        { id: 8, duration: 18000, content: `
+            <div class="title text-success">VOLTAGE DROP: THE CALCULATION</div>
+            <div class="punchy-headline text-info">Predicting the Power Loss</div>
+            <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.07);">
+                 <div class="card-title text-success">KEY FORMULA (3Ø AC Approx. Volts):</div>
+                 <div class="card-text formula-font">
+                     VD ≈ (√3 × <span class="highlight">L</span> × <span class="highlight">I</span> × <span class="highlight">Z</span>) / 1000<br>
+                     <span style="font-size: 0.9em; color: var(--text-dim);">(Use Z = R×cosφ + X×sinφ for higher accuracy)</span>
+                 </div>
+                  <div class="card-text" style="margin-top: 0.5rem; font-size: 0.95em;">
+                     <span class="highlight">CRITICAL INPUTS:</span> Correct <span class="highlight">L</span>ength(m/ft), Load <span class="highlight">I</span>(A), Cable <span class="highlight">R</span>esistance & <span class="highlight">X</span>Reactance (Ω/km or Ω/kft from tables!), Load Power Factor (<span class="highlight">cosφ</span>). Accuracy here is vital!
+                 </div>
+            </div>
+             <div class="key-point" style="border-left-color: var(--success);"><strong>Combat Tip:</strong> Long runs are voltage drop enemies! If %VD fails, <span class="highlight">UPSIZE THE CABLE</span> - lower R means less drop.</div>`
+        },
+        // SCENE 9: DIRECTIVE CHARLIE: SHORT CIRCUIT (15s) - Kept punchy
+        { id: 9, duration: 15000, content: `
+            <div class="rule-box shortcircuit">
+                <div class="rule-box-num">③</div>
+                <div class="rule-box-content">
+                    <div class="rule-box-title">DIRECTIVE CHARLIE: SHORT CIRCUIT SURVIVAL - BRACE FOR IMPACT!</div>
+                    <div class="rule-box-detail">
+                       The ultimate test: Can the cable withstand the <span class="critical">VIOLENT ENERGY</span> of a direct fault (kA!) for the split second before the breaker acts? Insulation must hold, conductor must not vaporize!
+                    </div>
+                </div>
+            </div>
+            <div class="punchy-headline text-accent" style="animation: fire-flicker 0.4s infinite;">Check withstand or risk explosive failure! 💥</div>`
+        },
+         // SCENE 9.5: NEW SLIDE - SHORT CIRCUIT HAZARDS (12s)
+        { id: 9.5, duration: 12000, content: `
+            <div class="title text-primary">SHORT CIRCUIT: MORE THAN JUST HEAT!</div>
+            <div class="punchy-headline text-accent">Understanding the Destructive Forces</div>
+            <div class="two-col-grid">
+                 <div class="card accent" style="border-color: var(--primary);">
+                    <div class="card-title text-primary">🔥 Extreme Thermal Stress</div>
+                    <div class="card-text">I²R heating skyrockets! Can instantly melt insulation, damage conductor, ignite surroundings. <span class="critical">Adiabatic calc checks this.</span></div>
+                 </div>
+                 <div class="card accent" style="border-color: var(--primary);">
+                    <div class="card-title text-primary">💥 Violent Magnetic Forces</div>
+                    <div class="card-text">Parallel conductors repel violently! Can rip cables from supports, damage terminations, bend busbars. Requires proper bracing!</div>
+                 </div>
+            </div>
+            <div class="content-text text-primary" style="font-weight: bold;">Withstand calculation focuses on heat, but physical bracing is also critical!</div>`
+        },
+        // SCENE 10: SHORT CIRCUIT SURVIVAL FORMULA (18s) - More visual emphasis
+        { id: 10, duration: 18000, content: `
+            <div class="title text-primary">SHORT CIRCUIT: THE SURVIVAL EQUATION</div>
+            <div class="punchy-headline text-accent">Calculating Minimum Blast Resistance (Adiabatic)</div>
+             <div class="formula-box text-white" style="border-color: var(--primary); box-shadow: 0 0 25px var(--primary);">
+                Min Size (<span class="highlight">S<sub>min</sub></span>) = √(<span class="highlight">I<sub>sc</sub>² × t</span>) / <span class="highlight">k</span>
+             </div>
+            <div class="card accent" style="border-color: var(--primary); background: rgba(255, 0, 60, 0.07);">
+                 <div class="card-title text-primary">INPUT PARAMETERS:</div>
+                 <div class="card-text formula-font">
+                     <strong>S<sub>min</sub></strong> <span class="text-dim">= Min Required Size (mm²)</span><br>
+                     <strong class="highlight">I<sub>sc</sub></strong> <span class="text-dim">= Max Fault Current (Amps)</span><br>
+                     <strong class="highlight">t</strong> <span class="text-dim">= Max Clearing Time (seconds)</span><br>
+                     <strong class="highlight">k</strong> <span class="text-dim">= Cable Constant (Get from <span class="highlight">Standards!</span> Varies by material & insulation temp limit)</span>
+                 </div>
+            </div>
+             <div class="key-point" style="border-left-color: var(--primary);">Your <span class="highlight">Selected Cable Size (S)</span> MUST BE ≥ <span class="critical">S<sub>min</sub></span>! Size UP if needed!</div>`
+        },
+        // SCENE 11: MISSION BRIEFING (10s) - Updated title
+        { id: 11, duration: 10000, content: `
+            <div class="title text-success">FIELD EXERCISE: SIZE THAT CABLE!</div>
+            <div class="punchy-headline text-info">Applying the Triad Protocol Under Pressure</div>
+            <div class="icon-large" style="color: var(--success);">⚙️</div>
+            <div class="content-text text-dim">Operation: Safely power a 45kW motor through hostile territory (heat, grouping). Failure is unacceptable. Let's execute.</div>`
+        },
+        // SCENE 12: MISSION PARAMETERS (15s) - Kept data clear
+        { id: 12, duration: 15000, content: `
+            <div class="subtitle text-info">FIELD EXERCISE: PARAMETERS</div>
+            <div class="punchy-headline text-white">Target & Environmental Intel</div>
+            <div class="card info">
+                <div class="card-title text-info">📋 MISSION DATA:</div>
+                <div class="card-text formula-font" style="font-size: clamp(1rem, 2.2vw, 1.4rem);"> {/* Slightly smaller for fit */}
+                    • TARGET: 45 kW Motor, 400V, 3Ø (FLC = <span class="highlight">78A</span> @ PF=0.88, Eff=0.94)<br>
+                    • DISTANCE (L): 95 meters<br>
+                    • DEPLOYMENT: Cable Tray, Grouped (6 circuits total)<br>
+                    • ENVIRONMENT TEMP: 50°C<br>
+                    • ASSET TYPE: Copper / XLPE Insulation<br>
+                    • MAX FAULT (I<sub>sc</sub>): 12,000 A<br>
+                    • PROTECTION CLEAR TIME (t): 0.15 s
+                </div>
+            </div>`
+        },
+        // SCENE 13: EXECUTION 1: AMPACITY (20s) - Clearer explanation
+        { id: 13, duration: 20000, content: `
+            <div class="subtitle text-info">EXECUTION 1: AMPACITY CHECK</div>
+            <div class="punchy-headline text-warning">Calculating True Current Requirement!</div>
+            <div class="card warning">
+                <div class="card-title text-warning">DERATING FACTORS (Intel Applied):</div>
+                <div class="card-text formula-font"> Ca (50°C XLPE) ≈ <span class="critical">0.82</span> | Cg (6 circuits/tray) ≈ <span class="critical">0.65</span> </div>
+                 <div class="card-title text-warning" style="margin-top: 1rem;">EFFECTIVE LOAD (I<sub>req</sub>):</div>
+                 <div class="card-text formula-font"> I<sub>req</sub> = 78A / (0.82 × 0.65) = 78A / 0.533 = <span class="critical">146.4 Amps</span> </div>
+                 <div class="card-title text-warning" style="margin-top: 1rem;">ASSET SELECTION (Using Standard Sizes - Check Your Tables!):</div>
+                  <div class="card-text">
+                    - 35mm² Cu/XLPE (Rated ~135A) <span class="critical">FAILS! (135 < 146.4)</span><br>
+                    - 50mm² Cu/XLPE (Rated ~165A) <span class="text-success">PASSES! (165 > 146.4)</span><br>
+                    <strong>STEP 1 RESULT: Tentatively select <span class="text-success">50mm²</span></strong>
+                 </div>
+            </div>`
+        },
+        // SCENE 14: EXECUTION 2: VOLTAGE DROP (20s) - Clearer steps
+        { id: 14, duration: 20000, content: `
+            <div class="subtitle text-success">EXECUTION 2: VOLTAGE DROP CHECK (for 50mm²)</div>
+            <div class="punchy-headline text-info">Confirming Power Reaches the Target!</div>
+            <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.07);">
+                 <div class="card-title text-success">50mm² Cu IMPEDANCE INTEL:</div>
+                 <div class="card-text formula-font"> R ≈ 0.45 Ω/km | X ≈ 0.08 Ω/km | cosφ = 0.88 | sinφ ≈ 0.475 </div>
+                  <div class="card-title text-success" style="margin-top: 1rem;">CALCULATE VOLTAGE LOSS (VD - 3Ø AC):</div>
+                 <div class="card-text formula-font"> VD ≈ (1.732 × 95m × 78A × (0.45×0.88 + 0.08×0.475)) / 1000 ≈ <span class="highlight">5.57 Volts</span> </div>
+                  <div class="card-title text-success" style="margin-top: 1rem;">PERCENTAGE LOSS ASSESSMENT:</div>
+                  <div class="card-text"> %VD = (5.57V / 400V) × 100 = <span class="highlight">1.39%</span><br>
+                     <strong>STEP 2 RESULT: <span class="text-success">PASS!</span> (1.39% is well under 5%)</strong>
+                 </div>
+            </div>`
+        },
+        // SCENE 15: EXECUTION 3: SHORT CIRCUIT (20s) - Clearer result
+        { id: 15, duration: 20000, content: `
+            <div class="subtitle text-primary">EXECUTION 3: SHORT CIRCUIT CHECK (for 50mm²)</div>
+            <div class="punchy-headline text-accent">Verifying Blast Resistance!</div>
+             <div class="card accent" style="border-color: var(--primary); background: rgba(255, 0, 60, 0.07);">
+                 <div class="card-title text-primary">FAULT PARAMETERS:</div>
+                 <div class="card-text formula-font"> I<sub>sc</sub> = 12000 A | t = 0.15 s | k (XLPE Cu) = <span class="highlight">143</span> </div>
+                 <div class="card-title text-primary" style="margin-top: 1rem;">CALCULATE MINIMUM SURVIVAL SIZE (S<sub>min</sub>):</div>
+                 <div class="card-text formula-font"> S<sub>min</sub> = √(12000² × 0.15) / 143 ≈ <span class="critical">32.5 mm²</span> </div>
+                  <div class="card-title text-primary" style="margin-top: 1rem;">CAPABILITY ASSESSMENT:</div>
+                  <div class="card-text">
+                     Chosen Size S = 50mm².<br>
+                     Is 50mm² ≥ 32.5mm²? <span class="highlight">YES.</span><br>
+                     <strong>STEP 3 RESULT: <span class="text-success">PASS!</span> (50mm² exceeds minimum requirement)</strong>
+                 </div>
+             </div>`
+        },
+        // SCENE 16: MISSION DEBRIEF (10s) - Clearer outcome
+        { id: 16, duration: 10000, content: `
+            <div class="title text-success">MISSION DEBRIEF: TARGET SECURED</div>
+            <div class="punchy-headline text-primary">Triad Protocol Complete. Asset Confirmed.</div>
+            <div class="card success">
+                <div class="card-title text-success">FINAL ASSET SPECIFICATION:</div>
+                <div class="card-text" style="font-size: 1.4em; text-align: center; font-weight: bold; padding: 10px 0;">
+                    <span style="color: var(--success); font-size: 1.5em; filter: drop-shadow(0 0 5px var(--success));">✅ 50mm² Copper XLPE Cable ✅</span>
+                </div>
+                 <div class="card-text" style="text-align: center; margin-top: 0.5rem;"> All checks passed: Ampacity (derated), Voltage Drop, Short Circuit Withstand. Ready for deployment.</div>
+            </div>`
+        },
+         // SCENE 16.5: NEW SLIDE - STANDARDS REMINDER (10s)
+        { id: 16.5, duration: 10000, content: `
+            <div class="title text-purple">REMEMBER YOUR FIELD MANUAL!</div>
+            <div class="punchy-headline text-info">ALWAYS Consult Local & International Standards!</div>
+            <div class="card purple">
+                <div class="card-title text-purple">Key Directives:</div>
+                <div class="card-text" style="text-align: center; font-size: 1.1em;">
+                     <span class="highlight">IEC 60364</span> (Global Baseline) <br>
+                     <span class="highlight">NEC (NFPA 70)</span> (USA) <br>
+                     <span class="highlight">BS 7671</span> (UK) <br>
+                     <span class="highlight">AS/NZS 3000</span> (Australia/NZ) <br>
+                     <span class="text-dim">(And others specific to your region!)</span>
+                </div>
+            </div>
+            <div class="content-text text-accent">Standards provide the specific tables for Ampacity, Derating, R, X, k values!</div>`
+        },
+        // SCENE 17: LETHAL ERRORS (12s) - Kept punchy
+        { id: 17, duration: 12000, content: `
+            <div class="title text-primary">TOP SECRET: LETHAL ERRORS TO AVOID!</div>
+            <div class="punchy-headline text-accent">Mission Failure Points!</div>
+             <div class="card accent" style="animation: alert-glow 1.5s infinite;">
+                 <div class="card-title text-primary">CLASSIFIED ABORTS:</div>
+                 <div class="card-text formula-font" style="font-size: clamp(1rem, 2.2vw, 1.4rem);"> {/* Increased */ }
+                    <span class="critical">❌ IGNORING DERATING = MELTDOWN</span><br>
+                    <span class="critical">❌ SKIPPING VOLTAGE DROP = EQUIPMENT FAILURE</span><br>
+                    <span class="critical">❌ FORGETTING SHORT CIRCUIT = EXPLOSION RISK</span><br>
+                    <span class="critical">❌ USING BAD DATA (R/X/k) = FATAL MISCALCULATION</span><br>
+                    <span class="critical">❌ NO MOTOR SAFETY FACTOR = OVERLOAD</span>
+                 </div>
+             </div>`
+        },
+        // SCENE 18: Q-BRANCH: TOOLS (12s) - Kept emphasis
+        { id: 18, duration: 12000, content: `
+            <div class="title text-purple">YOUR Q-BRANCH: CALCULATION ARSENAL</div>
+            <div class="punchy-headline text-info">High-Tech Gear for Precision Sizing</div>
+             <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.1);">
+                <div class="card-title text-success" style="text-align: center; font-size: 1.8em; animation: pulse 1.5s infinite;">designcalculators.co.in</div>
+                <div class="card-text" style="text-align: center; margin-top: 1rem;">
+                    <span class="highlight">Your FREE Tactical Advantage:</span><br>
+                    <strong>✓ ALL-IN-ONE CABLE SIZER (Triad Protocol!)</strong><br>
+                    <strong>✓ VOLTAGE DROP ANALYZER</strong><br>
+                    <strong>✓ SHORT CIRCUIT SIMULATOR</strong><br>
+                    <strong>✓ DERATING INTEL DATABASE</strong><br>
+                    <span class="text-success">Zero Cost. Mission Ready. Instant Results.</span>
+                </div>
+             </div>`
+        },
+        // SCENE 19: AGENT STATUS: MASTER (10s) - Kept concise
+        { id: 19, duration: 10000, content: `
+            <div class="title text-success">AGENT STATUS: CERTIFIED CABLE MASTER</div>
+            <div class="punchy-headline text-primary">You Have the Intel. Execute with Precision.</div>
+            <div class="content-text text-dim" style="font-size: clamp(1.2rem, 3vw, 1.8rem); line-height: 1.8;"> {/* Increased */}
+                Master the Triad. Apply Derating. Verify VD & SC.<br>
+                Utilize your tools. Adhere to standards. Ensure System Integrity.
+            </div>
+            <div class="icon-large" style="color: var(--accent);">🏆</div>`
+        },
+        // SCENE 20: FINAL TRANSMISSION (10s) - Kept concise
+        { id: 20, duration: 10000, content: `
+            <div class="title text-success">END TRANSMISSION</div>
+            <div class="subtitle text-info">ACCESS FREE TOOLS & MISSION UPDATES:</div>
+            <div class="subtitle text-accent" style="animation: pulse 1.8s infinite; font-size: clamp(1.6rem, 4.5vw, 2.5rem); margin-top: 1rem;"> {/* Increased */}
+                 <a href="https://designcalculators.co.in" target="_blank" style="color: var(--accent); text-decoration: none;">https://designcalculators.co.in</a>
+            </div>
+            <div class="content-text text-dim" style="margin-top: 2rem;">
+                Disseminate this Briefing. Eliminate Cable Failures. Mission Complete. 🙏
+            </div>`
         }
+    ]; // Total 23 Scenes (Added 3 new slides)
 
-        while(svg.firstChild) {
-            svg.removeChild(svg.firstChild);
-        }
-        
-        activeElements = [];
-        isPlaying = false;
-    }
-
-    // --- Element Creation ---
-    function createElement(item) {
-        let el;
-        
-        if (item.type === 'text') {
-            el = document.createElementNS(svgNS, 'text');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('font-size', item.fontSize);
-            el.setAttribute('fill', item.fill || 'var(--draw-color)');
-            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
-            if(item.weight) el.setAttribute('font-weight', item.weight);
-            if(item.style) el.setAttribute('font-style', item.style);
-            el.textContent = '';
-            el.setAttribute('data-text', item.text);
-            el.classList.add('text-anim', 'anim-element');
-            
-        } else if (item.type === 'path') {
-            el = document.createElementNS(svgNS, 'path');
-            el.setAttribute('d', item.d);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
-            el.classList.add('anim-element');
-            
-        } else if (item.type === 'rect') {
-            el = document.createElementNS(svgNS, 'rect');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('width', item.width);
-            el.setAttribute('height', item.height);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
-            el.setAttribute('rx', item.rx || 8);
-            el.classList.add('anim-element');
-
-        } else if (item.type === 'circle') {
-            el = document.createElementNS(svgNS, 'circle');
-            el.setAttribute('cx', item.cx);
-            el.setAttribute('cy', item.cy);
-            el.setAttribute('r', item.r);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
-            el.classList.add('anim-element');
-        }
-        
-        if(el) {
-            el.id = item.id;
-            svg.appendChild(el);
-        }
-        
-        return el;
-    }
-
-    // --- Typing Animation ---
-    function typeText(el, text, duration) {
-        if(!text || text.length === 0) {
-            el.style.opacity = 1;
-            return;
-        }
-
-        let charIndex = 0;
-        const chars = text.split('');
-        const charDelay = (duration * 1000) / chars.length;
-        const actualDelay = Math.max(25, charDelay);
-
-        el.style.opacity = 1;
-
-        function addNextChar() {
-            if(charIndex < chars.length && isPlaying) {
-                el.textContent += chars[charIndex];
-                charIndex++;
-                const timeout = setTimeout(addNextChar, actualDelay);
-                timeouts.push(timeout);
-            }
-        }
-        addNextChar();
-    }
-
-    // --- Draw Animation ---
-    function drawShape(el, duration, animation) {
-        el.style.opacity = 1;
-        
-        if(animation) {
-            const classes = animation.split(' ');
-            classes.forEach(cls => el.classList.add(cls));
+    // --- JAVASCRIPT LOGIC (Unchanged) ---
+     function showScene(index) {
+        container.innerHTML = '';
+        if (sceneConfig[index]) {
+            const sceneData = sceneConfig[index];
+            const sceneElement = document.createElement('div');
+            sceneElement.id = `scene${sceneData.id}`;
+            sceneElement.className = 'scene';
+            sceneElement.innerHTML = sceneData.content;
+            container.appendChild(sceneElement);
+            const footerEl = document.createElement('div');
+            footerEl.className = 'footer-wrapper';
+            footerEl.innerHTML = `
+                <hr class="footer-line">
+                <div>prepared by <a href="https://designcalculators.co.in" target="_blank">https://designcalculators.co.in</a></div>
+            `;
+            container.appendChild(footerEl);
+            requestAnimationFrame(() => { sceneElement.scrollTop = 0; });
         } else {
-            el.classList.add('fade-in');
+            console.error(`Invalid scene index: ${index}`);
+            currentSceneIndex = 0; showScene(0);
         }
     }
-
-    // --- Main Animation Function ---
-    function animateItem(item) {
-        if (item.type === 'clear') {
-            activeElements.forEach(el => {
-                if(el && el.parentNode) {
-                    svg.removeChild(el);
-                }
-            });
-            activeElements = [];
-            return;
-        }
-
-        const el = createElement(item);
-        if(!el) return;
-        
-        activeElements.push(el);
-
-        if(item.type === 'text') {
-            const text = el.getAttribute('data-text');
-            if(item.animation) {
-                el.textContent = text;
-                drawShape(el, item.duration, item.animation);
-            } else {
-                typeText(el, text, item.duration);
-            }
-        } else {
-            drawShape(el, item.duration, item.animation);
-        }
+    function nextScene() { currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function prevScene() { currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function resetInterval() {
+        clearInterval(sceneInterval);
+        let duration = 13000; // Increased default slightly
+        if (sceneConfig[currentSceneIndex]?.duration) { duration = sceneConfig[currentSceneIndex].duration; }
+        sceneInterval = setInterval(nextScene, duration);
     }
+    if (sceneConfig.length > 0) { showScene(0); resetInterval(); }
+    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextScene(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); prevScene(); } });
+    container.addEventListener('click', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; nextScene(); });
+    let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0; const swipeThreshold = 50, tapThreshold = 10; let touchStartTime = 0; const tapTimeThreshold = 200;
+    container.addEventListener('touchstart', (e) => { let target = e.target; let isScrollable = false; while(target && target !== container) { if (target.scrollHeight > target.clientHeight && target.classList.contains('scene')) { const style = window.getComputedStyle(target); if (style.overflowY === 'auto' || style.overflowY === 'scroll') { isScrollable = true; break; } } target = target.parentNode; } if (isScrollable) { touchStartX = 0; return; } touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; touchStartTime = new Date().getTime(); }, { passive: true });
+    container.addEventListener('touchend', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; if (touchStartX === 0) { touchStartY = 0; touchStartTime = 0; return; } touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY; const touchTime = new Date().getTime() - touchStartTime; const diffX = touchEndX - touchStartX; const diffY = touchEndY - touchStartY; const absDiffX = Math.abs(diffX); const absDiffY = Math.abs(diffY); touchStartX = 0; touchStartY = 0; touchStartTime = 0; if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) return; if (absDiffX > swipeThreshold && absDiffX > absDiffY) { e.stopPropagation(); if (diffX < 0) { nextScene(); } else { prevScene(); } } });
 
-    // --- Start Animation ---
-    function startAnimation() {
-        if(isPlaying) return;
-        
-        resetAnimation();
-        isPlaying = true;
-        
-        timeline.forEach(item => {
-            const timeout = setTimeout(() => {
-                if(isPlaying) {
-                    animateItem(item);
-                }
-            }, item.time * 1000);
-            timeouts.push(timeout);
-        });
-
-        // Auto-restart
-        const restartTimeout = setTimeout(() => {
-            startAnimation();
-        }, (TOTAL_DURATION + 3) * 1000);
-        timeouts.push(restartTimeout);
-    }
-
-    // --- Auto-start on page load ---
-    window.addEventListener('load', () => {
-        setTimeout(startAnimation, 500);
-    });
-
-    window.addEventListener('beforeunload', resetAnimation);
 </script>
 
 </body>
