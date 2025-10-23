@@ -3,413 +3,549 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Voltage Drop - The Professional Masterclass</title>
+    <title>Voltage Drop - Operation VOLTAGE INTEGRITY v5</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --board-bg: #f8f9fa;
-            --draw-color: #1a1a1a;
-            --primary-blue: #0056b3;
-            --danger-red: #b33600;
-            --success-green: #28a745;
-            --warning-orange: #b36b00;
-            --info-purple: #5e35b1;
-            --font-main: 'Kalam', cursive;
-            --font-alt: 'Architects Daughter', cursive;
+            /* Palette emphasizing Info Blue, with danger/warning accents */
+            --primary: #00a8ff; /* Electric Blue for Primary Theme/Info */
+            --accent: #ff003c; /* Intense Red for Danger/Critical Warnings */
+            --warning: #ffc400; /* Bright Yellow/Gold for Warnings/Emphasis */
+            --success: #00ff7f; /* Spring Green for Success/Pass */
+            --purple: #a300ff; /* Deep Purple for Intel/Standards */
+            --dark-bg: #0a0f1f; /* Very Dark Blue/Black */
+            --card-bg: #1a243d; /* Dark Indigo/Blue */
+            --text-main: #f0f8ff; /* Alice Blue (slightly blueish white) */
+            --text-dim: #b8c8e8; /* Adjusted Muted Blue/Gray - Even Brighter */
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            background-color: #000;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #050810 50%, var(--dark-bg) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+        }
+
+        #container {
+            width: 95vw;
+            height: auto;
+            max-width: 1600px;
+            max-height: 95vh;
+            aspect-ratio: 16/9;
+            background: var(--dark-bg);
+            border-radius: 20px;
+            box-shadow: 0 0 100px rgba(0, 168, 255, 0.5), inset 0 0 50px rgba(0, 168, 255, 0.15);
             overflow: hidden;
-            font-family: var(--font-main);
-        }
-
-        #whiteboard-container {
+            display: flex;
+            flex-direction: column;
             position: relative;
-            background: #000;
-            width: 100vw; 
-            height: 56.25vw;
-            max-height: 100vh;
-            max-width: 177.78vh;
-            margin: auto;
-            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
         }
 
-        #whiteboard {
+        .scene {
             width: 100%;
-            height: 100%;
-            background-color: var(--board-bg);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #animation-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .anim-element {
-            opacity: 0;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        
-        #splash-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #1a2a3a;
-            z-index: 100;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #fff;
-            transition: opacity 1s ease-out;
-        }
-
-        #splash-screen.fade-out {
+            /* Further reduced padding for max space */
+            padding: 1% 2.5%;
+            text-align: center;
             opacity: 0;
-            pointer-events: none;
-        }
-        
-        #splash-screen h1 {
-            font-family: var(--font-main);
-            font-size: 5vw;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-        
-        #splash-screen p {
-             font-family: var(--font-alt);
-             font-size: 2.5vw;
+            animation: fadeInScene 0.7s ease-out forwards;
+            overflow-y: auto;
+            position: relative;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        #replay-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 200;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
+        .scene::-webkit-scrollbar { display: none; }
+
+        /* --- Animations (Kept cinematic style) --- */
+        @keyframes fadeInScene { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUpIn { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.75); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.04); filter: brightness(1.3);} }
+        @keyframes glow-primary { 0%, 100% { text-shadow: 0 0 12px rgba(0, 168, 255, 0.8), 0 0 30px rgba(0, 168, 255, 0.5); } 50% { text-shadow: 0 0 30px rgba(0, 168, 255, 1), 0 0 60px rgba(0, 168, 255, 0.7); } }
+        @keyframes glow-accent { 0%, 100% { text-shadow: 0 0 12px rgba(255, 0, 60, 0.8), 0 0 30px rgba(255, 0, 60, 0.5); } 50% { text-shadow: 0 0 30px rgba(255, 0, 60, 1), 0 0 60px rgba(255, 0, 60, 0.7); } }
+        @keyframes shake { 0%, 100% { transform: translate(0, 0); } 10%, 90% { transform: translate(-3px, -2px); } 20%, 80% { transform: translate(3px, 2px); } 30%, 50%, 70% { transform: translate(-4px, 3px); } 40%, 60% { transform: translate(4px, -3px); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); animation-timing-function: ease-out; } 50% { transform: translateY(-18px); animation-timing-function: ease-in; } }
+        @keyframes alert-glow { 0%, 100% { background-color: rgba(255, 0, 60, 0.15); border-color: rgba(255, 0, 60, 0.6); } 50% { background-color: rgba(255, 0, 60, 0.3); border-color: rgba(255, 0, 60, 1); } }
+
+
+        /* --- FONT SIZE MAX BOOST (Final Tuning) --- */
+        /* Adjusted clamp minimums slightly for better small-screen fit */
+        .title {
+            font-size: clamp(2.6rem, 7vw, 4.5rem); /* Min adjusted */
+            font-weight: 800; margin-bottom: 1rem; line-height: 1.05; animation: slideDownIn 0.8s ease-out; letter-spacing: 1.5px; text-transform: uppercase;
         }
-        #replay-container.visible {
-            opacity: 1;
-            pointer-events: auto;
+        .subtitle {
+            font-size: clamp(2rem, 5.5vw, 3.5rem); /* Min adjusted */
+            font-weight: 700; margin-bottom: 1rem; line-height: 1.1; animation: slideUpIn 0.8s ease-out 0.1s forwards; opacity: 0; letter-spacing: 0.5px;
         }
-        
-        #replay-btn {
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 2vw;
-            padding: 20px 40px;
-            cursor: pointer;
-            border: 3px solid var(--primary-blue);
-            background-color: #fff;
-            color: var(--primary-blue);
-            border-radius: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        .punchy-headline {
+            font-size: clamp(1.8rem, 5vw, 3rem); /* Min adjusted */
+            font-weight: 700; margin: 0.9rem 0; line-height: 1.2; animation: slideUpIn 0.8s ease-out 0.15s forwards; opacity: 0; letter-spacing: 0.5px; text-transform: uppercase;
         }
-        #replay-btn:hover {
-             background-color: var(--primary-blue); 
-             color: #fff;
-             transform: scale(1.05);
+        .content-text {
+            font-size: clamp(1.3rem, 3.3vw, 2rem); /* Min adjusted */
+            color: var(--text-dim); line-height: 1.8; margin: 0.9rem auto; animation: slideUpIn 0.9s ease-out 0.2s forwards; max-width: 88%; opacity: 0;
+        }
+        /* Text Colors */
+        .text-primary { color: var(--primary); animation: glow-primary 1.8s infinite; font-weight: 700; }
+        .text-accent { color: var(--accent); animation: glow-accent 1.5s infinite; font-weight: 700; }
+        .text-warning { color: var(--warning); font-weight: 700; filter: brightness(1.2); }
+        .text-success { color: var(--success); font-weight: 700; }
+        .text-danger { color: var(--accent); font-weight: 700; }
+        .text-info { color: var(--primary); font-weight: 700; }
+        .text-purple { color: var(--purple); font-weight: 700; }
+        .text-white { color: var(--text-main); }
+        .text-dim { color: var(--text-dim); }
+
+        .icon-large {
+            font-size: clamp(4.5rem, 10vw, 7rem); /* Adjusted */
+            animation: pulse 1.8s infinite; margin: 1.3rem 0;
         }
 
-        #progress-bar-container {
-            position: absolute;
-            bottom: 0px;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: rgba(0, 0, 0, 0.1);
+        .card {
+            background: var(--card-bg); border: 2px solid rgba(255, 255, 255, 0.15); border-left: 10px solid var(--primary);
+            border-radius: 10px; padding: 1.8rem; /* Adjusted */ margin: 1rem auto; animation: scaleUpIn 0.6s ease-out; width: 96%; max-width: 1050px; /* Slightly narrower */
+            text-align: left; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        }
+        /* Card variations */
+        .card.accent { border-left-color: var(--accent); background: rgba(255, 0, 60, 0.08); }
+        .card.warning { border-left-color: var(--warning); background: rgba(255, 196, 0, 0.08); }
+        .card.success { border-left-color: var(--success); background: rgba(0, 255, 127, 0.08); }
+        .card.purple { border-left-color: var(--purple); background: rgba(163, 0, 255, 0.08); }
+        .card.info { border-left-color: var(--info); background: rgba(0, 168, 255, 0.08); } /* Added info card variation */
+
+
+        .card-title {
+            font-size: clamp(1.7rem, 3.8vw, 2.4rem); /* Adjusted */
+            font-weight: 700; margin-bottom: 1rem; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .card-text {
+            font-size: clamp(1.2rem, 2.8vw, 1.8rem); /* Adjusted */
+            color: var(--text-dim); line-height: 1.85;
+        }
+        .card-text strong { color: var(--success); font-weight: 700; }
+        .card-text .highlight { color: var(--warning); font-weight: 700; }
+        .card-text .critical { color: var(--accent); font-weight: 700; text-transform: uppercase; }
+
+        .code-text {
+            font-family: 'Consolas', 'Monaco', monospace; background: rgba(0,0,0,0.7); padding: 0.6rem 1.2rem; border-radius: 5px; border: 1px solid rgba(0, 168, 255, 0.4);
+            font-size: clamp(1rem, 2.3vw, 1.6rem); /* Adjusted */
+            display: inline-block; margin: 0.5rem 0; color: #a0ffa0; letter-spacing: 1.5px;
+        }
+        .formula-font {
+            font-family: 'Consolas', 'Monaco', monospace; line-height: 1.85;
+            font-size: clamp(1.2rem, 2.8vw, 1.8rem); /* Adjusted */
+            color: var(--text-main); word-wrap: break-word; /* Ensure formulas wrap */
+        }
+        .formula-box {
+            background: rgba(0, 0, 0, 0.8); border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(0, 168, 255, 0.5); padding: 1.8rem; margin: 1.6rem auto; border-radius: 10px; font-family: 'Consolas', 'Monaco', monospace;
+            font-size: clamp(1.3rem, 3vw, 1.9rem); /* Adjusted */
+            line-height: 1.85; text-align: center; animation: slideUpIn 0.9s ease-out; width: fit-content; max-width: 95%; color: #f0f8ff;
+        }
+        .formula-box .highlight { color: var(--primary); filter: brightness(1.2); }
+
+        .two-col-grid, .three-col-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Adjusted */ gap: 1.5rem; width: 98%; max-width: 1400px; margin: 1.5rem auto; animation: slideUpIn 0.9s ease-out;
+        }
+        /* Make three col potentially wrap earlier if needed */
+         @media (max-width: 1100px) {
+            .three-col-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+         }
+
+
+        .checklist-item {
+            display: flex; align-items: center; margin: 1rem 0; color: var(--text-dim); line-height: 1.85;
+            font-size: clamp(1.2rem, 2.6vw, 1.7rem); /* Adjusted */
+            animation: slideUpIn 1s ease-out; text-align: left;
+        }
+        .checklist-item strong { color: var(--success); font-weight: 700; }
+        .check-icon {
+            color: var(--success); font-weight: 900; margin-right: 1.3rem; font-size: 1.7em; /* Adjusted */ line-height: 1;
         }
 
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #28a745, #20c997);
-            transition: width 0.2s ease;
+        .key-point {
+            background: rgba(0, 168, 255, 0.12); border-left: 8px solid var(--primary); padding: 1.6rem; margin: 1.6rem auto; border-radius: 8px;
+            font-size: clamp(1.2rem, 2.8vw, 1.8rem); /* Adjusted */
+            line-height: 1.8; animation: slideUpIn 0.8s ease-out; text-align: left; color: var(--text-dim);
         }
+        .key-point strong { color: var(--primary); }
 
-        .fade-in { animation: fadeIn 0.4s ease-in forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- Footer --- */
+        .footer-wrapper {
+            width: 100%; text-align: center; padding: 15px 0 18px 0; background: #000;
+            font-size: clamp(1.1rem, 2vw, 1.4rem); color: rgba(204, 204, 204, 0.75); flex-shrink: 0; animation: slideUpIn 1.2s ease-out; position: relative; z-index: 10;
+        }
+        .footer-line { border: 0; height: 1px; background: rgba(0, 168, 255, 0.5); width: 70%; margin: 0 auto 12px auto; }
+        .footer-wrapper a { color: var(--warning); text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        .footer-wrapper a:hover { color: #fff; text-shadow: 0 0 10px var(--warning); }
+
     </style>
 </head>
 <body>
-    <div id="whiteboard-container">
-        <div id="splash-screen">
-            <h1>Voltage Drop</h1>
-            <p>The Industrial Masterclass</p>
-        </div>
-        <div id="whiteboard">
-            <svg id="animation-svg" viewBox="0 0 1600 900"></svg>
-            <div id="progress-bar-container">
-                <div id="progress-bar"></div>
-            </div>
-        </div>
-        <div id="replay-container">
-            <button id="replay-btn">Replay Tutorial</button>
-        </div>
-    </div>
+
+<div id="container"></div>
 
 <script>
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.getElementById('animation-svg');
-    const progressBar = document.getElementById('progress-bar');
-    const splashScreen = document.getElementById('splash-screen');
-    const replayContainer = document.getElementById('replay-container');
-    const replayBtn = document.getElementById('replay-btn');
-    
-    let activeElements = [];
-    let animationFrame;
-    let timeouts = [];
-    let isPlaying = false;
+    const container = document.getElementById('container');
+    let currentSceneIndex = 0;
+    let sceneInterval;
 
-    const TOTAL_DURATION = 200; // Faster pace
-
-    const timeline = [
-        // SECTION 1: WHAT (0-15s)
-        { time: 0.5, type: 'text', id: 'title-what', text: 'WHAT is Voltage Drop?', x: 800, y: 150, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2.5, fill: 'var(--primary-blue)' },
-        { time: 3.5, type: 'text', id: 'what-desc', text: 'The loss of electrical pressure (voltage) along a cable.', x: 800, y: 280, fontSize: 72, anchor: 'middle', duration: 3},
-        { time: 7, type: 'rect', id: 'source-box', x: 100, y: 400, width: 300, height: 200, stroke: 'var(--success-green)', strokeWidth: 8, duration: 1},
-        { time: 8, type: 'text', id: 'source-text', text: 'Source', x: 250, y: 480, fontSize: 68, anchor: 'middle', weight: 'bold', duration: 1.5},
-        { time: 8.5, type: 'text', id: 'source-volt', text: '415V', x: 250, y: 550, fontSize: 60, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 1.5},
-        { time: 9, type: 'rect', id: 'load-box', x: 1200, y: 400, width: 300, height: 200, stroke: 'var(--danger-red)', strokeWidth: 8, duration: 1},
-        { time: 10, type: 'text', id: 'load-text', text: 'Load', x: 1350, y: 480, fontSize: 68, anchor: 'middle', weight: 'bold', duration: 1.5},
-        { time: 10.5, type: 'text', id: 'load-volt', text: '402V', x: 1350, y: 550, fontSize: 60, anchor: 'middle', weight: 'bold', fill: 'var(--danger-red)', duration: 1.5},
-        { time: 11, type: 'path', id: 'cable-path', d: 'M 400 500 H 1200', stroke: 'var(--draw-color)', strokeWidth: 10, duration: 1.5},
-        { time: 12, type: 'text', id: 'cable-label', text: 'Long Cable', x: 800, y: 480, fontSize: 54, anchor: 'middle', duration: 1.5},
-        { time: 13.5, type: 'text', id: 'vd-label', text: 'Voltage Drop = 13V', x: 800, y: 600, fontSize: 72, anchor: 'middle', weight: 'bold', fill: 'var(--warning-orange)', duration: 2},
-        { time: 16, type: 'clear' },
-        
-        // SECTION 2: WHY (17-38s)
-        { time: 17, type: 'text', id: 'title-why', text: 'WHY is it Critical?', x: 800, y: 150, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2, fill: 'var(--danger-red)' },
-        { time: 20, type: 'text', id: 'why-1', text: '1. Equipment Malfunction & Damage', x: 150, y: 300, fontSize: 72, duration: 3},
-        { time: 24, type: 'text', id: 'why-2', text: '2. Poor Performance (Dim Lights, Slow Motors)', x: 150, y: 450, fontSize: 72, duration: 3.5},
-        { time: 28.5, type: 'text', id: 'why-3', text: '3. Overheating & Fire Hazard', x: 150, y: 600, fontSize: 72, duration: 3},
-        { time: 32.5, type: 'text', id: 'why-4', text: '4. Wasted Energy & Higher Bills', x: 150, y: 750, fontSize: 72, duration: 3},
-        { time: 37, type: 'clear' },
-
-        // SECTION 3: WHERE & WHEN (38-58s)
-        { time: 38, type: 'text', id: 'title-where', text: 'WHERE & WHEN to Check?', x: 800, y: 150, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2, fill: 'var(--info-purple)' },
-        { time: 41, type: 'text', id: 'where-text', text: 'WHERE: On the longest cable runs and most critical loads.', x: 800, y: 320, fontSize: 72, anchor: 'middle', duration: 4 },
-        { time: 46, type: 'text', id: 'when-text', text: 'WHEN: Always during the design phase!', x: 800, y: 550, fontSize: 80, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 3.5 },
-        { time: 50.5, type: 'rect', id: 'when-box', x: 200, y: 480, width: 1200, height: 140, stroke: 'var(--success-green)', strokeWidth: 8, fill: 'none', duration: 1.5},
-        { time: 53, type: 'text', id: 'when-subtitle', text: '(Never wait for problems to appear on site)', x: 800, y: 700, fontSize: 60, anchor: 'middle', duration: 3},
-        { time: 57, type: 'clear' },
-        
-        // SECTION 4: HOW (The Formula) (58-85s)
-        { time: 58, type: 'text', id: 'title-how', text: 'HOW to Calculate?', x: 800, y: 120, fontSize: 110, anchor: 'middle', weight: 'bold', duration: 2, fill: 'var(--draw-color)' },
-        { time: 61, type: 'text', id: 'how-subtitle', text: 'Using the International IEC Formula:', x: 800, y: 220, fontSize: 68, anchor: 'middle', duration: 2.5},
-        { time: 64, type: 'rect', id: 'formula-box', x: 50, y: 280, width: 1500, height: 180, stroke: 'var(--primary-blue)', strokeWidth: 8, fill: 'rgba(0, 86, 179, 0.05)', duration: 1.5},
-        { time: 66, type: 'text', id: 'formula-text', text: 'VD = K × I × L × [R·cos(φ) + X·sin(φ)]', x: 800, y: 390, fontSize: 78, anchor: 'middle', weight: 'bold', duration: 4},
-        { time: 71, type: 'text', id: 'k-label', text: 'K = Constant (√3 for 3-ph)', x: 150, y: 550, fontSize: 64, duration: 2.5, fill: 'var(--danger-red)' },
-        { time: 74, type: 'text', id: 'i-label', text: 'I = Load Current (A)', x: 150, y: 650, fontSize: 64, duration: 2, fill: 'var(--primary-blue)'},
-        { time: 76.5, type: 'text', id: 'l-label', text: 'L = Cable Length (km)', x: 150, y: 750, fontSize: 64, duration: 2, fill: 'var(--warning-orange)'},
-        { time: 79, type: 'text', id: 'z-label', text: '[ ... ] = Impedance (Ω/km)', x: 900, y: 550, fontSize: 64, duration: 2.5, fill: 'var(--info-purple)'},
-        { time: 82, type: 'text', id: 'z-subtitle', text: '(R & X from cable datasheets)', x: 900, y: 650, fontSize: 54, duration: 2},
-        { time: 85, type: 'clear' },
-
-        // SECTION 5: Industrial Example (86-140s)
-        { time: 86, type: 'text', id: 'example-title', text: 'Example: 110kW Pump Motor', x: 800, y: 100, fontSize: 90, weight: 'bold', anchor: 'middle', fill: 'var(--success-green)', duration: 3 },
-        { time: 90, type: 'text', id: 'given-title', text: 'Data:', x: 100, y: 200, fontSize: 70, weight: 'bold', duration: 1.5},
-        { time: 92, type: 'text', id: 'given1', text: '• Current (I): 195A | PF (cos φ): 0.89', x: 150, y: 290, fontSize: 64, duration: 3 },
-        { time: 96, type: 'text', id: 'given2', text: '• Cable Length (L): 200 meters = 0.2 km', x: 150, y: 380, fontSize: 64, duration: 3 },
-        { time: 100, type: 'text', id: 'given3', text: '• Cable: 120mm² Copper (R=0.18, X=0.08 Ω/km)', x: 150, y: 470, fontSize: 64, duration: 4 },
-        { time: 105, type: 'path', d: 'M 50 550 H 1550', stroke: 'rgba(0,0,0,0.2)', strokeWidth: 3, duration: 1 },
-        { time: 107, type: 'text', id: 'calc-title', text: 'Calculation:', x: 100, y: 620, fontSize: 70, weight: 'bold', duration: 1.5},
-        { time: 109, type: 'text', id: 'sin-phi', text: 'First, find sin(φ): If cos(φ)=0.89, then sin(φ)=0.456', x: 150, y: 700, fontSize: 60, duration: 4},
-        { time: 114, type: 'text', id: 'vd-calc-line', text: 'VD = 1.732 × 195A × 0.2km × [0.18×0.89 + 0.08×0.456]', x: 800, y: 800, fontSize: 58, anchor: 'middle', duration: 6},
-        { time: 121, type: 'clear' },
-
-        // Section 6: Result & Final Check (122-160s)
-        { time: 122, type: 'text', id: 'result-title', text: 'Result', x: 800, y: 150, fontSize: 110, weight: 'bold', anchor: 'middle', fill: 'var(--draw-color)', duration: 2},
-        { time: 125, type: 'text', id: 'vd-result', text: 'VD = 13.27 Volts', x: 800, y: 320, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 3},
-        { time: 129, type: 'text', id: 'check-title', text: 'But is this acceptable?', x: 800, y: 450, fontSize: 72, anchor: 'middle', duration: 2.5},
-        { time: 132, type: 'rect', id: 'check-box', x: 100, y: 520, width: 1400, height: 280, stroke: 'var(--danger-red)', strokeWidth: 8, fill: 'rgba(179, 54, 0, 0.05)', duration: 1.5},
-        { time: 134, type: 'text', id: 'check-formula', text: '%VD = (Voltage Drop / System Voltage) × 100', x: 800, y: 600, fontSize: 68, anchor: 'middle', duration: 4},
-        { time: 139, type: 'text', id: 'check-calc', text: '%VD = (13.27V / 415V) × 100 = 3.2%', x: 800, y: 720, fontSize: 72, anchor: 'middle', weight: 'bold', duration: 4},
-        { time: 144, type: 'clear'},
-
-        // Section 7: Conclusion (145-200s)
-        { time: 145, type: 'text', id: 'final-title', text: 'Final Verdict', x: 800, y: 200, fontSize: 110, weight: 'bold', anchor: 'middle', fill: 'var(--primary-blue)', duration: 3},
-        { time: 149, type: 'text', id: 'final-result', text: '3.2% Voltage Drop', x: 800, y: 350, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 3},
-        { time: 153, type: 'rect', id: 'final-box', x: 200, y: 420, width: 1200, height: 250, stroke: 'var(--success-green)', strokeWidth: 10, fill: 'rgba(40, 167, 69, 0.1)', duration: 1.5},
-        { time: 155, type: 'text', id: 'final-verdict', text: 'PASS ✓', x: 800, y: 550, fontSize: 130, anchor: 'middle', weight: 'bold', fill: 'var(--success-green)', duration: 3},
-        { time: 159, type: 'text', id: 'final-standard', text: 'This is within the 5% limit recommended by IEC 60364 for industrial loads.', x: 800, y: 750, fontSize: 60, anchor: 'middle', duration: 5},
-        { time: 165, type: 'text', id: 'footer-link', text: 'For industrial calculators, visit: https://designcalculators.co.in', x: 800, y: 860, fontSize: 54, anchor: 'middle', weight: 'bold', fill: 'var(--draw-color)', duration: 8},
-    ];
-
-    function resetAnimation() {
-        isPlaying = false;
-        timeouts.forEach(t => clearTimeout(t));
-        timeouts = [];
-        if (animationFrame) cancelAnimationFrame(animationFrame);
-        while(svg.firstChild) svg.removeChild(svg.firstChild);
-        activeElements = [];
-        progressBar.style.width = '0%';
-    }
-
-    function updateUI(elapsedSeconds) {
-        const percentage = (elapsedSeconds / TOTAL_DURATION) * 100;
-        progressBar.style.width = percentage + '%';
-    }
-
-    function createElement(item) {
-        let el;
-        if (item.type === 'text') {
-            el = document.createElementNS(svgNS, 'text');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('font-size', item.fontSize);
-            el.setAttribute('fill', item.fill || 'var(--draw-color)');
-            if (item.anchor) el.setAttribute('text-anchor', item.anchor);
-            if (item.weight) el.setAttribute('font-weight', item.weight);
-            el.textContent = '';
-            el.setAttribute('data-text', item.text);
-        } else if (item.type === 'path' || item.type === 'rect') {
-            el = document.createElementNS(svgNS, item.type);
-            if (item.type === 'path') {
-                el.setAttribute('d', item.d);
-            } else { // rect
-                el.setAttribute('x', item.x);
-                el.setAttribute('y', item.y);
-                el.setAttribute('width', item.width);
-                el.setAttribute('height', item.height);
-                el.setAttribute('rx', 15);
-            }
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
+    // --- CINEMATIC VOLTAGE DROP SCENES (v5 - Simpler, Larger, More Slides) ---
+    // Total Duration aims for ~8-9+ minutes
+    const sceneConfig = [
+        // SCENE 1: INTRO - THE SILENT THIEF (12s)
+        { id: 1, duration: 12000, content: `
+            <div class="title text-primary" style="animation: pulse 2s infinite;">OPERATION: VOLTAGE INTEGRITY</div>
+            <div class="subtitle text-warning">ALERT: Power Levels Dropping!</div>
+            <div class="punchy-headline text-white">Meet VOLTAGE DROP: The Silent Power Thief</div>
+            <div class="icon-large" style="color: var(--warning); animation: shake 0.5s infinite;">📉</div>
+            <div class="content-text text-dim">It secretly steals electricity from your wires. You pay, equipment suffers! Let's expose it.</div>`
+        },
+        // SCENE 2: MISSION: WHY CARE? (10s)
+        { id: 2, duration: 10000, content: `
+            <div class="title text-info">MISSION BRIEFING</div>
+            <div class="punchy-headline text-success">WHY YOU MUST STOP VOLTAGE DROP!</div>
+            <div class="content-text text-dim">Ignoring it leads to <span class="critical">fried equipment, wasted cash, unreliable systems, and safety risks!</span> Your mission: Learn to fight back.</div>`
+        },
+        // SCENE 3: WHAT CAUSES IT? (15s)
+        { id: 3, duration: 15000, content: `
+            <div class="title text-info">INTEL: WHAT IS VOLTAGE DROP?</div>
+            <div class="punchy-headline text-white">Electricity's Toll Road!</div>
+            <div class="card info">
+                <div class="card-title text-info">Electrical "Friction":</div>
+                <div class="card-text">
+                    • Wires aren't perfect highways; they have <span class="highlight">Resistance (Impedance Z)</span>.<br>
+                    • Pushing Power (Current <span class="highlight">I</span>) through this resistance uses up some Voltage (<span class="highlight">V = I × Z</span>).<br>
+                    • <span class="critical">Longer Wire = More Resistance = More Voltage Lost!</span><br>
+                    • <span class="critical">More Power Needed = More Current = More Voltage Lost!</span>
+                </div>
+            </div>`
+        },
+        // SCENE 3.5: R vs X Simplified (15s)
+        { id: 3.5, duration: 15000, content: `
+            <div class="title text-info">DECODING IMPEDANCE (Z)</div>
+            <div class="punchy-headline text-white">The Two Villains of Voltage Loss</div>
+            <div class="two-col-grid">
+                 <div class="card info">
+                    <div class="card-title text-info">Resistance (R) - The Constant Drag</div>
+                    <div class="card-text">Simple friction. Always there (DC & AC). Gets <span class="highlight">worse with heat & length</span>. Reduced by <span class="highlight">thicker wires</span>.</div>
+                 </div>
+                 <div class="card info">
+                    <div class="card-title text-info">Reactance (X) - The AC Gremlin</div>
+                    <div class="card-text">Only bugs AC power! Caused by invisible magnetic fields. Gets <span class="highlight">worse with higher frequency & cable spacing.</span></div>
+                 </div>
+            </div>
+            <div class="content-text text-dim"><span class="highlight">Impedance (Z)</span> is their combined evil power! We need it for AC calculations.</div>`
+        },
+        // SCENE 3.6: WHERE TO FIND R & X? (12s)
+        { id: 3.6, duration: 12000, content: `
+            <div class="title text-purple">INTEL GATHERING: FIND R & X DATA</div>
+            <div class="punchy-headline text-white">Your Resistance Recon Sources</div>
+            <div class="card purple">
+                <div class="card-title text-purple">TOP SECRET LOCATIONS:</div>
+                <div class="card-text">
+                    <span class="check-icon">✓</span> <strong class="highlight">Cable Maker's Files (Datasheets):</strong> Best accuracy!<br>
+                    <span class="check-icon">✓</span> <strong class="highlight">Code Books (NEC, IEC, BS...):</strong> Standard values.<br>
+                    <span class="check-icon">✓</span> <strong class="highlight">Online Calculators/Software:</strong> Quick lookup.
+                </div>
+            </div>
+            <div class="key-point"><strong>CRITICAL MISSION INTEL:</strong> Get R values for the cable's <span class="highlight">HOT operating temperature</span>, not cold! Heat increases resistance!</div>`
+        },
+        // SCENE 4: POWER CIRCUITS DAMAGE (PART 1) (15s) - SPLIT
+        { id: 4, duration: 15000, content: `
+            <div class="title text-accent">DANGER ZONE: POWER EQUIPMENT</div>
+            <div class="punchy-headline text-primary">How Low Voltage KILLS Your Machines! (Part 1)</div>
+            <div class="two-col-grid">
+                 <div class="card accent">
+                    <div class="card-title text-primary">Motors Struggle & OVERHEAT!</div>
+                    <div class="card-text">Low volts make motors pull <span class="critical">WAY more amps</span> for the same job. Result? <span class="critical">Excess heat, shorter life, burnout!</span></div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-primary">Lights Go DIM & FLICKER!</div>
+                    <div class="card-text">The most obvious sign! Annoying, reduces visibility, and kills expensive LED drivers or ballasts early.</div>
+                 </div>
+            </div>`
+        },
+        // SCENE 4.5: POWER CIRCUITS DAMAGE (PART 2) (15s) - SPLIT
+        { id: 4.5, duration: 15000, content: `
+            <div class="title text-accent">DANGER ZONE: POWER EQUIPMENT</div>
+            <div class="punchy-headline text-primary">How Low Voltage KILLS Your Machines! (Part 2)</div>
+            <div class="two-col-grid">
+                 <div class="card accent">
+                    <div class="card-title text-primary">Heaters Turn Lukewarm!</div>
+                    <div class="card-text">Heating power crashes when voltage drops (Power ≈ V²). Things take forever to heat up, wasting time & energy.</div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-primary">You're Paying for NOTHING!</div>
+                    <div class="card-text">Every volt lost in the wire is <span class="critical">100% WASTED ENERGY</span> turning into heat. It's like burning money!</div>
+                 </div>
+            </div>`
+        },
+        // SCENE 5: INSTRUMENTATION DAMAGE (PART 1) (15s) - SPLIT
+        { id: 5, duration: 15000, content: `
+            <div class="title text-accent">DANGER ZONE: CONTROL SYSTEMS</div>
+            <div class="punchy-headline text-primary">Low Voltage = GARBAGE DATA! (Part 1)</div>
+             <div class="two-col-grid">
+                 <div class="card accent">
+                    <div class="card-title text-primary">Sensors LIE!</div>
+                    <div class="card-text">If a sensor doesn't get enough power, its readings become <span class="critical">WRONG!</span> Imagine controlling a process with false temperature or pressure data!</div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-primary">PLCs & Computers CRASH!</div>
+                    <div class="card-text">These brains need stable power. Voltage dips cause <span class="critical">random errors, shutdowns, lost data, communication failures.</span> Chaos!</div>
+                 </div>
+            </div>`
+        },
+         // SCENE 5.5: INSTRUMENTATION DAMAGE (PART 2) (15s) - SPLIT
+        { id: 5.5, duration: 15000, content: `
+            <div class="title text-accent">DANGER ZONE: CONTROL SYSTEMS</div>
+            <div class="punchy-headline text-primary">Low Voltage = GARBAGE DATA! (Part 2)</div>
+             <div class="two-col-grid">
+                 <div class="card accent">
+                    <div class="card-title text-primary">Devices REFUSE TO START!</div>
+                    <div class="card-text">Many sensors and controllers have a minimum voltage. If the drop is too much, they simply <span class="critical">won't power up or work correctly.</span></div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-primary">NOISE GETS LOUDER!</div>
+                    <div class="card-text">When the signal voltage is weak, it's easily <span class="critical">overwhelmed by electrical noise</span> from nearby power cables, making readings even more unreliable.</div>
+                 </div>
+            </div>
+             <div class="content-text text-accent" style="font-weight: bold;">Precision systems demand precise voltage!</div>`
+        },
+        // SCENE 6: SAFE LIMITS: THE RULEBOOK (15s)
+        { id: 6, duration: 15000, content: `
+            <div class="title text-purple">SAFE LIMITS: KNOW YOUR TARGET!</div>
+            <div class="punchy-headline text-warning">How Much Voltage Loss is OK?</div>
+            <div class="card purple">
+                <div class="card-title text-purple">General Rules (Check Local Codes!):</div>
+                <div class="card-text" style="text-align: center;">
+                     <span class="highlight">Power/Lights:</span> Keep TOTAL loss <span class="critical">UNDER 5%</span><br>
+                     <span class="highlight">(Often split: < 3% on main feeder, < 3% on final circuit)</span>
+                </div>
+                 <div class="card-title text-purple" style="margin-top: 1rem;">Sensitive Gear:</div>
+                 <div class="card-text"> Instruments? Computers? May need <span class="critical">MUCH LESS drop (1-2%)!</span> <span class="highlight">Check the manual!</span></div>
+            </div>`
+        },
+         // SCENE 6.5: TEMPERATURE'S ASSAULT (15s)
+        { id: 6.5, duration: 15000, content: `
+            <div class="title text-warning">ENEMY ALERT: HEAT INCREASES LOSS!</div>
+            <div class="punchy-headline text-accent">Hot Wires = Higher Resistance = More Voltage Drop!</div>
+             <div class="card warning">
+                 <div class="card-title text-warning">Why Heat Hurts:</div>
+                 <div class="card-text">
+                    • Metal Resistance (R) goes <span class="critical">UP</span> when temperature goes up.<br>
+                    • This applies to heat from the outside (hot room) AND heat the wire makes itself carrying current!<br>
+                    • Result? <span class="critical">Voltage drop gets WORSE</span> when things are running hard or it's hot out.
+                 </div>
+                  <div class="card-title text-warning" style="margin-top: 1rem;">YOUR ACTION:</div>
+                  <div class="card-text"> ALWAYS use Resistance values (<span class="highlight">R</span>) from tables/datasheets that are rated for the cable's <span class="highlight">HOT operating temperature</span> (like 70°C or 90°C)!</div>
+             </div>`
+        },
+         // SCENE 6.6: POWER FACTOR'S ROLE (15s)
+        { id: 6.6, duration: 15000, content: `
+            <div class="title text-warning">SIDE MISSION: POWER FACTOR</div>
+            <div class="punchy-headline text-accent">Wasted Current Also Increases Voltage Drop!</div>
+             <div class="card warning">
+                 <div class="card-title text-warning">The Problem with Poor Power Factor:</div>
+                 <div class="card-text">
+                    • Loads like motors don't use power perfectly (PF < 1.0).<br>
+                    • This inefficiency forces the system to send <span class="critical">EXTRA "reactive" current</span> through the wires just to deliver the needed "real" power.<br>
+                 </div>
+                  <div class="card-title text-warning" style="margin-top: 1rem;">THE IMPACT:</div>
+                  <div class="card-text"> That <span class="critical">EXTRA current (I)</span> still flows through the wire's resistance (Z), causing <span class="critical">EXTRA Voltage Drop (V=IZ)!</span> Improving PF reduces current AND voltage drop!</div>
+             </div>`
+        },
+        // SCENE 7: CALCULATING DROP: POWER (20s) - Added clarity
+        { id: 7, duration: 20000, content: `
+            <div class="title text-success">ACTION: CALCULATE POWER VD</div>
+            <div class="punchy-headline text-info">Predicting Loss for Motors, Lights, etc.</div>
+             <div class="formula-box text-white" style="border-color: var(--success); box-shadow: 0 0 20px var(--success);">
+                <span class="highlight">3-Phase AC Volts Lost:</span><br>
+                VD ≈ (1.732 × <span class="highlight">Length</span> × <span class="highlight">Amps</span> × (<span class="highlight">R</span>×PF + <span class="highlight">X</span>×sinφ)) / 1000
+             </div>
+             <div class="card success">
+                <div class="card-title text-success">NEED THIS INTEL:</div>
+                <div class="card-text" style="font-size: clamp(1.3rem, 2.9vw, 1.9rem);"> {/* Increased font */}
+                    • <strong class="highlight">Length</strong> (L): Meters (one way)<br>
+                    • <strong class="highlight">Amps</strong> (I): Full Load Amps<br>
+                    • <strong class="highlight">R & X</strong>: Cable Resistance/Reactance (Ω/km @ HOT Temp!)<br>
+                    • <strong class="highlight">PF</strong> (cosφ): Load Power Factor
+                </div>
+            </div>
+             <div class="content-text text-success" style="font-weight:bold;">% Lost = (Lost Volts / Start Volts) × 100 → Keep < 5%!</div>`
+        },
+        // SCENE 8: CALCULATING DROP: INSTRUMENTS (20s) - Added clarity
+        { id: 8, duration: 20000, content: `
+            <div class="title text-success">ACTION: CALCULATE CONTROL/SENSOR VD</div>
+            <div class="punchy-headline text-info">Ensuring Signals Arrive & Devices Work</div>
+            <div class="card info">
+                <div class="card-title text-info">Simpler Check (Usually DC / Low AC):</div>
+                <div class="card-text">
+                    • Reactance (X) often ignored.<br>
+                    • Use <span class="highlight">DC Resistance (R<sub>dc</sub>)</span>.<br>
+                    • Current (I) is tiny (e.g., 0.02A for 20mA).
+                </div>
+             </div>
+             <div class="formula-box text-white" style="border-color: var(--primary); box-shadow: 0 0 20px var(--primary);">
+                <span class="highlight">DC Loop Volts Lost:</span><br>
+                 VD ≈ (2 × <span class="highlight">Length</span> × <span class="highlight">Amps</span> × <span class="highlight">R</span><sub>dc</sub>) / 1000<br>
+                 <span style="font-size: 0.8em; color: var(--text-dim);">(R<sub>dc</sub> in Ω/km!)</span>
+             </div>
+              <div class="key-point" style="border-left-color: var(--primary); background: rgba(255,0,60,0.1); border-color: var(--accent); animation: alert-glow 1.8s infinite;"><strong><span class="critical">VITAL CHECK:</span></strong> Is (Start Volts - Lost Volts) <span class="highlight">ABOVE</span> the device's <span class="critical">MINIMUM needed voltage</span> (from manual)?</div>`
+        },
+        // SCENE 8.5: INSTRUMENTATION WIRING TIPS (15s)
+        { id: 8.5, duration: 15000, content: `
+            <div class="title text-info">CONTROL WIRING TACTICS</div>
+            <div class="punchy-headline text-white">Stop Noise From Killing Your Signals!</div>
+             <div class="card info">
+                <div class="card-title text-info">Noise Reduction Protocol:</div>
+                <div class="card-text">
+                    <span class="check-icon">✓</span> Use <strong class="highlight">Twisted Pairs:</strong> Cancels magnetic noise.<br>
+                    <span class="check-icon">✓</span> Use <strong class="highlight">Shielded Cables (STP):</strong> Blocks electrical noise.<br>
+                    <span class="check-icon">✓</span> <strong class="critical">Ground Shield at ONE End ONLY!</strong> (Avoids loops).<br>
+                    <span class="check-icon">✓</span> <strong class="critical">Keep SEPARATE</strong> from power cables!
+                 </div>
+             </div>`
+        },
+        // SCENE 9: FIELD EXERCISE - POWER (25s) - Larger text
+        { id: 9, duration: 25000, content: `
+            <div class="title text-success">FIELD EXERCISE: POWER CIRCUIT</div>
+            <div class="punchy-headline text-info">Test: 45kW Motor | 95m | 50mm² Cable</div>
+            <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.07);">
+                 <div class="card-title text-success">INPUTS:</div>
+                 <div class="card-text formula-font"> L=95m | I=78A | PF=0.88 | sinφ≈0.475 | R≈0.45 | X≈0.08 </div>
+                  <div class="card-title text-success" style="margin-top: 1rem;">CALCULATION (3Ø AC):</div>
+                 <div class="card-text formula-font"> VD ≈ (1.732 × 95 × 78 × (0.45×0.88 + 0.08×0.475)) / 1000 ≈ <span class="highlight">5.57 Volts Lost</span> </div>
+                  <div class="card-title text-success" style="margin-top: 1rem;">RESULT (vs 400V):</div>
+                  <div class="card-text" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem);"> % Lost = (5.57 / 400) × 100 = <span class="highlight">1.39%</span><br>
+                     <strong>STATUS: <span class="text-success" style="font-size: 1.2em;">PASS! (< 5%)</span></strong>
+                 </div>
+            </div>`
+        },
+        // SCENE 10: FIELD EXERCISE - INSTRUMENT (25s) - Larger text
+        { id: 10, duration: 25000, content: `
+            <div class="title text-success">FIELD EXERCISE: SENSOR LOOP</div>
+            <div class="punchy-headline text-info">Test: 24V Sensor | 250m | 1.5mm² Cable</div>
+             <div class="card info">
+                <div class="card-title text-info">INPUTS:</div>
+                <div class="card-text formula-font"> Sensor Min: 12V | Supply: 24V | I=0.02A | L=250m | R<sub>dc</sub>≈12.1 Ω/km </div>
+                 <div class="card-title text-info" style="margin-top: 1rem;">CALCULATION (DC):</div>
+                 <div class="card-text formula-font"> VD ≈ (2 × 250m × 0.02A × 12.1 Ω/km) / 1000 ≈ <span class="highlight">0.121 Volts Lost</span> </div>
+                 <div class="card-title text-info" style="margin-top: 1rem;">RESULT (Voltage at Sensor):</div>
+                 <div class="card-text" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem);">
+                     V<sub>sensor</sub> = 24V - 0.121V = <span class="highlight">23.88V</span><br>
+                     Is 23.88V ≥ 12V Minimum? Yes!<br>
+                     <strong>STATUS: <span class="text-success" style="font-size: 1.2em;">PASS!</span></strong>
+                 </div>
+             </div>`
+        },
+         // SCENE 10.5: MOTOR STARTING VOLTAGE DIP (18s) - Larger Text
+        { id: 10.5, duration: 18000, content: `
+            <div class="title text-accent">SPECIAL ALERT: MOTOR STARTING!</div>
+            <div class="punchy-headline text-primary">The Grid-Shaking Power Draw!</div>
+             <div class="card accent" style="animation: alert-glow 2s infinite;">
+                 <div class="card-title text-primary">The DANGER:</div>
+                 <div class="card-text">
+                    • Starting Motors GULP Current! (<span class="highlight">5-8x normal!</span>).<br>
+                    • This HUGE current causes a <span class="critical">MASSIVE, SHORT Voltage DIP</span> system-wide.<br>
+                    • Running VD might be OK, but starting dip could be <span class="critical">OVER 15%!</span>
+                 </div>
+                  <div class="card-title text-primary" style="margin-top: 1rem;">Consequences:</div>
+                  <div class="card-text"><span class="critical">Lights flicker hard, controls reset, other motors trip!</span> Check starting VD for big motors!</div>
+             </div>`
+        },
+        // SCENE 11: COUNTERMEASURES (18s) - Larger text
+        { id: 11, duration: 18000, content: `
+            <div class="title text-warning">COUNTERMEASURES: WINNING MOVES</div>
+            <div class="punchy-headline text-success">How to Defeat Voltage Drop!</div>
+            <div class="two-col-grid">
+                 <div class="card success"> <div class="card-title text-success">🚀 GO BIGGER! (Upsize Cable)</div> <div class="card-text">Less resistance = Less loss. #1 tactic.</div> </div>
+                 <div class="card success"> <div class="card-title text-success">⚡ HIGHER VOLTAGE!</div> <div class="card-text">More volts = Less amps for same power = Less loss.</div> </div>
+                 <div class="card success"> <div class="card-title text-success">📏 SHORTER PATH!</div> <div class="card-text">Less distance = Less resistance. Optimize routes!</div> </div>
+                 <div class="card success"> <div class="card-title text-success">⛓️ DOUBLE UP! (Parallel Cables)</div> <div class="card-text">Splits current, lowers resistance. (Install carefully!).</div> </div>
+            </div>`
+        },
+        // SCENE 12: STANDARDS & TOOLS (15s) - Larger text
+        { id: 12, duration: 15000, content: `
+            <div class="title text-purple">YOUR FIELD MANUAL & GADGETS</div>
+            <div class="punchy-headline text-info">Use the Official Rules & Smart Tools!</div>
+            <div class="two-col-grid">
+                 <div class="card purple">
+                    <div class="card-title text-purple">Code Books (The Law!):</div>
+                    <div class="card-text" style="font-size: clamp(1.2rem, 2.7vw, 1.7rem);"> {/* Increased */}
+                        • <span class="highlight">NEC</span> (USA)<br>
+                        • <span class="highlight">IEC 60364</span> (Global)<br>
+                        • <span class="highlight">BS 7671</span> (UK)<br>
+                        (Find limits & calculation help!)
+                    </div>
+                 </div>
+                 <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.1);">
+                    <div class="card-title text-success">Your Secret Weapon:</div>
+                     <div class="card-text" style="text-align: center; font-size: 1.7em;"> {/* Increased */}
+                        <a href="https://designcalculators.co.in" target="_blank" style="color: var(--warning); text-decoration: none; animation: pulse 1.5s infinite;">designcalculators.co.in</a><br>
+                        <span class="text-dim">(FREE Voltage Drop Calculators!)</span>
+                     </div>
+                 </div>
+            </div>`
+        },
+        // SCENE 13: MISSION SUMMARY (12s) - Larger text
+        { id: 13, duration: 12000, content: `
+            <div class="title text-success">MISSION RECAP: VICTORY OVER VD!</div>
+            <div class="punchy-headline text-primary">Key Intel Downloaded!</div>
+            <div class="card success" style="max-width: 1300px;"> {/* Wider */}
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Voltage Drop = Power Lost as Heat in Wires.</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Hurts Equipment, Wastes Money, Causes Errors.</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Aim Below 5% (Power), Check Minimums (Control).</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Calculate using Length, Amps, R, X (hot!), PF.</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Fix: <span class="highlight">UPSIZE THE CABLE!</span></div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Watch for <span class="critical">Heat</span> & <span class="critical">Motor Starts!</span></div></div>
+            </div>`
+        },
+        // SCENE 14: FINAL TRANSMISSION (10s) - Larger text
+        { id: 14, duration: 10000, content: `
+            <div class="title text-success">END TRANSMISSION</div>
+            <div class="subtitle text-info">GET FREE TOOLS & MORE INTEL:</div>
+            <div class="subtitle text-warning" style="animation: pulse 1.8s infinite; font-size: clamp(2.2rem, 6vw, 3.2rem); margin-top: 1.8rem;"> {/* Increased */}
+                 <a href="https://designcalculators.co.in" target="_blank" style="color: var(--warning); text-decoration: none;">https://designcalculators.co.in</a>
+            </div>
+            <div class="content-text text-dim" style="margin-top: 3rem;">
+                Eliminate Voltage Drop. Power Your Mission. Agent, Dismissed. 🙏
+            </div>`
         }
-        if (el) {
-            el.id = item.id;
-            el.classList.add('anim-element');
-            svg.appendChild(el);
-        }
-        return el;
-    }
+    ]; // Total 31 Scenes
 
-    function typeText(el, text, duration) {
-        if (!text || text.length === 0) { el.style.opacity = 1; return; }
-        let charIndex = 0;
-        const chars = text.split('');
-        const actualDelay = Math.max(25, (duration * 1000) / chars.length); // Faster typing
-        el.style.opacity = 1;
+    // --- JAVASCRIPT LOGIC (Unchanged) ---
+    function showScene(index) { container.innerHTML = ''; if (sceneConfig[index]) { const sceneData = sceneConfig[index]; const sceneElement = document.createElement('div'); sceneElement.id = `scene${sceneData.id}`; sceneElement.className = 'scene'; sceneElement.innerHTML = sceneData.content; container.appendChild(sceneElement); const footerEl = document.createElement('div'); footerEl.className = 'footer-wrapper'; footerEl.innerHTML = `<hr class="footer-line"><div>prepared by <a href="https://designcalculators.co.in" target="_blank">https://designcalculators.co.in</a></div>`; container.appendChild(footerEl); requestAnimationFrame(() => { sceneElement.scrollTop = 0; }); } else { console.error(`Invalid scene index: ${index}`); currentSceneIndex = 0; showScene(0); } }
+    function nextScene() { currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function prevScene() { currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function resetInterval() { clearInterval(sceneInterval); let duration = 16000; /* Increased default */ if (sceneConfig[currentSceneIndex]?.duration) { duration = sceneConfig[currentSceneIndex].duration; } sceneInterval = setInterval(nextScene, duration); }
+    if (sceneConfig.length > 0) { showScene(0); resetInterval(); }
+    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextScene(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); prevScene(); } });
+    container.addEventListener('click', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; nextScene(); });
+    let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0; const swipeThreshold = 50, tapThreshold = 10; let touchStartTime = 0; const tapTimeThreshold = 200;
+    container.addEventListener('touchstart', (e) => { let target = e.target; let isScrollable = false; while(target && target !== container) { if (target.scrollHeight > target.clientHeight && target.classList.contains('scene')) { const style = window.getComputedStyle(target); if (style.overflowY === 'auto' || style.overflowY === 'scroll') { isScrollable = true; break; } } target = target.parentNode; } if (isScrollable) { touchStartX = 0; return; } touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; touchStartTime = new Date().getTime(); }, { passive: true });
+    container.addEventListener('touchend', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; if (touchStartX === 0) { touchStartY = 0; touchStartTime = 0; return; } touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY; const touchTime = new Date().getTime() - touchStartTime; const diffX = touchEndX - touchStartX; const diffY = touchEndY - touchStartY; const absDiffX = Math.abs(diffX); const absDiffY = Math.abs(diffY); touchStartX = 0; touchStartY = 0; touchStartTime = 0; if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) return; if (absDiffX > swipeThreshold && absDiffX > absDiffY) { e.stopPropagation(); if (diffX < 0) { nextScene(); } else { prevScene(); } } });
 
-        function addNextChar() {
-            if (charIndex < chars.length && isPlaying) {
-                el.textContent += chars[charIndex++];
-                timeouts.push(setTimeout(addNextChar, actualDelay));
-            }
-        }
-        addNextChar();
-    }
-
-    function drawShape(el, duration) {
-        el.style.opacity = 1;
-        el.style.animationDuration = (duration > 0.8 ? 0.8 : duration) + 's'; // Faster drawing
-        el.classList.add('fade-in');
-    }
-
-    function animateItem(item) {
-        if (item.type === 'clear') {
-            activeElements.forEach(el => {
-                if (el && el.parentNode) {
-                    el.style.transition = 'opacity 0.3s ease-out';
-                    el.style.opacity = 0;
-                }
-            });
-            setTimeout(() => {
-                 activeElements.forEach(el => el && el.parentNode && svg.removeChild(el));
-                 activeElements = [];
-            }, 300);
-            return;
-        }
-        const el = createElement(item);
-        if(!el) return;
-        activeElements.push(el);
-        if(item.type === 'text') {
-            typeText(el, el.getAttribute('data-text'), item.duration);
-        } else {
-            drawShape(el, item.duration);
-        }
-    }
-
-    function startAnimation() {
-        if(isPlaying) return;
-        
-        resetAnimation();
-        replayContainer.classList.remove('visible');
-        isPlaying = true;
-        const startTime = Date.now();
-
-        timeline.forEach(item => {
-            const timeout = setTimeout(() => {
-                if(isPlaying) animateItem(item);
-            }, item.time * 1000);
-            timeouts.push(timeout);
-        });
-
-        function updateProgress() {
-            if(!isPlaying) return;
-            const elapsed = (Date.now() - startTime) / 1000;
-            
-            if(elapsed >= TOTAL_DURATION) {
-                isPlaying = false;
-                progressBar.style.width = '100%';
-                setTimeout(() => replayContainer.classList.add('visible'), 2000);
-                return;
-            }
-            
-            updateUI(elapsed);
-            animationFrame = requestAnimationFrame(updateProgress);
-        }
-        updateProgress();
-    }
-
-    function initTutorial() {
-        setTimeout(() => {
-            splashScreen.classList.add('fade-out');
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-                startAnimation();
-            }, 1000);
-        }, 3000);
-    }
-
-    replayBtn.addEventListener('click', startAnimation);
-    window.addEventListener('load', initTutorial);
-    window.addEventListener('beforeunload', resetAnimation);
 </script>
+
 </body>
 </html>
-
-
-
