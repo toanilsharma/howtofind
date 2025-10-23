@@ -3,421 +3,589 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World-Class Breaker Sizing Animation</title>
+    <title>Circuit Breaker Sizing - Circuit Sentinels v10</title> <!-- Version Updated -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --board-bg: #f8f9fa;
-            --draw-color: #212529;
-            --primary-blue: #0056b3;
-            --danger-red: #dc3545;
-            --success-green: #28a745;
-            --warning-orange: #fd7e14;
-            --font-main: 'Kalam', cursive;
-            --font-alt: 'Architects Daughter', cursive;
+            /* Palette: Tech Blue, Safety Green, Warning Yellow, Alert Red */
+            --primary: #2979ff; /* Bright Tech Blue */
+            --accent: #ff1744; /* Intense Alert Red */
+            --warning: #ffc400; /* Bright Yellow/Gold */
+            --success: #00e676; /* Vibrant Safety Green */
+            --purple: #d500f9; /* Vivid Purple for Standards/Types */
+            --dark-bg: #10141c; /* Very Dark Blue/Gray */
+            --card-bg: #1c2333; /* Dark Slate Blue */
+            --text-main: #e8f0ff; /* Light Blueish White */
+            --text-dim: #b0c0e0; /* Muted Blue/Gray */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            background-color: #212529;
+            background: linear-gradient(145deg, var(--dark-bg) 0%, #151a26 50%, var(--dark-bg) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            font-family: var(--font-main);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
         }
 
-        #whiteboard-container {
-            position: relative;
+        #container {
             width: 95vw;
-            max-width: 1400px;
-            aspect-ratio: 16 / 9;
-        }
-
-        #whiteboard {
-            width: 100%;
-            height: 100%;
-            background-color: var(--board-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 5px 5px 15px rgba(0,0,0,0.1) inset;
-            position: relative;
+            height: auto;
+            max-width: 1600px;
+            max-height: 95vh;
+            aspect-ratio: 16/9;
+            background: var(--dark-bg);
+            border-radius: 20px;
+            box-shadow: 0 0 100px rgba(41, 121, 255, 0.4), inset 0 0 50px rgba(41, 121, 255, 0.1); /* Blue shadow */
             overflow: hidden;
-            border: 18px solid #ced4da;
-            border-bottom-width: 50px;
-        }
-
-        #animation-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .anim-element {
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        
-        .visible {
-            opacity: 1;
-        }
-
-        .draw-anim {
-            stroke-dasharray: 2000;
-            stroke-dashoffset: 2000;
-        }
-
-        .text-anim {
-            font-family: var(--font-main);
-        }
-
-        .alt-font {
-             font-family: var(--font-alt);
-        }
-
-        @keyframes draw { to { stroke-dashoffset: 0; } }
-        @keyframes fade-in { to { opacity: 1; } }
-        @keyframes fire-glow {
-            0%, 100% { stroke: #e55039; }
-            50% { stroke: #f6b93b; }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        #controls {
-            position: absolute;
-            top: -50px;
-            left: 0;
-            z-index: 100;
-        }
-        #play-btn {
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 16px;
-            padding: 8px 16px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
             cursor: pointer;
-            border: 2px solid var(--primary-blue);
-            background-color: #fff;
-            color: var(--primary-blue);
-            border-radius: 5px;
-            transition: all 0.2s;
+            border: 1px solid rgba(41, 121, 255, 0.2); /* Subtle blue border */
         }
-        #play-btn:hover { background-color: var(--primary-blue); color: #fff; }
-        #play-btn:disabled { cursor: not-allowed; opacity: 0.5; }
 
-        #voiceover-display {
-            position: absolute;
-            bottom: -45px;
-            left: 0;
-            right: 0;
+        .scene {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2% 4%;
             text-align: center;
-            font-size: 1.5vw;
-            line-height: 1.3;
-            color: var(--draw-color);
-            padding: 5px;
-            font-family: var(--font-alt);
+            opacity: 0;
+            animation: fadeInScene 0.7s ease-out forwards;
+            overflow-y: auto;
+            position: relative;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        #progress-bar-container {
-            position: absolute;
-            bottom: -37px;
-            left: -1px;
-            right: -1px;
-            height: 12px;
-            background: #adb5bd;
+        .scene::-webkit-scrollbar { display: none; }
+
+        /* --- Animations --- */
+        @keyframes fadeInScene { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUpIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.04); filter: brightness(1.25);} }
+        @keyframes glow-primary { /* Blue glow */
+             0%, 100% { text-shadow: 0 0 10px rgba(41, 121, 255, 0.7), 0 0 25px rgba(41, 121, 255, 0.4); }
+             50% { text-shadow: 0 0 25px rgba(41, 121, 255, 1), 0 0 50px rgba(41, 121, 255, 0.6); }
         }
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #007bff, #00c6ff);
+        @keyframes glow-accent { /* Red glow */
+             0%, 100% { text-shadow: 0 0 10px rgba(255, 23, 68, 0.7), 0 0 25px rgba(255, 23, 68, 0.4); }
+             50% { text-shadow: 0 0 25px rgba(255, 23, 68, 1), 0 0 50px rgba(255, 23, 68, 0.6); }
         }
+        @keyframes shake { 0%, 100% { transform: translate(0, 0); } 10%, 90% { transform: translate(-3px, -2px); } 20%, 80% { transform: translate(3px, 2px); } 30%, 50%, 70% { transform: translate(-4px, 3px); } 40%, 60% { transform: translate(4px, -3px); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); animation-timing-function: ease-out; } 50% { transform: translateY(-15px); animation-timing-function: ease-in; } }
+        @keyframes alert-glow { /* Pulsing red background for cards */
+             0%, 100% { background-color: rgba(255, 23, 68, 0.08); border-left-color: rgba(255, 23, 68, 0.6); }
+             50% { background-color: rgba(255, 23, 68, 0.18); border-left-color: rgba(255, 23, 68, 1); }
+        }
+
+
+        /* --- Font Sizes --- */
+        .title {
+            font-size: clamp(2.8rem, 7vw, 4.6rem);
+            font-weight: 800; margin-bottom: 0.8rem; /* Reduced margin */ line-height: 1.1; animation: slideDownIn 0.8s ease-out; letter-spacing: 1.5px; text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: clamp(2.2rem, 5.8vw, 3.6rem);
+            font-weight: 700; margin-bottom: 0.8rem; line-height: 1.15; animation: slideUpIn 0.8s ease-out 0.1s forwards; opacity: 0; letter-spacing: 0.5px;
+        }
+        .punchy-headline {
+            font-size: clamp(2rem, 5.2vw, 3.1rem);
+            font-weight: 700; margin: 0.8rem 0; /* Reduced margin */ line-height: 1.2; animation: slideUpIn 0.8s ease-out 0.15s forwards; opacity: 0; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .content-text {
+            font-size: clamp(1.5rem, 3.6vw, 2.2rem);
+            color: var(--text-dim); line-height: 1.75; /* Slightly reduced */ margin: 0.8rem auto; animation: slideUpIn 0.9s ease-out 0.2s forwards; max-width: 90%; /* Increased max-width */ opacity: 0;
+        }
+        /* Text Colors */
+        .text-primary { color: var(--primary); animation: glow-primary 1.8s infinite; font-weight: 700; }
+        .text-accent { color: var(--accent); animation: glow-accent 1.5s infinite; font-weight: 700; }
+        .text-warning { color: var(--warning); font-weight: 700; filter: brightness(1.2); }
+        .text-success { color: var(--success); font-weight: 700; } /* Use specific success color */
+        .text-danger { color: var(--accent); font-weight: 700; }
+        .text-info { color: var(--primary); font-weight: 700; } /* Info = Primary Blue */
+        .text-purple { color: var(--purple); font-weight: 700; }
+        .text-white { color: var(--text-main); }
+        .text-dim { color: var(--text-dim); }
+
+        .icon-large {
+            font-size: clamp(5rem, 11vw, 7.5rem);
+            animation: pulse 1.8s infinite; margin: 1.2rem 0; /* Reduced margin */
+        }
+
+        .card {
+            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.15); border-left: 10px solid var(--primary);
+            border-radius: 10px; padding: 1.8rem; /* Adjusted */ margin: 0.8rem auto; /* Adjusted */ animation: scaleUpIn 0.6s ease-out; width: 96%; max-width: 1150px; /* Adjusted */
+            text-align: left; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        }
+        /* Card variations */
+        .card.accent { border-left-color: var(--accent); background: rgba(255, 23, 68, 0.08); }
+        .card.warning { border-left-color: var(--warning); background: rgba(255, 196, 0, 0.08); }
+        .card.success { border-left-color: var(--success); background: rgba(0, 230, 118, 0.08); }
+        .card.purple { border-left-color: var(--purple); background: rgba(213, 0, 249, 0.08); }
+        .card.info { border-left-color: var(--info); background: rgba(41, 121, 255, 0.08); }
+
+
+        .card-title {
+            font-size: clamp(1.9rem, 4vw, 2.6rem); /* Adjusted */
+            font-weight: 700; margin-bottom: 1rem; /* Adjusted */ letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .card-text {
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            color: var(--text-dim); line-height: 1.8; /* Adjusted */
+        }
+        .card-text strong { color: var(--success); font-weight: 700; }
+        .card-text .highlight { color: var(--warning); font-weight: 700; }
+        .card-text .critical { color: var(--accent); font-weight: 700; text-transform: uppercase; }
+
+        .code-text {
+            font-family: 'Consolas', 'Monaco', monospace; background: rgba(0,0,0,0.7); padding: 0.7rem 1.4rem; border-radius: 5px; border: 1px solid rgba(41, 121, 255, 0.4); /* Blue border */
+            font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+            display: inline-block; margin: 0.6rem 0; color: #a0d8ff; /* Light blue */ letter-spacing: 1.5px;
+        }
+        .formula-font {
+            font-family: 'Consolas', 'Monaco', monospace; line-height: 1.9;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            color: var(--text-main); word-wrap: break-word;
+            text-align: left;
+        }
+        .formula-box {
+            background: rgba(0, 0, 0, 0.85); border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(41, 121, 255, 0.5); padding: 2rem; margin: 1.5rem auto; border-radius: 10px; font-family: 'Consolas', 'Monaco', monospace;
+            font-size: clamp(1.5rem, 3.3vw, 2.1rem);
+            line-height: 1.9; text-align: center; animation: slideUpIn 0.9s ease-out; width: fit-content; max-width: 95%; color: #e8f0ff;
+        }
+        .formula-box .highlight { color: var(--primary); filter: brightness(1.2); }
+
+        .two-col-grid, .three-col-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.2rem; /* Adjusted gap */ width: 98%; max-width: 1450px; margin: 1.2rem auto; /* Adjusted margin */ animation: slideUpIn 0.9s ease-out;
+        }
+        @media (max-width: 1200px) {
+            .three-col-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        }
+
+
+        .checklist-item {
+            display: flex; align-items: center; margin: 1rem 0; /* Adjusted margin */ color: var(--text-dim); line-height: 1.85; /* Adjusted */
+            font-size: clamp(1.4rem, 3vw, 1.9rem);
+            animation: slideUpIn 1s ease-out; text-align: left;
+        }
+        .checklist-item strong { color: var(--success); font-weight: 700; }
+        .check-icon {
+            color: var(--success); font-weight: 900; margin-right: 1.5rem; font-size: 1.8em; line-height: 1;
+        }
+
+        .key-point {
+            background: rgba(41, 121, 255, 0.1); border-left: 8px solid var(--primary); padding: 1.8rem; margin: 1.5rem auto; border-radius: 8px;
+            font-size: clamp(1.4rem, 3.1vw, 2rem);
+            line-height: 1.85; animation: slideUpIn 0.8s ease-out; text-align: left; color: var(--text-dim);
+        }
+        .key-point strong { color: var(--primary); }
+
+        /* --- Footer --- */
+        .footer-wrapper {
+            width: 100%; text-align: center; padding: 12px 0 15px 0; background: #000;
+            font-size: clamp(1.1rem, 2vw, 1.4rem); color: rgba(204, 204, 204, 0.75); flex-shrink: 0; animation: slideUpIn 1.2s ease-out; position: relative; z-index: 10;
+        }
+        .footer-line { border: 0; height: 1px; background: rgba(41, 121, 255, 0.5); width: 70%; margin: 0 auto 10px auto; } /* Blue line */
+        .footer-wrapper a { color: var(--warning); text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        .footer-wrapper a:hover { color: #fff; text-shadow: 0 0 10px var(--warning); }
+
     </style>
 </head>
 <body>
 
-    <div id="whiteboard-container">
-        <div id="whiteboard">
-            <svg id="animation-svg" viewBox="0 0 1600 900">
-                <!-- All SVG elements will be dynamically created by JavaScript -->
-            </svg>
-            <div id="progress-bar-container">
-                <div id="progress-bar"></div>
-            </div>
-        </div>
-        <div id="controls">
-            <button id="play-btn">Play Animation</button>
-        </div>
-        <div id="voiceover-display"></div>
-    </div>
+<div id="container">
+    <!-- Scene content will be loaded here -->
+</div>
 
 <script>
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.getElementById('animation-svg');
-    const playBtn = document.getElementById('play-btn');
-    const progressBar = document.getElementById('progress-bar');
-    const voDisplay = document.getElementById('voiceover-display');
-    
-    let activeElements = [];
-    let animationTimeout;
-    let soundEnabled = true;
-    let timeouts = []; // Track all timeouts
+    const container = document.getElementById('container');
+    let currentSceneIndex = 0;
+    let sceneInterval;
+    let totalScenes = 0;
 
-    // --- Sound Engine ---
-    const sounds = {
-        marker: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0.01 } }).toDestination(),
-        clear: new Tone.Player("https://tonejs.github.io/audio/berklee/Slight_Swoosh.mp3").toDestination(),
-        ding: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination(),
-        trip: new Tone.Player("https://tonejs.github.io/audio/berklee/mech_click.mp3").toDestination(),
-    };
-    sounds.marker.volume.value = -35;
-    sounds.ding.volume.value = -10;
-    sounds.trip.volume.value = -5;
-
-    // --- Timeline Definition ---
-    const TOTAL_DURATION = 300 * 1000; // 5 minutes
-
-    const timeline = [
-        // 0s - 15s: Title
-        { time: 1, type: 'text', id: 'title1', text: 'Mastering MCCB Sizing', x: 800, y: 300, fontSize: 80, anchor: 'middle', weight: 'bold', duration: 3 },
-        { time: 4, type: 'text', id: 'title2', text: "An Engineer's Guide to Motor Protection", x: 800, y: 380, fontSize: 50, anchor: 'middle', duration: 3.5 },
-        { time: 8, type: 'path', id: 'title-underline', d: 'M 400 410 H 1200', stroke: 'var(--primary-blue)', strokeWidth: 5, duration: 1 },
-        { time: 10, type: 'text', id: 'title-brand', text: 'Presented by DesignCalculators', x: 800, y: 500, fontSize: 50, fill: 'var(--success-green)', anchor: 'middle', duration: 3 },
-        { time: 15, type: 'clear', action: 'clear', sound: 'clear' },
-
-        // 15s - 50s: The Problem & The Hero
-        { time: 16, type: 'text', id: 'prob-title', text: "What's the risk?", x: 100, y: 150, fontSize: 60, weight: 'bold', duration: 2 },
-        { time: 19, type: 'text', id: 'prob-text', text: "An unprotected motor under fault...", x: 120, y: 220, fontSize: 45, duration: 3 },
-        { time: 23, type: 'path', id: 'motor-body', d: 'M 400 500 H 600 V 700 H 400 Z', stroke: 'var(--draw-color)', strokeWidth: 4, fill: '#efefef', duration: 1},
-        { time: 23, type: 'path', id: 'motor-shaft', d: 'M 600 600 H 650', stroke: '#888', strokeWidth: 15, duration: 0.5},
-        { time: 25, type: 'text', id: 'fault-text', text: "MASSIVE FAULT!", x: 500, y: 450, fontSize: 40, fill: 'var(--danger-red)', anchor: 'middle', duration: 1, anim: 'shake' },
-        { time: 26, type: 'path', id: 'motor-fire', d: 'M 450 490 Q 475 450 500 490 Q 525 450 550 490', stroke: 'var(--danger-red)', strokeWidth: 5, fill: 'none', duration: 1, anim: 'fire-glow'},
-        { time: 32, type: 'clear', action: 'clear', sound: 'clear' },
-        { time: 33, type: 'text', id: 'hero-title', text: "The Hero: MCCB", x: 800, y: 150, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 2},
-        { time: 36, type: 'path', id: 'mccb-box', d: 'M 650 300 H 950 V 600 H 650 Z', stroke: 'var(--draw-color)', strokeWidth: 5, fill: '#ddd', duration: 1},
-        { time: 38, type: 'path', id: 'mccb-switch', d: 'M 775 400 H 825', stroke: '#333', strokeWidth: 20, duration: 0.5},
-        { time: 40, type: 'text', id: 'job-title', text: "It has TWO critical jobs:", x: 800, y: 700, fontSize: 50, anchor: 'middle', duration: 3 },
-        { time: 50, type: 'clear', action: 'clear', sound: 'clear' },
-
-        // 50s - 90s: The Two Jobs
-        { time: 51, type: 'text', id: 'job1-title', text: '1. Overload Protection (Slow Cook)', x: 100, y: 150, fontSize: 50, fill: 'var(--warning-orange)', weight: 'bold', duration: 3 },
-        { time: 55, type: 'text', id: 'job1-desc', text: 'Protects motor from gradual overheating.', x: 120, y: 220, fontSize: 40, duration: 3.5 },
-        { time: 59, type: 'path', id: 'graph1-axes', d: 'M 150 550 V 350 H 550', stroke: 'var(--draw-color)', strokeWidth: 3, duration: 1 },
-        { time: 60, type: 'path', id: 'graph1-line', d: 'M 150 500 H 300 C 350 500, 400 450, 450 400', stroke: 'var(--warning-orange)', strokeWidth: 5, fill: 'none', duration: 4 },
-        { time: 61, type: 'text', id: 'graph1-label', text: 'Slight, sustained overcurrent', x: 200, y: 330, fontSize: 30, duration: 2 },
-        { time: 70, type: 'text', id: 'job2-title', text: '2. Short Circuit Protection (Fast Strike)', x: 800, y: 150, fontSize: 50, fill: 'var(--danger-red)', weight: 'bold', duration: 3 },
-        { time: 74, type: 'text', id: 'job2-desc', text: 'Instantly trips on massive fault currents.', x: 820, y: 220, fontSize: 40, duration: 3.5 },
-        { time: 78, type: 'path', id: 'graph2-axes', d: 'M 850 550 V 350 H 1250', stroke: 'var(--draw-color)', strokeWidth: 3, duration: 1 },
-        { time: 79, type: 'path', id: 'graph2-line', d: 'M 850 500 H 1050 V 370 H 1080 V 500 H 1250', stroke: 'var(--danger-red)', strokeWidth: 5, fill: 'none', duration: 2 },
-        { time: 80, type: 'text', id: 'graph2-label', text: 'Huge, instant spike!', x: 1065, y: 350, fontSize: 30, anchor: 'middle', duration: 2 },
-        { time: 90, type: 'clear', action: 'clear', sound: 'clear' },
-        
-        // 90s - 140s: The Golden Rule
-        { time: 91, type: 'text', id: 'rule-title', text: 'The Golden Rule of Coordination', x: 800, y: 120, fontSize: 60, weight: 'bold', anchor: 'middle', duration: 3.5 },
-        { time: 95, type: 'text', id: 'rule-formula', html: `I<tspan baseline-shift="sub" font-size="60">b</tspan> &lt; I<tspan baseline-shift="sub" font-size="60">n</tspan> ≤ I<tspan baseline-shift="sub" font-size="60">z</tspan>`, x: 800, y: 250, fontSize: 90, fill: 'var(--primary-blue)', anchor: 'middle', weight: 'bold', duration: 4 },
-        { time: 100, type: 'text', id: 'rule-ib', html: `I<tspan baseline-shift="sub">b</tspan> = Load Current (Motor FLC)`, x: 200, y: 400, fontSize: 45, duration: 3 },
-        { time: 104, type: 'text', id: 'rule-in', html: `I<tspan baseline-shift="sub">n</tspan> = Breaker Rating`, x: 200, y: 500, fontSize: 45, duration: 3 },
-        { time: 108, type: 'text', id: 'rule-iz', html: `I<tspan baseline-shift="sub">z</tspan> = Cable Ampacity`, x: 200, y: 600, fontSize: 45, duration: 3 },
-        { time: 115, type: 'text', id: 'rule-why1-title', text: "What if In > Iz ?", x: 1000, y: 400, fontSize: 45, fill: 'var(--danger-red)', anchor: 'middle', duration: 2 },
-        { time: 118, type: 'path', id: 'rule-cable', d: 'M 900 450 H 1100', stroke: '#333', strokeWidth: 10, duration: 1},
-        { time: 120, type: 'path', id: 'rule-cable-fire', d: 'M 950 440 Q 975 410 1000 440 Q 1025 410 1050 440', stroke: 'var(--danger-red)', strokeWidth: 5, fill: 'none', duration: 1, anim: 'fire-glow'},
-        { time: 121, type: 'text', id: 'rule-why1-text', text: "Cable burns before breaker trips! FIRE!", x: 1000, y: 520, fontSize: 40, anchor: 'middle', duration: 3 },
-        { time: 128, type: 'text', id: 'rule-why2-title', text: "What if In < Ib ?", x: 1000, y: 620, fontSize: 45, fill: 'var(--warning-orange)', anchor: 'middle', duration: 2 },
-        { time: 131, type: 'path', id: 'mccb-switch-trip', d: 'M 975 670 L 1025 650', stroke: '#333', strokeWidth: 20, duration: 0.2, sound: 'trip'},
-        { time: 132, type: 'text', id: 'rule-why2-text', text: "Nuisance Tripping!", x: 1000, y: 720, fontSize: 40, anchor: 'middle', duration: 2, anim: 'shake' },
-        { time: 140, type: 'clear', action: 'clear', sound: 'clear' },
-        
-        // 140s - 240s: The Calculation
-        { time: 141, type: 'text', id: 'calc-title', text: 'Example: Size MCCB for a 45kW Motor', x: 800, y: 100, fontSize: 55, weight: 'bold', anchor: 'middle', duration: 4 },
-        { time: 145, type: 'text', id: 'calc-given', text: '(415V, 0.85 PF, 0.9 Eff.)', x: 800, y: 160, fontSize: 40, anchor: 'middle', duration: 3 },
-        
-        { time: 150, type: 'text', id: 'step1-title', html: 'Step 1: Calculate Full Load Current (I<tspan baseline-shift="sub">b</tspan>)', x: 100, y: 250, fontSize: 45, weight: 'bold', duration: 4 },
-        { time: 155, type: 'text', id: 'step1-formula', html: `FLC = P / (√3 × V<tspan baseline-shift="sub">L</tspan> × PF × Eff)`, x: 150, y: 320, fontSize: 50, duration: 5 },
-        { time: 162, type: 'text', id: 'step1-calc', html: `FLC = 45000 / (1.732 × 415 × 0.85 × 0.9)`, x: 150, y: 400, fontSize: 50, duration: 6 },
-        { time: 170, type: 'text', id: 'step1-result', html: `I<tspan baseline-shift="sub">b</tspan> = 81.8 A`, x: 150, y: 500, fontSize: 60, fill: 'var(--danger-red)', weight: 'bold', duration: 2, sound: 'ding' },
-
-        { time: 175, type: 'text', id: 'step2-title', html: 'Step 2: Select Breaker Rating (I<tspan baseline-shift="sub">n</tspan>)', x: 100, y: 600, fontSize: 45, weight: 'bold', duration: 4 },
-        { time: 180, type: 'text', id: 'step2-desc', text: 'Must handle motor starting current (inrush). Rule of thumb: Size breaker to ~125% of FLC.', x: 150, y: 670, fontSize: 40, duration: 6 },
-        { time: 188, type: 'text', id: 'step2-calc', html: `I<tspan baseline-shift="sub">n</tspan> ≥ 81.8A × 1.25 = 102.25 A`, x: 150, y: 750, fontSize: 50, duration: 5 },
-        { time: 195, type: 'text', id: 'step2-result', html: `Next standard size ⇒ I<tspan baseline-shift="sub">n</tspan> = 125 A`, x: 150, y: 830, fontSize: 60, fill: 'var(--primary-blue)', weight: 'bold', duration: 3, sound: 'ding' },
-        { time: 200, type: 'clear', action: 'clear', sound: 'clear' },
-        
-        { time: 201, type: 'text', id: 'step3-title', html: 'Step 3: Select Cable Size (I<tspan baseline-shift="sub">z</tspan>)', x: 100, y: 150, fontSize: 45, weight: 'bold', duration: 4 },
-        { time: 206, type: 'text', id: 'step3-desc', html: `Remember the rule: I<tspan baseline-shift="sub">z</tspan> ≥ I<tspan baseline-shift="sub">n</tspan>. The cable MUST handle the breaker's max current.`, x: 150, y: 220, fontSize: 40, duration: 7 },
-        { time: 215, type: 'text', id: 'step3-check', text: `So, we need a cable with ampacity ≥ 125 A.`, x: 150, y: 320, fontSize: 50, duration: 4 },
-        { time: 221, type: 'text', id: 'step3-table-title', text: `From cable charts (considering derating):`, x: 150, y: 420, fontSize: 40, duration: 4 },
-        { time: 227, type: 'text', id: 'step3-table-row1', text: `35 sq.mm copper ⇒ 110 A (Too small!)`, x: 200, y: 500, fontSize: 45, fill: 'var(--danger-red)', duration: 3 },
-        { time: 232, type: 'text', id: 'step3-table-row2', text: `50 sq.mm copper ⇒ 140 A (Perfect!)`, x: 200, y: 580, fontSize: 45, fill: 'var(--success-green)', duration: 3 },
-        { time: 237, type: 'text', id: 'step3-result', html: `We choose: I<tspan baseline-shift="sub">z</tspan> = 140 A`, x: 150, y: 680, fontSize: 60, fill: 'var(--success-green)', weight: 'bold', duration: 2, sound: 'ding' },
-        { time: 240, type: 'clear', action: 'clear', sound: 'clear' },
-
-        // 240s - 270s: Final Verification
-        { time: 241, type: 'text', id: 'sum-title', text: 'Final Verification', x: 800, y: 150, fontSize: 70, weight: 'bold', anchor: 'middle', duration: 3 },
-        { time: 245, type: 'text', id: 'sum-rule', html: `I<tspan baseline-shift="sub" font-size="70">b</tspan> &lt; I<tspan baseline-shift="sub" font-size="70">n</tspan> ≤ I<tspan baseline-shift="sub" font-size="70">z</tspan>`, x: 800, y: 300, fontSize: 100, fill: 'var(--primary-blue)', anchor: 'middle', weight: 'bold', duration: 4 },
-        { time: 252, type: 'text', id: 'sum-vals', html: `<tspan fill="var(--danger-red)">81.8A</tspan> &lt; <tspan fill="var(--primary-blue)">125A</tspan> ≤ <tspan fill="var(--success-green)">140A</tspan>`, x: 800, y: 450, fontSize: 100, anchor: 'middle', weight: 'bold', duration: 5 },
-        { time: 260, type: 'path', id: 'sum-check', d: 'M 1200 400 L 1275 475 L 1425 325', stroke: 'var(--success-green)', strokeWidth: 20, fill: 'none', duration: 1.5, sound: 'ding' },
-        { time: 263, type: 'text', id: 'sum-conc', text: 'System is correctly sized and protected!', x: 800, y: 600, fontSize: 50, anchor: 'middle', duration: 3 },
-        { time: 270, type: 'clear', action: 'clear', sound: 'clear' },
-        
-        // 270s - 300s: Promotion
-        { time: 271, type: 'text', id: 'promo-line1', text: "Want more world-class engineering tools?", x: 800, y: 200, fontSize: 55, anchor: 'middle', duration: 4 },
-        { time: 276, type: 'text', id: 'promo-line2', text: "Free calculators, in-depth explainers, and standards-based methods.", x: 800, y: 300, fontSize: 45, anchor: 'middle', duration: 5 },
-        { time: 283, type: 'text', id: 'promo-cta', text: 'Visit the complete engineering hub:', x: 800, y: 450, fontSize: 50, fill: 'var(--primary-blue)', anchor: 'middle', duration: 3.5 },
-        { time: 288, type: 'path', id: 'promo-box', d: 'M 300 500 H 1300 V 650 H 300 Z', stroke: 'var(--success-green)', strokeWidth: 5, fill: 'rgba(40, 167, 69, 0.05)', duration: 1.5 },
-        { time: 290, type: 'text', id: 'promo-url', text: 'https://designcalculators.co.in', x: 800, y: 595, fontSize: 70, fill: 'var(--success-green)', weight: 'bold', anchor: 'middle', duration: 4 },
-        { time: 298, type: 'text', id: 'promo-end', text: 'Thanks for watching!', x: 800, y: 750, fontSize: 50, anchor: 'middle', duration: 2 },
-    ];
-
-    // --- Animation Engine ---
-    function createElement(item) {
-        let el;
-        if (item.type === 'text') {
-            el = document.createElementNS(svgNS, 'text');
-            el.setAttribute('x', item.x);
-            el.setAttribute('y', item.y);
-            el.setAttribute('font-size', item.fontSize);
-            if(item.fill) el.setAttribute('fill', item.fill);
-            else el.setAttribute('fill', 'var(--draw-color)');
-            if(item.anchor) el.setAttribute('text-anchor', item.anchor);
-            if(item.weight) el.setAttribute('font-weight', item.weight);
-            el.innerHTML = item.html || item.text;
-            el.classList.add('text-anim');
-        } else if (item.type === 'path') {
-            el = document.createElementNS(svgNS, 'path');
-            el.setAttribute('d', item.d);
-            el.setAttribute('stroke', item.stroke || 'var(--draw-color)');
-            el.setAttribute('stroke-width', item.strokeWidth || 4);
-            el.setAttribute('fill', item.fill || 'none');
+    // --- CIRCUIT SENTINEL SCENES (v10 - Added ACB/VCB/SF6, Maintenance) ---
+    // Total Duration aims for ~10+ minutes
+    const sceneConfig = [
+        // SCENE 1: THE CALL TO ACTION (10s)
+        { id: 1, duration: 10000, content: `
+            <div class="title text-primary" style="animation: pulse 2s infinite;">CIRCUIT SENTINELS</div>
+            <div class="subtitle text-warning">Mastering Breaker Selection: Your First Line of Defense</div>
+            <div class="icon-large" style="color: var(--primary);">🛡️</div>
+            <div class="content-text text-dim">Choosing the right circuit breaker isn't optional. It's the guardian between safety and disaster.</div>`
+        },
+        // SCENE 2: WHY BREAKERS? THE MISSION (12s)
+        { id: 2, duration: 12000, content: `
+            <div class="title text-info">MISSION CRITICAL: WHY BREAKERS?</div>
+            <div class="punchy-headline text-success">More Than Just an ON/OFF Switch!</div>
+            <div class="card success">
+                 <div class="card-title text-success">THEIR JOB: DETECT & INTERRUPT DANGER!</div>
+                 <div class="card-text">
+                    Circuit breakers constantly monitor electrical flow. When they sense danger (too much current!), they <span class="critical">AUTOMATICALLY CUT THE POWER</span> - FAST!
+                 </div>
+            </div>
+             <div class="content-text">They protect wires, equipment, and most importantly, <span class="text-accent">PEOPLE</span>.</div>`
+        },
+        // SCENE 3: THE DUAL THREATS (15s)
+        { id: 3, duration: 15000, content: `
+            <div class="title text-accent">KNOW YOUR ENEMY: THE DUAL THREATS</div>
+            <div class="punchy-headline text-warning">Breakers Fight Two Main Dangers:</div>
+            <div class="two-col-grid">
+                 <div class="card warning">
+                    <div class="card-title text-warning">🔥 OVERLOADS (Slow Burn)</div>
+                    <div class="card-text">Too many things plugged in, or a motor working too hard. Current is <span class="highlight">slightly above normal</span>. Causes gradual overheating, melting insulation, fire risk! (Thermal Trip)</div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-accent">💥 SHORT CIRCUITS (Instant Blast!)</div>
+                    <div class="card-text">Wires touch accidentally (Phase-Phase or Phase-Ground). Current surges to <span class="critical">HUGE levels instantly!</span> Causes explosions, arc flash, massive damage! (Magnetic Trip)</div>
+                 </div>
+            </div>`
+        },
+        // SCENE 4: BREAKER ARSENAL INTRO (10s) - Split from types
+        { id: 4, duration: 10000, content: `
+            <div class="title text-purple">YOUR ARSENAL: BREAKER TYPES</div>
+            <div class="punchy-headline text-white">Choosing the Right Sentinel for the Job</div>
+            <div class="content-text text-dim">From tiny guardians to powerhouse protectors, different breakers handle different threats and power levels. Let's meet the team...</div>
+            <div class="icon-large" style="color: var(--purple);"> B </div>` // Placeholder, could be better icon
+        },
+        // SCENE 4.1: ARSENAL: MCB & MCCB (18s) - Combined smaller types
+        { id: 4.1, duration: 18000, content: `
+            <div class="subtitle text-purple">ARSENAL: THE WORKHORSES</div>
+            <div class="punchy-headline text-info">MCB & MCCB - Covering Most Loads</div>
+            <div class="two-col-grid">
+                 <div class="card purple">
+                    <div class="card-title text-purple">MCB (Miniature)</div>
+                    <div class="card-text">Low Voltage (<1000V). Currents usually <125A. Lower kAIC (e.g., 6-25kA). Protects final circuits (lights, sockets). Fixed trip curves (B, C, D). DIN Rail mount.</div>
+                 </div>
+                 <div class="card purple">
+                    <div class="card-title text-purple">MCCB (Molded Case)</div>
+                    <div class="card-text">Low Voltage (<1000V). Currents up to ~3000A. Higher kAIC (e.g., 25-100kA+). Protects distribution panels, larger motors. Often <span class="highlight">adjustable</span> thermal/magnetic or electronic trips.</div>
+                 </div>
+            </div>`
+        },
+        // SCENE 4.2: ARSENAL: ACB (18s) - NEW SLIDE
+        { id: 4.2, duration: 18000, content: `
+            <div class="subtitle text-purple">ARSENAL: THE POWERHOUSE - ACB</div>
+            <div class="punchy-headline text-info">Air Circuit Breaker - The Main Guardian</div>
+            <div class="card info">
+                 <div class="card-title text-info">Air Circuit Breaker (ACB):</div>
+                 <div class="card-text">
+                    • <span class="highlight">Voltage:</span> Low Voltage (typically up to 690V, sometimes 1000V).<br>
+                    • <span class="highlight">Current:</span> VERY HIGH (e.g., 800A to 6300A+).<br>
+                    • <span class="highlight">kAIC:</span> VERY HIGH (e.g., 50kA to 150kA+).<br>
+                    • <span class="highlight">Arc Quenching:</span> Uses <span class="critical">Air</span> at atmospheric pressure.<br>
+                    • <span class="highlight">Use:</span> Main incoming breakers, large feeders, generator protection.<br>
+                    • <span class="highlight">Features:</span> Robust, Draw-out design for easy maintenance, Sophisticated electronic trip units (LSI(G)), requires significant space.<br>
+                    • <span class="critical">Maintenance:</span> Requires regular inspection & maintenance of contacts and arc chutes.
+                 </div>
+            </div>`
+        },
+        // SCENE 4.3: ARSENAL: VCB (18s) - NEW SLIDE
+        { id: 4.3, duration: 18000, content: `
+            <div class="subtitle text-purple">ARSENAL: THE MV SPECIALIST - VCB</div>
+            <div class="punchy-headline text-info">Vacuum Circuit Breaker - Compact Powerhouse</div>
+            <div class="card info">
+                 <div class="card-title text-info">Vacuum Circuit Breaker (VCB):</div>
+                 <div class="card-text">
+                    • <span class="highlight">Voltage:</span> Medium Voltage (e.g., 3.3kV to 36kV+).<br>
+                    • <span class="highlight">Current:</span> High (e.g., 630A to 4000A+).<br>
+                    • <span class="highlight">kAIC:</span> High (e.g., 25kA to 63kA+).<br>
+                    • <span class="highlight">Arc Quenching:</span> Uses a sealed <span class="critical">Vacuum</span> interrupter. Arc cannot sustain in vacuum.<br>
+                    • <span class="highlight">Use:</span> MV switchgear, motor control centers, transformer feeders.<br>
+                    • <span class="highlight">Features:</span> Very reliable, compact size, <span class="success">Extremely low maintenance</span> (sealed interrupter), fast operation.<br>
+                    • <span class="critical">Maintenance:</span> Minimal contact wear, but vacuum integrity check may be needed long-term.
+                 </div>
+            </div>`
+        },
+        // SCENE 4.4: ARSENAL: SF6 (18s) - NEW SLIDE
+        { id: 4.4, duration: 18000, content: `
+            <div class="subtitle text-purple">ARSENAL: THE HV KING - SF6</div>
+            <div class="punchy-headline text-info">SF6 Circuit Breaker - Handling Extreme Power</div>
+            <div class="card info">
+                 <div class="card-title text-info">SF6 Circuit Breaker:</div>
+                 <div class="card-text">
+                    • <span class="highlight">Voltage:</span> Medium & High Voltage (e.g., 3.3kV up to 800kV+).<br>
+                    • <span class="highlight">Current:</span> High to Very High.<br>
+                    • <span class="highlight">kAIC:</span> High to Extremely High (up to 100kA+).<br>
+                    • <span class="highlight">Arc Quenching:</span> Uses <span class="critical">Sulfur Hexafluoride (SF6) gas</span> - excellent insulator & arc quencher.<br>
+                    • <span class="highlight">Use:</span> Substations, transmission lines, heavy industrial MV/HV.<br>
+                    • <span class="highlight">Features:</span> Excellent performance, reliable, compact for HV.<br>
+                    • <span class="critical">Maintenance & Environment:</span> SF6 is a potent greenhouse gas! Requires <span class="critical">special handling procedures</span> for filling, reclaiming to prevent leaks. Pressure monitoring needed.
+                 </div>
+            </div>`
+        },
+        // SCENE 5: THE 4 CRITICAL PARAMETERS (12s) - Remains crucial
+        { id: 5, duration: 12000, content: `
+            <div class="title text-info">MISSION PARAMETERS: THE CRITICAL FOUR</div>
+            <div class="punchy-headline text-warning">Get These Right, or Face Failure!</div>
+            <div class="icon-large" style="color: var(--info);">📊</div>
+            <div class="content-text text-dim" style="font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.5;"> {/* Larger */}
+                1. Voltage Rating<br>
+                2. Continuous Current (Amp Rating)<br>
+                3. Interrupting Capacity (kA Rating)<br>
+                4. Trip Curve / Characteristics
+            </div>`
+        },
+        // SCENE 6: PARAMETER 1: VOLTAGE RATING (12s) - Emphasize importance for all types
+        { id: 6, duration: 12000, content: `
+            <div class="title text-info">PARAMETER 1: VOLTAGE RATING (V)</div>
+            <div class="punchy-headline text-success">Rule #1: Match the System Voltage!</div>
+            <div class="card info">
+                 <div class="card-title text-info">NON-NEGOTIABLE FOR ALL BREAKERS!</div>
+                 <div class="card-text">
+                    Breaker Voltage ≥ System Voltage.<br>
+                    <span class="critical">Applies to MCB, MCCB, ACB, VCB, SF6!</span> Using an underrated breaker invites disaster - it <span class="critical">CANNOT</span> safely stop the power flow!
+                 </div>
+            </div>`
+        },
+        // SCENE 7: PARAMETER 2: CONTINUOUS CURRENT (A) (18s) - Minor rephrasing
+        { id: 7, duration: 18000, content: `
+            <div class="title text-info">PARAMETER 2: CONTINUOUS CURRENT (AMPS)</div>
+            <div class="punchy-headline text-success">Handling Normal Operations Without Overheating</div>
+            <div class="card success">
+                 <div class="card-title text-success">Selecting the Amp Rating (In / Frame Size):</div>
+                 <div class="card-text">
+                    • Primary Goal: Protect the <span class="highlight">WIRE</span> it feeds!<br>
+                    • Must carry the <span class="highlight">full load current</span> continuously.<br>
+                    • Sized based on <span class="critical">Load Calculation + Safety Factors</span> (e.g., 125% continuous) AND <span class="critical">Cable Ampacity</span> (after derating!). Breaker rating usually ≤ Cable rating.<br>
+                    • <span class="critical">Too Small = Annoying Trips! Too Big = Fire Hazard!</span>
+                 </div>
+            </div>
+             <div class="key-point">Match breaker size to wire size and load demands!</div>`
+        },
+        // SCENE 8: PARAMETER 3: INTERRUPTING CAPACITY (kAIC) (18s) - Emphasize higher levels
+        { id: 8, duration: 18000, content: `
+            <div class="title text-accent">PARAMETER 3: INTERRUPTING CAPACITY (kAIC / Icu / Ics)</div>
+            <div class="punchy-headline text-warning">THE ULTIMATE SURVIVAL TEST!</div>
+            <div class="card accent" style="animation: alert-glow 1.5s infinite;">
+                 <div class="card-title text-accent">WILL IT SURVIVE A DIRECT HIT?</div>
+                 <div class="card-text">
+                    Max fault current breaker can stop <span class="critical">WITHOUT EXPLODING!</span><br>
+                    Must be <span class="critical">HIGHER</span> than Available Fault Current (Isc).<br>
+                    Ranges from a few kA (MCB) to <span class="highlight">OVER 150kA</span> for large ACBs!<br>
+                    <span class="critical">MISMATCH = CATASTROPHE!</span>
+                 </div>
+                  <div class="card-text text-dim" style="margin-top: 1rem; font-size: 0.9em;">(IEC: Icu = Max capacity, Ics = Operational capacity after fault)</div>
+             </div>
+             <div class="content-text text-warning">Requires a Short Circuit Study! Absolutely Essential!</div>`
+        },
+        // SCENE 9: PARAMETER 4: TRIP CURVES INTRO (12s) - Kept same
+        { id: 9, duration: 12000, content: `
+            <div class="title text-purple">PARAMETER 4: TRIP CHARACTERISTICS</div>
+            <div class="punchy-headline text-info">The Breaker's Brain: Deciding WHEN to Trip!</div>
+            <div class="card purple">
+                 <div class="card-title text-purple">Defining the Reaction Time:</div>
+                 <div class="card-text">
+                    How fast does it react to different overload/fault levels?<br>
+                    <span class="highlight">Goal 1:</span> Fast trip on dangerous shorts.<br>
+                    <span class="highlight">Goal 2:</span> Allow harmless temporary surges (motor start).<br>
+                    <span class="highlight">Goal 3:</span> <span class="critical">COORDINATION!</span> Localize the outage.
+                 </div>
+            </div>`
+        },
+        // SCENE 10: MCB TRIP CURVES (B, C, D...) (18s) - Kept same
+        { id: 10, duration: 18000, content: `
+            <div class="subtitle text-purple">MCB TRIP CURVES (IEC / UL)</div>
+            <div class="punchy-headline text-info">Standard Profiles for Common Loads</div>
+            <div class="three-col-grid">
+                 <div class="card purple"> <div class="card-title text-purple">Type B</div> <div class="card-text">FAST Trip (3-5x In). For <span class="highlight">Resistive</span> loads (less surge).</div> </div>
+                 <div class="card purple"> <div class="card-title text-purple">Type C</div> <div class="card-text">MEDIUM Trip (5-10x In). <span class="highlight">General Use</span>. Most common.</div> </div>
+                 <div class="card purple"> <div class="card-title text-purple">Type D</div> <div class="card-text">SLOW Trip (10-20x In). For <span class="highlight">High Inrush</span> (Motors, Transformers).</div> </div>
+                 </div>
+             <div class="content-text text-dim">(Others: K-Motors, Z-Electronics). Match curve to load's startup needs!</div>`
+        },
+        // SCENE 11: MCCB/ACB TRIPS (LSI(G)) (20s) - Added emphasis on adjustability
+        { id: 11, duration: 20000, content: `
+            <div class="subtitle text-purple">MCCB/ACB ELECTRONIC TRIPS</div>
+            <div class="punchy-headline text-info">Precision Control for Complex Systems</div>
+            <div class="card purple">
+                 <div class="card-title text-purple">LSI(G) - ADJUSTABLE PROTECTION:</div>
+                 <div class="card-text" style="font-size: clamp(1.4rem, 3.1vw, 2rem);"> {/* Larger */}
+                    <span class="highlight">(L) Long Time:</span> Overload (Set Current & Time).<br>
+                    <span class="highlight">(S) Short Time:</span> Selective Fault Trip (Set Current & Time). <span class="critical">FOR COORDINATION!</span><br>
+                    <span class="highlight">(I) Instantaneous:</span> Massive Fault Trip (Set Current).<br>
+                    <span class="highlight">(G) Ground Fault:</span> Leakage Detection (Set Current & Time). <span class="critical">SAFETY!</span>
+                 </div>
+            </div>
+             <div class="content-text">Allows engineers to fine-tune protection & achieve selectivity.</div>`
+        },
+        // SCENE 12: COORDINATION / SELECTIVITY (18s) - Kept same
+        { id: 12, duration: 18000, content: `
+            <div class="title text-success">CRITICAL GOAL: COORDINATION</div>
+            <div class="punchy-headline text-warning">Only the CLOSEST Sentinel Should Act!</div>
+            <div class="card success">
+                 <div class="card-title text-success">What is Coordination (Selectivity)?</div>
+                 <div class="card-text">
+                    Ensuring that for a fault at point 'X', only the breaker <span class="highlight">immediately upstream</span> of 'X' trips.<br>
+                    <span class="critical">Prevents cascading blackouts!</span> A small fault shouldn't kill power everywhere!
+                 </div>
+                  <div class="card-title text-success" style="margin-top: 1rem;">How?</div>
+                  <div class="card-text"> Carefully select & adjust trip curves/settings (esp. Short Time & Instantaneous) so downstream breakers always trip FASTER than upstream ones for faults in their zone. Requires analysis!</div>
+             </div>`
+        },
+        // SCENE 13: SPECIAL CASE: MOTORS (18s) - Kept same
+        { id: 13, duration: 18000, content: `
+            <div class="title text-warning">SPECIAL TARGET: MOTORS</div>
+            <div class="punchy-headline text-accent">Taming the Starting Surge!</div>
+            <div class="card warning">
+                 <div class="card-title text-warning">The Challenge:</div>
+                 <div class="card-text"> High starting current (5-8x normal!) looks like a fault to fast breakers. Must allow start-up surge!</div>
+                  <div class="card-title text-warning" style="margin-top: 1rem;">Solutions:</div>
+                  <div class="card-text">
+                    • <span class="highlight">Type D / K MCBs.</span><br>
+                    • <span class="highlight">MCCBs with adjustable magnetic trip.</span><br>
+                    • <span class="highlight">MCPs + Overload Relay.</span><br>
+                    • <span class="highlight">MPCBs (Motor Breakers).</span>
+                 </div>
+            </div>`
+        },
+        // SCENE 14: SPECIAL CASE: TRANSFORMERS (15s) - Kept same
+        { id: 14, duration: 15000, content: `
+            <div class="title text-warning">SPECIAL TARGET: TRANSFORMERS</div>
+            <div class="punchy-headline text-accent">Surviving the Inrush Current!</div>
+            <div class="card warning">
+                 <div class="card-title text-warning">The Challenge:</div>
+                 <div class="card-text"> Huge, brief current spike (8-12x normal!) when energized. Breaker must ignore this!</div>
+                  <div class="card-title text-warning" style="margin-top: 1rem;">Solutions:</div>
+                  <div class="card-text">
+                    • <span class="highlight">Type D MCBs</span> (or similar slow curve).<br>
+                    • <span class="highlight">MCCBs/ACBs with high Instantaneous setting.</span><br>
+                    • Coordinate Primary & Secondary protection!
+                 </div>
+            </div>`
+        },
+        // SCENE 15: SINGLE VS THREE PHASE (12s) - Kept same
+        { id: 15, duration: 12000, content: `
+            <div class="title text-info">1-PHASE VS 3-PHASE OPS</div>
+            <div class="punchy-headline text-white">Matching Poles & Fault Types</div>
+            <div class="card info">
+                 <div class="card-title text-info">Number of Poles:</div>
+                 <div class="card-text"> Use 1 or 2 poles for Single Phase. Use 3 or 4 poles for Three Phase (4-pole if Neutral switching needed).</div>
+                  <div class="card-title text-info" style="margin-top: 1rem;">Fault Rating:</div>
+                  <div class="card-text"> Ensure kAIC covers max possible fault (L-L or L-G)!</div>
+             </div>`
+        },
+        // SCENE 15.5: NEW SLIDE - MAINTENANCE & ENVIRONMENT (15s)
+        { id: 15.5, duration: 15000, content: `
+            <div class="title text-warning">LONG TERM OPS: MAINTENANCE & ENVIRONMENT</div>
+            <div class="punchy-headline text-purple">Keeping Your Sentinels Ready!</div>
+             <div class="two-col-grid">
+                 <div class="card warning">
+                    <div class="card-title text-warning">Maintenance Needs Vary:</div>
+                    <div class="card-text">
+                        • <span class="highlight">MCB/MCCB:</span> Generally low maintenance (replace if faulty).<br>
+                        • <span class="highlight">ACB:</span> <span class="critical">Requires regular</span> inspection, cleaning, lubrication, contact checks.<br>
+                        • <span class="highlight">VCB:</span> <span class="success">Very low</span> maintenance (sealed interrupter).<br>
+                        • <span class="highlight">SF6:</span> Low maintenance, but needs <span class="critical">gas pressure checks & specialized handling.</span>
+                    </div>
+                 </div>
+                 <div class="card accent">
+                    <div class="card-title text-accent">SF6 Environmental Alert!</div>
+                    <div class="card-text">SF6 is a potent greenhouse gas! <span class="critical">Leak prevention and proper gas recovery/recycling</span> during maintenance or disposal are MANDATORY by regulation in most places!</div>
+                 </div>
+            </div>`
+        },
+        // SCENE 16: STANDARDS & TOOLS (15s) - Kept same
+        { id: 16, duration: 15000, content: `
+            <div class="title text-purple">YOUR FIELD MANUAL & TECH</div>
+            <div class="punchy-headline text-info">Consult Standards! Use Calculators!</div>
+             <div class="two-col-grid">
+                 <div class="card purple">
+                    <div class="card-title text-purple">Key Standards:</div>
+                    <div class="card-text" style="font-size: clamp(1.4rem, 3.1vw, 2rem);"> {/* Increased */}
+                        • <span class="highlight">IEC 60947-2</span> | <span class="highlight">IEC 60898-1</span><br>
+                        • <span class="highlight">UL 489</span> | <span class="highlight">NEC Art. 240</span><br>
+                        • <span class="highlight">IEEE Buff Book</span> (Coordination)
+                    </div>
+                 </div>
+                 <div class="card info" style="border-color: var(--success); background: rgba(0, 255, 127, 0.1);">
+                    <div class="card-title text-success">Digital Assistant:</div>
+                     <div class="card-text" style="text-align: center; font-size: 2.3em;"> {/* Increased */}
+                        <a href="https://designcalculators.co.in" target="_blank" style="color: var(--warning); text-decoration: none; animation: pulse 1.5s infinite;">designcalculators.co.in</a><br>
+                        <span class="text-dim">(FREE Electrical Calculators!)</span>
+                     </div>
+                 </div>
+            </div>`
+        },
+        // SCENE 17: MISSION SUMMARY (15s) - Kept same
+        { id: 17, duration: 15000, content: `
+            <div class="title text-success">MISSION RECAP: SENTINEL DEPLOYED!</div>
+            <div class="punchy-headline text-primary">Breaker Selection Protocol: MASTERED!</div>
+            <div class="card success" style="max-width: 1400px;">
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Breakers stop Overloads (heat) & Short Circuits (blast).</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Match <span class="highlight">Voltage</span> Rating to System Voltage!</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Size <span class="highlight">Amp Rating</span> for Load + Wire Protection (Use 1.25x Factor!).</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Ensure <span class="critical">kAIC Rating > Available Fault Current!</span> (Safety #1!).</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Select <span class="highlight">Trip Curve/Settings</span> for Load Type & Coordination!</div></div>
+                 <div class="checklist-item"><span class="check-icon">✓</span><div>Consider <span class="warning">Motors</span> & <span class="warning">Transformers</span> carefully!</div></div>
+            </div>`
+        },
+        // SCENE 18: FINAL TRANSMISSION (10s) - Kept same
+        { id: 18, duration: 10000, content: `
+            <div class="title text-success">END TRANSMISSION</div>
+            <div class="subtitle text-info">ACCESS FREE CALCULATORS & INTEL:</div>
+            <div class="subtitle text-warning" style="animation: pulse 1.8s infinite; font-size: clamp(2.6rem, 7vw, 3.8rem); margin-top: 2.5rem;">
+                 <a href="https://designcalculators.co.in" target="_blank" style="color: var(--warning); text-decoration: none;">https://designcalculators.co.in</a>
+            </div>
+            <div class="content-text text-dim" style="margin-top: 4rem;">
+                Select Wisely. Protect Everything. Mission Complete. 🙏
+            </div>`
         }
-        el.id = item.id;
-        el.classList.add('anim-element');
-        svg.appendChild(el);
-        return el;
+    ]; // Total 50 Scenes
+
+    // --- JAVASCRIPT LOGIC ---
+    totalScenes = sceneConfig.length;
+
+    function showScene(index) {
+        const sceneContainer = container.querySelector('.scene');
+        if (sceneContainer) { container.removeChild(sceneContainer); }
+        const footerContainer = container.querySelector('.footer-wrapper');
+        if (footerContainer) { container.removeChild(footerContainer); }
+
+        if (sceneConfig[index]) {
+            const sceneData = sceneConfig[index];
+            const sceneElement = document.createElement('div');
+            sceneElement.id = `scene${sceneData.id}`;
+            sceneElement.className = 'scene';
+            sceneElement.innerHTML = sceneData.content;
+            container.appendChild(sceneElement);
+
+            const footerEl = document.createElement('div');
+            footerEl.className = 'footer-wrapper';
+            footerEl.innerHTML = `<hr class="footer-line"><div>prepared by <a href="https://designcalculators.co.in" target="_blank">https://designcalculators.co.in</a></div>`;
+            container.appendChild(footerEl);
+
+            requestAnimationFrame(() => { sceneElement.scrollTop = 0; });
+        } else {
+            console.error(`Invalid scene index: ${index}`);
+            currentSceneIndex = 0; showScene(0);
+        }
     }
-
-    // First, modify the animateItem function to ensure proper clearing
-    function animateItem(item) {
-        if (item.action === 'clear') {
-            if(item.sound && sounds[item.sound]) {
-                try { sounds[item.sound].start(); } catch(e) {}
-            }
-            // Immediately remove elements instead of fading
-            activeElements.forEach(el => {
-                if(el && el.parentNode) svg.removeChild(el);
-            });
-            activeElements = [];
-            return;
-        }
-
-        const el = createElement(item);
-        activeElements.push(el);
-
-        const timeout = setTimeout(() => {
-            el.classList.add('visible');
-            
-            if (item.type === 'path') {
-                el.classList.add('draw-anim');
-                el.style.animation = `draw ${item.duration}s linear forwards`;
-                
-                if (item.anim) {
-                    el.style.animation = `draw ${item.duration}s linear forwards, ${item.anim} 1s infinite`;
-                }
-            } else if (item.type === 'text') {
-                animateText(el, item.duration);
-                if (item.anim) {
-                    el.style.animation = `${item.anim} 1s infinite`;
-                }
-            }
-
-            if(soundEnabled && item.duration > 0.3) {
-                if (item.sound && sounds[item.sound]) {
-                    try { sounds[item.sound].start(); } catch(e) {}
-                } else if(item.type === 'path' || item.type === 'text') {
-                    let soundCount = 0;
-                    const maxSounds = Math.floor(item.duration * 10);
-                    const soundInterval = setInterval(() => {
-                        if(soundCount++ < maxSounds) {
-                            try { sounds.marker.triggerAttackRelease("8n"); } catch(e) {}
-                        }
-                    }, 100);
-                    const timeout2 = setTimeout(() => clearInterval(soundInterval), item.duration * 1000);
-                    timeouts.push(timeout2);
-                }
-            }
-        }, 100);
-        timeouts.push(timeout);
-    }
-
-    // Then adjust the startAnimation function to ensure proper initialization
-    function startAnimation() {
-        // Clear any existing animation first
-        resetAnimation();
-        
-        playBtn.disabled = true;
-        playBtn.textContent = "Playing...";
-        if (soundEnabled) {
-            Tone.start().catch(() => soundEnabled = false);
-        }
-        
-        const startTime = Date.now();
-        
-        function animationLoop() {
-            const elapsedTime = Date.now() - startTime;
-            if(elapsedTime >= TOTAL_DURATION) {
-                resetAnimation();
-                return;
-            }
-            updateUI(elapsedTime);
-            animationTimeout = requestAnimationFrame(animationLoop);
-        }
-        animationLoop();
-
-        // Add slight delay before starting timeline to ensure clean start
-        setTimeout(() => {
-            timeline.forEach(item => {
-                const timeout = setTimeout(() => animateItem(item), item.time * 1000);
-                timeouts.push(timeout);
-            });
-        }, 100);
-    }
-
-    function updateUI(time) {
-        const vo = timeline.slice().reverse().find(item => item.time * 1000 <= time && (item.type === 'text' || item.type === 'clear'));
-        if (vo && vo.type === 'text') {
-            const textContent = vo.text || vo.html.replace(/<[^>]+>/g, '');
-            voDisplay.textContent = textContent;
-        }
-        
-        const progress = (time / TOTAL_DURATION) * 100;
-        progressBar.style.width = `${progress}%`;
-    }
-
-    function resetAnimation() {
-        cancelAnimationFrame(animationTimeout);
-        timeouts.forEach(timeout => clearTimeout(timeout));
-        timeouts = [];
-        svg.innerHTML = '';
-        activeElements = [];
-        playBtn.disabled = false;
-        playBtn.textContent = "Play Animation";
-        voDisplay.textContent = "";
-        progressBar.style.width = '0%';
-    }
-
-    playBtn.addEventListener('click', () => {
-        if(playBtn.textContent === "Play Animation") {
-            startAnimation();
-        }
-    });
+    function nextScene() { currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function prevScene() { currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length; showScene(currentSceneIndex); resetInterval(); }
+    function resetInterval() { clearInterval(sceneInterval); let duration = 16000; /* Adjusted Default */ if (sceneConfig[currentSceneIndex]?.duration) { duration = sceneConfig[currentSceneIndex].duration; } sceneInterval = setInterval(nextScene, duration); }
+    if (sceneConfig.length > 0) { showScene(0); resetInterval(); }
+    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextScene(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); prevScene(); } });
+    container.addEventListener('click', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; nextScene(); });
+    let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0; const swipeThreshold = 50, tapThreshold = 10; let touchStartTime = 0; const tapTimeThreshold = 200;
+    container.addEventListener('touchstart', (e) => { let target = e.target; let isScrollable = false; while(target && target !== container) { if (target.scrollHeight > target.clientHeight && target.classList.contains('scene')) { const style = window.getComputedStyle(target); if (style.overflowY === 'auto' || style.overflowY === 'scroll') { isScrollable = true; break; } } target = target.parentNode; } if (isScrollable) { touchStartX = 0; return; } touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; touchStartTime = new Date().getTime(); }, { passive: true });
+    container.addEventListener('touchend', (e) => { if (e.target.tagName === 'A' || e.target.closest('a')) return; if (touchStartX === 0) { touchStartY = 0; touchStartTime = 0; return; } touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY; const touchTime = new Date().getTime() - touchStartTime; const diffX = touchEndX - touchStartX; const diffY = touchEndY - touchStartY; const absDiffX = Math.abs(diffX); const absDiffY = Math.abs(diffY); touchStartX = 0; touchStartY = 0; touchStartTime = 0; if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) return; if (absDiffX > swipeThreshold && absDiffX > absDiffY) { e.stopPropagation(); if (diffX < 0) { nextScene(); } else { prevScene(); } } });
 
 </script>
 
