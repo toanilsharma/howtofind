@@ -22,8 +22,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
+            width: 100%;
             height: 100%;
-            overflow: hidden; /* Prevent body scroll */
+            overflow: hidden;
+            max-width: 100%;
         }
 
         body {
@@ -31,88 +33,85 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             font-family: 'Poppins', sans-serif;
             color: var(--text-main);
+            font-size: 16px; /* Base for rem units */
         }
 
         #container {
-            width: 95vw;
-            height: auto;
-            max-width: 1600px;
-            max-height: 95vh;
-            aspect-ratio: 16/9;
+            width: 100vw;
+            height: 100vh;
             background: var(--dark-bg);
-            border-radius: 30px;
-            box-shadow: 0 0 80px rgba(0, 212, 255, 0.4), inset 0 0 40px rgba(0, 212, 255, 0.1);
-            overflow: hidden;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Key for fixed footer */
+            overflow: hidden;
             position: relative;
             cursor: pointer;
         }
 
-        .scene {
+        /* Holds the slide content, separate from the footer */
+        .scene-content {
             width: 100%;
-            flex-grow: 1;
+            flex: 1; /* Takes all available vertical space */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 2% 4%; /* Slightly reduced padding */
+            padding: 1.5vh 3vw; /* Increased vertical padding slightly */
             text-align: center;
+            overflow-y: auto; /* Allow scrolling if needed */
+            overflow-x: hidden;
             opacity: 0;
-            animation: fadeInScene 0.8s ease-out forwards;
-            overflow-y: auto;
-            position: relative;
+            animation: fadeInScene 0.7s ease-out forwards; /* Faster fade */
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        .scene-content::-webkit-scrollbar { display: none; }
 
-        .scene::-webkit-scrollbar { display: none; }
 
-        @keyframes fadeInScene { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUpIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } } /* Reduced Y */
-        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } } /* Reduced Y */
-        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } } /* Adjusted scale */
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } } /* Adjusted scale */
-        @keyframes glow { 0%, 100% { text-shadow: 0 0 15px rgba(0, 212, 255, 0.6), 0 0 30px rgba(0, 212, 255, 0.3); } 50% { text-shadow: 0 0 30px rgba(0, 212, 255, 1), 0 0 50px rgba(0, 212, 255, 0.5); } } /* Adjusted glow */
+        @keyframes fadeInScene { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } } /* Subtle scale in */
+        @keyframes slideUpIn { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } } /* Reduced distance */
+        @keyframes slideDownIn { from { opacity: 0; transform: translateY(-25px); } to { opacity: 1; transform: translateY(0); } } /* Reduced distance */
+        @keyframes scaleUpIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } } /* More subtle scale */
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } } /* Slightly reduced pulse */
+        @keyframes glow { 0%, 100% { text-shadow: 0 0 15px rgba(0, 212, 255, 0.7), 0 0 30px rgba(0, 212, 255, 0.4); } 50% { text-shadow: 0 0 30px rgba(0, 212, 255, 1), 0 0 50px rgba(0, 212, 255, 0.6); } } /* Adjusted glow intensity */
 
+        /* --- FONT SIZE ADJUSTMENTS --- */
         .title {
-            font-size: clamp(1.8rem, 4.5vw, 3.2rem); /* Adjusted */
+            font-size: clamp(2rem, 6vw, 3.5rem); /* Increased min, adjusted preferred */
             font-weight: 800;
-            margin-bottom: 0.8rem;
-            line-height: 1.1;
-            animation: slideDownIn 0.8s ease-out;
+            margin-bottom: 1.5vh;
+            line-height: 1.15;
+            animation: slideDownIn 0.7s ease-out; /* Faster animation */
             letter-spacing: 0.5px;
         }
 
         .subtitle {
-            font-size: clamp(1.4rem, 3.5vw, 2.3rem); /* Adjusted */
+            font-size: clamp(1.5rem, 4.5vw, 2.5rem); /* Increased min */
             font-weight: 700;
-            margin-bottom: 0.8rem;
-            line-height: 1.15;
-            animation: slideUpIn 0.8s ease-out 0.1s forwards;
+            margin-bottom: 1.5vh;
+            line-height: 1.2;
+            animation: slideUpIn 0.7s ease-out 0.1s forwards; /* Faster animation */
             opacity: 0;
         }
 
         .punchy-headline {
-            font-size: clamp(1.2rem, 3vw, 2rem); /* Adjusted */
-            font-weight: 700; /* Slightly reduced weight */
-            margin: 0.6rem 0;
-            line-height: 1.25;
-            animation: slideUpIn 0.8s ease-out 0.15s forwards;
+            font-size: clamp(1.3rem, 4vw, 2.2rem); /* Increased min */
+            font-weight: 700;
+            margin: 1.5vh 0;
+            line-height: 1.3;
+            animation: slideUpIn 0.7s ease-out 0.15s forwards; /* Faster animation */
             opacity: 0;
             letter-spacing: 0.3px;
         }
 
         .content-text {
-            font-size: clamp(0.9rem, 2.2vw, 1.4rem); /* Adjusted */
+            font-size: clamp(1rem, 3vw, 1.7rem); /* Increased min & preferred */
             color: var(--text-dim);
-            line-height: 1.65; /* Adjusted */
-            margin: 0.6rem auto;
-            animation: slideUpIn 0.9s ease-out 0.2s forwards;
-            max-width: 92%; /* Increased max-width slightly */
+            line-height: 1.65; /* Slightly increased for readability */
+            margin: 1vh auto;
+            animation: slideUpIn 0.8s ease-out 0.2s forwards; /* Faster animation */
+            max-width: 90%; /* Reduced slightly */
             opacity: 0;
         }
 
@@ -120,119 +119,116 @@
         .text-accent { color: var(--accent); font-weight: 700; }
         .text-success { color: var(--success); font-weight: 700; }
         .text-danger { color: var(--danger); font-weight: 700; }
-        .text-white { color: white; }
+        .text-white { color: white; font-weight: 600; } /* Added weight */
 
         .icon-large {
-            font-size: clamp(3rem, 7vw, 5rem); /* Adjusted */
-            animation: pulse 2.2s infinite;
-            margin: 0.8rem 0;
+            font-size: clamp(3.5rem, 10vw, 5rem); /* Increased min */
+            animation: pulse 2s infinite ease-in-out; /* Smoother pulse */
+            margin: 1.5vh 0;
         }
 
         .card {
-            background: rgba(0, 212, 255, 0.08);
+            background: rgba(var(--primary-rgb, 0, 212, 255), 0.08); /* Use RGB for opacity */
             border: 2px solid var(--primary);
-            border-radius: 16px; /* Adjusted */
-            padding: 1.2rem; /* Adjusted */
-            margin: 0.6rem auto;
-            animation: scaleUpIn 0.7s ease-out; /* Faster animation */
-            width: 96%; /* Increased width */
-            max-width: 850px; /* Adjusted max-width */
+            border-radius: 16px;
+            padding: clamp(1.1rem, 3vw, 1.5rem); /* Increased min padding */
+            margin: 1.5vh auto;
+            animation: scaleUpIn 0.6s ease-out; /* Faster animation */
+            width: 95%;
+            max-width: 900px; /* Slightly increased max-width */
             text-align: left;
-            backdrop-filter: blur(8px); /* Reduced blur */
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
+         /* Setup RGB variables for opacity */
+        .card.accent { background: rgba(255, 183, 0, 0.1); border-color: var(--accent); } /* Increased opacity slightly */
+        .card.success { background: rgba(57, 255, 20, 0.1); border-color: var(--success); } /* Increased opacity slightly */
+        .card.danger { background: rgba(255, 46, 99, 0.1); border-color: var(--danger); } /* Increased opacity slightly */
 
-        .card.accent { background: rgba(255, 183, 0, 0.08); border-color: var(--accent); } /* Yellow */
-        .card.success { background: rgba(57, 255, 20, 0.08); border-color: var(--success); } /* Green */
-        .card.danger { background: rgba(255, 46, 99, 0.08); border-color: var(--danger); } /* Red/Pink */
 
         .card-title {
-            font-size: clamp(1rem, 2.5vw, 1.5rem); /* Adjusted */
+            font-size: clamp(1.1rem, 3vw, 1.7rem); /* Increased min */
             font-weight: 700;
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.8rem;
             letter-spacing: 0.3px;
         }
 
         .card-text {
-            font-size: clamp(0.85rem, 1.8vw, 1.2rem); /* Adjusted */
-            color: #e0e8f0;
-            line-height: 1.7; /* Adjusted */
+            font-size: clamp(0.95rem, 2.5vw, 1.4rem); /* Increased min & preferred */
+            color: #e8f0f8; /* Slightly brighter */
+            line-height: 1.7; /* Increased */
         }
 
-        .card-text strong { color: var(--success); font-weight: 700; }
-        .card-text .highlight { color: var(--primary); font-weight: 700; }
-        .card-text .critical { color: var(--danger); font-weight: 700; }
+        .card-text strong { color: var(--success); font-weight: 700; } /* Reduced weight */
+        .card-text .highlight { color: var(--primary); font-weight: 700; } /* Reduced weight */
+        .card-text .critical { color: var(--danger); font-weight: 700; text-transform: uppercase; } /* Added uppercase */
 
         .code-text {
             font-family: 'Courier New', monospace;
-            background: rgba(0,0,0,0.35); /* Slightly darker */
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: clamp(0.8rem, 1.6vw, 1.1rem); /* Relative size */
-            display: inline-block; /* Prevent stretching */
-            margin: 0.2rem 0;
+            background: rgba(0,0,0,0.4); /* Darker */
+            padding: 0.4rem 0.7rem; /* Increased padding */
+            border-radius: 5px; /* Slightly more rounded */
+            font-size: clamp(0.9rem, 2vw, 1.2rem); /* Increased min */
+            display: inline-block;
+            margin: 0.3rem 0;
+            border: 1px solid rgba(var(--primary-rgb, 0, 212, 255), 0.2); /* Subtle border */
         }
 
         .formula-font {
             font-family: 'Courier New', monospace;
             line-height: 1.7;
-            font-size: clamp(0.85rem, 1.9vw, 1.2rem); /* Adjusted */
+            font-size: clamp(0.95rem, 2.4vw, 1.4rem); /* Increased min & preferred */
         }
-        
+
         .formula-box {
-            background: rgba(0, 0, 0, 0.45); /* Darker */
-            border-left: 4px solid var(--accent); /* Changed border color */
-            padding: 1rem;
-            margin: 0.8rem auto;
+            background: rgba(0, 0, 0, 0.5); /* Darker */
+            border-left: 5px solid var(--accent); /* Thicker border */
+            padding: 1.2rem; /* Increased padding */
+            margin: 1.5vh auto;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
-            font-size: clamp(0.9rem, 2vw, 1.3rem);
+            font-size: clamp(1rem, 2.5vw, 1.5rem); /* Increased min */
             line-height: 1.7;
             text-align: center;
-            animation: slideUpIn 0.9s ease-out;
-            width: fit-content; /* Fit content */
-            max-width: 90%;
+            animation: slideUpIn 0.8s ease-out; /* Faster */
+            width: fit-content;
+            max-width: 92%; /* Increased */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Added shadow */
         }
 
 
-        .two-col-grid {
+        .two-col-grid, .three-col-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted */
-            gap: 0.8rem;
-            width: 98%;
-            max-width: 1200px; /* Adjusted */
-            margin: 0.8rem auto;
-            animation: slideUpIn 1s ease-out; /* Faster */
+            gap: clamp(1rem, 2.5vw, 1.2rem); /* Increased gap */
+            width: 96%; /* Increased */
+            max-width: 1250px; /* Increased */
+            margin: 1.5vh auto;
+            animation: slideUpIn 0.9s ease-out; /* Faster */
         }
+        .two-col-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); } /* Increased min */
+        .three-col-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); } /* Increased min */
 
-        .three-col-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Adjusted */
-            gap: 0.7rem;
-            width: 98%;
-            max-width: 1200px; /* Adjusted */
-            margin: 0.8rem auto;
-            animation: slideUpIn 1s ease-out; /* Faster */
-        }
 
         .comparison-table {
-            width: 95%;
-            max-width: 950px; /* Adjusted */
+            width: 96%; /* Increased */
+            max-width: 1000px; /* Increased */
             margin: 1rem auto;
             border-collapse: collapse;
-            animation: scaleUpIn 0.8s ease-out; /* Faster */
+            animation: scaleUpIn 0.7s ease-out; /* Faster */
+            overflow-x: auto;
         }
 
         .comparison-table th, .comparison-table td {
-            padding: 0.7rem; /* Adjusted */
+            padding: clamp(0.7rem, 2vw, 0.9rem); /* Increased padding */
             text-align: left;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.3); /* Thinner border */
-            font-size: clamp(0.8rem, 1.7vw, 1rem); /* Adjusted */
+            border-bottom: 1px solid rgba(0, 212, 255, 0.4); /* More visible border */
+            font-size: clamp(0.9rem, 2vw, 1.1rem); /* Increased min */
             color: var(--text-dim);
+            white-space: normal;
         }
 
         .comparison-table th {
-            background: rgba(0, 212, 255, 0.15);
+            background: rgba(0, 212, 255, 0.2); /* More visible */
             font-weight: 700;
             color: var(--primary);
         }
@@ -243,67 +239,82 @@
         }
 
         .comparison-table tr:hover {
-            background: rgba(0, 212, 255, 0.08);
+            background: rgba(0, 212, 255, 0.1); /* More visible hover */
+        }
+
+        .checklist {
+           width: 95%;
+           max-width: 850px; /* Increased */
+           margin: 1vh auto;
+           text-align: left;
+           animation: slideUpIn 0.9s ease-out; /* Faster */
         }
 
         .checklist-item {
             display: flex;
-            align-items: flex-start;
-            margin: 0.7rem 0;
+            align-items: center; /* Center items vertically */
+            margin: 1.2vh 0; /* Increased margin */
             color: var(--text-dim);
-            line-height: 1.5; /* Adjusted */
-            font-size: clamp(0.85rem, 1.9vw, 1.1rem); /* Adjusted */
-            animation: slideUpIn 1s ease-out; /* Faster */
+            line-height: 1.6; /* Increased */
+            font-size: clamp(0.95rem, 2.4vw, 1.3rem); /* Increased min & preferred */
+            animation: slideUpIn 0.9s ease-out; /* Faster */
             text-align: left;
         }
+        .checklist-item div { flex: 1; }
 
         .checklist-item strong { color: var(--success); font-weight: 700; }
         .check-icon {
             color: var(--success);
             font-weight: 900;
-            margin-right: 0.7rem;
-            font-size: 1.1em; /* Adjusted */
-            line-height: 1.1;
+            margin-right: 0.8rem; /* Increased */
+            font-size: 1.2em; /* Increased */
+            line-height: 1; /* Aligned better */
+            flex-shrink: 0;
         }
 
         .key-point {
-            background: linear-gradient(90deg, rgba(255, 183, 0, 0.2) 0%, rgba(255, 46, 99, 0.1) 100%); /* Yellow to Red */
-            border-left: 4px solid var(--accent);
-            padding: 0.9rem; /* Adjusted */
-            margin: 0.8rem auto;
-            border-radius: 8px;
-            font-size: clamp(0.9rem, 2.2vw, 1.2rem); /* Adjusted */
-            line-height: 1.6;
-            animation: slideUpIn 0.8s ease-out; /* Faster */
+            background: linear-gradient(90deg, rgba(var(--accent-rgb, 255, 183, 0), 0.25) 0%, rgba(var(--danger-rgb, 255, 46, 99), 0.15) 100%); /* Use RGB, stronger gradient */
+            border-left: 5px solid var(--accent); /* Thicker */
+            padding: 1rem; /* Increased */
+            margin: 1.5vh auto;
+            border-radius: 10px; /* More rounded */
+            font-size: clamp(1rem, 2.6vw, 1.4rem); /* Increased min */
+            line-height: 1.65; /* Increased */
+            animation: slideUpIn 0.7s ease-out; /* Faster */
             text-align: left;
+            width: 96%; /* Increased */
+            max-width: 900px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2); /* Added shadow */
+        }
+         /* Add RGB versions for opacity */
+        :root {
+            --primary-rgb: 0, 212, 255;
+            --accent-rgb: 255, 183, 0;
+            --danger-rgb: 255, 46, 99;
         }
 
+
+        /* FIXED FOOTER STYLE */
         .footer-wrapper {
             width: 100%;
             text-align: center;
-            padding: 8px 0 10px 0; /* Adjusted padding */
-            background: var(--dark-bg);
-            font-size: clamp(0.8rem, 1.5vw, 1rem);
-            color: rgba(176, 196, 222, 0.8);
+            padding: 1.5vh 0;
+            background: rgba(0, 0, 0, 0.85); /* Slightly darker */
+            font-size: clamp(0.8rem, 2.2vw, 1.1rem); /* Increased min */
+            color: var(--accent);
+            border-top: 2px solid rgba(var(--primary-rgb), 0.4); /* More visible */
             flex-shrink: 0;
-            animation: slideUpIn 1.2s ease-out; /* Faster */
             position: relative;
-            z-index: 10;
-        }
-        .footer-line {
-            border: 0;
-            height: 1px;
-            background: rgba(0, 212, 255, 0.3);
-            width: 80%;
-            margin: 0 auto 6px auto; /* Adjusted margin */
+            z-index: 100;
+            animation: slideUpIn 1s ease-out; /* Faster */
         }
         .footer-wrapper a {
-           color: var(--primary);
+           color: var(--accent);
            text-decoration: none;
-           font-weight: 600;
+           font-weight: 700; /* Bolder link */
         }
         .footer-wrapper a:hover {
-            text-decoration: underline;
+           text-shadow: 0 0 15px var(--accent);
         }
 
     </style>
@@ -317,654 +328,576 @@
     let currentSceneIndex = 0;
     let sceneInterval;
 
-    // --- UPDATED SCENE CONFIG WITH EXAMPLE CALCULATION ---
-    const sceneConfig = [
-        // SCENE 1: Title Card (8s)
-        { id: 1, duration: 8000, content: `
-            <div class="title text-primary">⚡ INDUSTRIAL TRANSFORMER MASTERY ⚡</div>
-            <div class="subtitle text-success">Powering Industry: Beyond the Nameplate</div>
-            <div class="punchy-headline text-accent">Unlock the Secrets OEMs Don't Teach You</div>
+    // --- SCENES ARRAY (Punchier Headlines & Text) ---
+    const scenes = [
+        // SCENE 1: Title Card (7s)
+        { duration: 7000, content: `
+            <div class="title text-primary">⚡ TRANSFORMER MASTERY ⚡</div>
+            <div class="subtitle text-success">STOP Guessing, START Engineering!</div>
+            <div class="punchy-headline text-accent">Unlock the Secrets Behind Reliable Power</div>
             <div class="icon-large">🔌</div>`
         },
-        // SCENE 2: The Crisis (7s)
-        { id: 2, duration: 7000, content: `
-            <div class="title text-danger">🔴 The Silent Giant's Costly Failure</div>
-            <div class="punchy-headline text-accent">$5M fire. Weeks of outage. One wrong spec.</div>
-            <div class="content-text text-white">Transformers are reliable... until they're not. Failure is catastrophic.</div>
+        // SCENE 2: The Stakes (6s)
+        { duration: 6000, content: `
+            <div class="title text-danger">🔴 One Wrong Spec = MILLIONS Lost!</div>
+            <div class="punchy-headline text-accent">$5M Fire. Weeks of Blackout. It Happens.</div>
+            <div class="content-text text-white">Transformers aren't set-and-forget. Get this wrong, pay the price.</div>`
+        },
+        // SCENE 3: Real Example Intro (5s)
+        { duration: 5000, content: `
+            <div class="subtitle text-danger">WARNING: Real-World Disaster</div>
+            <div class="punchy-headline text-accent">How Ignoring ONE Detail Ignited a Steel Mill</div>
+            <div class="content-text">Think it can't happen to you? Think again...</div>`
+        },
+         // SCENE 4: Real Example Details (8s)
+        { duration: 8000, content: `
             <div class="key-point">
-                A steel mill ignored harmonic loading (K-Factor) on a new 2500 kVA dry-type transformer. Result: Overheating, insulation failure, and fire within 18 months.
-            </div>`
+                <strong>The Setup:</strong> New 2500 kVA Dry-Type Transformer.<br>
+                <strong>The FATAL Mistake:</strong> Ignoring <span class="critical">HARMONICS (K-Factor)</span> from VFDs!<br>
+                <strong>The Nightmare:</strong> Cooked from the inside out → Insulation Failed → KABOOM! 🔥 (18 months later)
+            </div>
+            <div class="content-text text-success">Don't let this be your plant. Learn the fix!</div>`
         },
-        // SCENE 3: Why This Video (6s)
-        { id: 3, duration: 6000, content: `
-            <div class="title text-success">Why This Masterclass is CRITICAL</div>
-            <div class="punchy-headline text-primary">Nameplate Ratings are Just the STARTING Point.</div>
-            <div class="content-text">This isn't about reading specs. It's about understanding the physics, the environment, and the hidden risks to ensure 30+ years of reliable power.</div>`
+        // SCENE 5: Why This Class (6s)
+        { duration: 6000, content: `
+            <div class="title text-success">Why THIS Masterclass Matters</div>
+            <div class="punchy-headline text-primary">Nameplates LIE (by omission)!</div>
+            <div class="content-text">Go beyond the basics. Master the physics, environment & hidden risks for bulletproof power systems.</div>`
         },
-        // SCENE 4: The 6 Core Pillars (9s)
-        { id: 4, duration: 9000, content: `
-            <div class="title text-primary">The 6 Pillars of Transformer Expertise</div>
-            <div class="punchy-headline text-accent">Your Foundation for Flawless Specification.</div>
-            <div class="content-text" style="font-size: clamp(1rem, 2.8vw, 1.6rem); line-height: 1.8; text-align: left; display: inline-block;">
-                1️⃣ Core Ratings & Construction (kVA, Volts, Phase, Type)<br>
-                2️⃣ Impedance (%Z) & Short Circuit Duty<br>
-                3️⃣ Cooling Class & Environmental Impact (Temp Rise, ONAN/ONAF)<br>
-                4️⃣ Harmonic Loading (K-Factor) & Non-Linear Loads<br>
-                5️⃣ Efficiency & Loss Evaluation (DOE Standards, TCO)<br>
-                6️⃣ Protection & Safety (BIL, Overcurrent, Grounding)
+        // SCENE 6: Intro The 6 Pillars (5s)
+        { duration: 5000, content: `
+            <div class="title text-primary">The 6 Pillars of Transformer GOD MODE</div>
+            <div class="punchy-headline text-accent">Master These. Never Specify Wrong Again.</div>`
+        },
+        // SCENE 7: Listing the 6 Pillars (10s)
+        { duration: 10000, content: `
+            <div class="checklist" style="max-width: 900px;">
+                <div class="checklist-item"><span class="check-icon">1️⃣</span><div><strong>Ratings & Type:</strong> kVA, Volts, Oil or Dry?</div></div>
+                <div class="checklist-item"><span class="check-icon">2️⃣</span><div><strong>Impedance (%Z):</strong> Your Fault Current Shield!</div></div>
+                <div class="checklist-item"><span class="check-icon">3️⃣</span><div><strong>Cooling & Environment:</strong> Don't Let it Sweat!</div></div>
+                <div class="checklist-item"><span class="check-icon">4️⃣</span><div><strong>Harmonics (K-Factor):</strong> The SILENT Killer!</div></div>
+                <div class="checklist-item"><span class="check-icon">5️⃣</span><div><strong>Efficiency ($$$):</strong> Lowest TCO Wins!</div></div>
+                <div class="checklist-item"><span class="check-icon">6️⃣</span><div><strong>Protection & Safety:</strong> Survive the Zap!</div></div>
             </div>`
         },
 
         // --- PILLAR 1 ---
-        // SCENE 5: Core Ratings (10s)
-        { id: 5, duration: 10000, content: `
-            <div class="title text-primary">PILLAR #1: Decoding the Nameplate Basics</div>
-            <div class="punchy-headline text-success">kVA, Voltage, Phase: The Fundamentals</div>
-            <div class="card success">
-                <div class="card-title text-success">Key Ratings:</div>
-                <div class="card-text">
-                    <strong>kVA (Apparent Power):</strong> Total power capacity. Drives physical size.<br>
-                    <strong>Primary/Secondary Voltage:</strong> Defines transformation ratio.<br>
-                    <strong>Phase (1Ø or 3Ø):</strong> Determines application.<br>
-                    <strong>Frequency (Hz):</strong> Must match grid (50/60Hz).
+        // SCENE 8: Pillar 1 Title (4s)
+        { duration: 4000, content: `
+            <div class="title text-primary">PILLAR #1: THE NON-NEGOTIABLES</div>
+            <div class="punchy-headline text-success">Get These Basics Right, Or Else!</div>`
+        },
+        // SCENE 9: Core Ratings (8s)
+        { duration: 8000, content: `
+            <div class="subtitle text-primary">Decoding the DNA: Core Specs</div>
+             <div class="card success">
+                 <div class="card-title text-success">The Big Four:</div>
+                 <div class="card-text formula-font">
+                    <strong>kVA:</strong> How Much Power? (Dictates Size!)<br>
+                    <strong>Voltage:</strong> Step Up? Step Down? Ratio is Key!<br>
+                    <strong>Phase:</strong> Single (1Ø) or Three (3Ø)?<br>
+                    <strong>Frequency:</strong> 50Hz or 60Hz? Match Your Grid!
                 </div>
             </div>`
         },
-        // SCENE 6: Construction Types (11s)
-        { id: 6, duration: 11000, content: `
-            <div class="subtitle text-primary">Construction: Oil vs. Dry Type</div>
-            <div class="punchy-headline text-accent">Choosing the Right Medium for Your Application</div>
+        // SCENE 10: Oil vs Dry (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-primary">Oil vs. Dry: Which Armor Does It Wear?</div>
+            <div class="punchy-headline text-accent">Location, Safety & Cost Dictate the Choice!</div>
              <div class="two-col-grid">
                 <div class="card">
-                    <div class="card-title text-primary">Oil-Filled (Pad/Substation)</div>
-                    <div class="card-text">
-                        <strong>Pros:</strong> Superior cooling, higher BIL, lower cost/kVA.<br>
-                        <strong>Cons:</strong> Fire risk, outdoor/vault use, environmental concerns.
-                    </div>
+                    <div class="card-title text-primary">OIL-FILLED (The Outdoor Champ)</div>
+                    <div class="card-text"><strong>WIN:</strong> Cools better, cheaper/kVA.<br><strong>LOSE:</strong> Fire risk! Needs vault/outdoors.</div>
                 </div>
                 <div class="card accent">
-                    <div class="card-title text-accent">Dry-Type (VPI/Cast Coil)</div>
-                    <div class="card-text">
-                        <strong>Pros:</strong> Fire resistant (indoor use), lower maintenance.<br>
-                        <strong>Cons:</strong> Lower BIL, larger/heavier per kVA, sensitive to environment.
-                    </div>
+                    <div class="card-title text-accent">DRY-TYPE (The Indoor Guardian)</div>
+                    <div class="card-text"><strong>WIN:</strong> Fire safe! Less messy.<br><strong>LOSE:</strong> Bigger, heavier, hates dirt!</div>
                 </div>
             </div>`
         },
 
         // --- PILLAR 2 ---
-        // SCENE 7: Impedance (12s)
-        { id: 7, duration: 12000, content: `
-            <div class="title text-accent">PILLAR #2: Impedance (%Z) - The Gatekeeper</div>
-            <div class="punchy-headline text-danger">The MOST Misunderstood & Critical Spec!</div>
+        // SCENE 11: Pillar 2 Title (5s)
+        { duration: 5000, content: `
+            <div class="title text-accent">PILLAR #2: IMPEDANCE (%Z)</div>
+            <div class="punchy-headline text-danger">IGNORING THIS = CATASTROPHE!</div>`
+        },
+        // SCENE 12: What is Impedance (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-accent">What the Heck IS Impedance?</div>
+            <div class="punchy-headline text-primary">It's Electrical "Friction" - Controls FAULTS!</div>
             <div class="card accent">
-                <div class="card-title text-accent">What is Impedance (%Z)?</div>
-                <div class="card-text">
-                    Voltage drop at full load (%). Higher %Z = Lower Fault Current, Higher Voltage Drop.<br>
-                    Lower %Z = Higher Fault Current, Lower Voltage Drop.
-                </div>
-                 <div class="card-title text-accent" style="margin-top: 1rem;">Why it Matters:</div>
                  <div class="card-text">
-                    Determines <span class="critical">Short Circuit Current (SCCR)</span>. Affects breaker ratings & voltage regulation. Crucial for paralleling.
-                 </div>
+                    Imagine water in a pipe... %Z is like the pipe's resistance.<br><br>
+                    <strong>HIGH %Z:</strong> Limits fault current (safer?) | More voltage sag.<br>
+                    <strong>LOW %Z:</strong> HUGE fault current (danger!) | Less voltage sag.<br><br>
+                    <span class="critical">GET THIS WRONG = WRONG BREAKERS = EXPLOSIONS!</span>
+                </div>
             </div>`
         },
-        // SCENE 8: Short Circuit Duty (10s)
-        { id: 8, duration: 10000, content: `
-            <div class="subtitle text-danger">Short Circuit Current Calculation</div>
-            <div class="punchy-headline text-accent">How %Z Controls System Destruction</div>
-             <div class="formula-box text-white">
-                Fault Amps = FLA / (%Z / 100)
-             </div>
+        // SCENE 13: Short Circuit Calc (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-danger">Know Your KA-BOOM Potential! (SCCR Calc)</div>
+            <div class="punchy-headline text-accent">Math That Saves Lives (& Equipment)</div>
+             <div class="formula-box text-white">Fault Amps ≈ Full Load Amps / (%Z / 100)</div>
              <div class="card danger">
-                 <div class="card-title text-danger">Example: 1000 kVA, 480V, 5.75%Z</div>
-                 <div class="card-text">
-                    FLA = 1203A<br>
-                    Fault Current = 1203A / 0.0575 = <span class="critical">20,920 Amps!</span><br>
-                    <span class="text-white" style="font-weight: 700;">Downstream gear AIC must be > 21kA.</span>
-                 </div>
-             </div>`
+                <div class="card-title text-danger">Real Numbers: 1000 kVA, 480V, 5.75%Z</div>
+                 <div class="card-text formula-font">
+                    FLA ≈ 1203 A<br>
+                    Fault Current ≈ 1203 / 0.0575 = <span class="critical" style="font-size: 1.2em;">20,920 AMPS!</span><br>
+                    <span class="text-white highlight">Your gear better be rated > 21kA AIC! CHECK IT!</span>
+                </div>
+            </div>`
         },
 
         // --- PILLAR 3 ---
-        // SCENE 9: Cooling Class (11s)
-        { id: 9, duration: 11000, content: `
-            <div class="title text-primary">PILLAR #3: Cooling & Temperature Rise</div>
-            <div class="punchy-headline text-success">Keeping the Giant Cool Under Pressure</div>
+        // SCENE 14: Pillar 3 Title (4s)
+        { duration: 4000, content: `
+            <div class="title text-primary">PILLAR #3: COOLING & TEMP</div>
+            <div class="punchy-headline text-success">Don't Let Your Investment Overheat!</div>`
+        },
+        // SCENE 15: Cooling Classes (9s)
+        { duration: 9000, content: `
+            <div class="subtitle text-primary">Cooling Acronym Soup (ONAN, ONAF...)</div>
+            <div class="punchy-headline text-success">Natural Breeze or Forced Gale?</div>
             <div class="card success">
-                <div class="card-title text-success">Cooling Classes (IEC/IEEE):</div>
-                <div class="card-text">
-                    <strong>Oil:</strong> ONAN (Natural), ONAF (Forced Fans)<br>
-                    <strong>Dry:</strong> AN (Natural), AF (Forced Fans)<br>
-                    ONAF/AF adds <span class="highlight">~15-33% extra kVA capacity</span>.
-                </div>
-                <div class="card-title text-success" style="margin-top: 1rem;">Temperature Rise:</div>
-                <div class="card-text">
-                    Max winding temp rise above ambient (e.g., 65°C oil, 150°C dry). Lower rise = longer life.
+                 <div class="card-text">
+                    <strong>Oil:</strong> ONAN (Natural), ONAF (Add Fans)<br>
+                    <strong>Dry:</strong> AN (Natural), AF (Add Fans)<br><br>
+                    <span class="highlight">FANS (AF/ONAF) = MORE POWER!</span> (Adds ~15-33% kVA, but uses energy)
                 </div>
             </div>`
         },
-        // SCENE 10: Environmental Impact (9s)
-        { id: 10, duration: 9000, content: `
-            <div class="subtitle text-accent">Environmental Realities</div>
-            <div class="punchy-headline text-danger">Heat, Altitude, & Dirt: The Transformer Killers</div>
-            <div class="card accent">
-                <div class="card-title text-accent">De-Rating Factors:</div>
+        // SCENE 16: Temp Rise (8s)
+        { duration: 8000, content: `
+            <div class="subtitle text-primary">Temperature Rise: The Lifespan Dictator</div>
+            <div class="punchy-headline text-accent">Cooler Running = Decades Longer Life!</div>
+             <div class="card accent">
                 <div class="card-text">
-                    <strong>Altitude:</strong> Reduce kVA ~0.3-0.5% per 100m above 1000m.<br>
-                    <strong>Ambient Temp:</strong> Reduce kVA ~1-1.5% per °C above rated ambient.<br>
-                    <strong>Dirt/Dust (Dry Type):</strong> Clogs ducts → overheating. Clean regularly!
+                    How hot the windings get above ambient air.<br>
+                    <strong>Standard:</strong> 65°C (Oil), 150°C (Dry).<br>
+                    <strong>Low Rise (Costs More):</strong> 115°C, 80°C (Dry).<br>
+                    <span class="highlight">Rule of Thumb: Every 10°C hotter = Halves insulation life!</span>
+                </div>
+            </div>`
+        },
+        // SCENE 17: Environmental De-rating (9s)
+        { duration: 9000, content: `
+            <div class="subtitle text-accent">WARNING: De-Rate for Reality!</div>
+            <div class="punchy-headline text-danger">Heat, Altitude, Dirt STEAL Capacity!</div>
+            <div class="card accent">
+                 <div class="card-text formula-font">
+                     <strong>Altitude (>1000m):</strong> Thinner air cools less! <span class="critical">Lose kVA!</span><br>
+                     <strong>Hot Ambient (>Rated):</strong> Can't shed heat! <span class="critical">Lose kVA!</span><br>
+                     <strong>Dirt/Dust (Dry Type):</strong> Blocks airflow! <span class="critical">OVERHEATS! CLEAN IT!</span>
                 </div>
             </div>`
         },
 
         // --- PILLAR 4 ---
-        // SCENE 11: Harmonics Intro (10s)
-        { id: 11, duration: 10000, content: `
-            <div class="title text-danger">PILLAR #4: Harmonics - The Invisible Threat</div>
-            <div class="punchy-headline text-accent">VFDs, LEDs, Computers are Killing Your Transformer!</div>
+        // SCENE 18: Pillar 4 Title (5s)
+        { duration: 5000, content: `
+            <div class="title text-danger">PILLAR #4: HARMONICS</div>
+            <div class="punchy-headline text-accent">The Silent Assassin of Transformers!</div>`
+        },
+        // SCENE 19: What are Harmonics (8s)
+        { duration: 8000, content: `
+            <div class="subtitle text-danger">What ARE Harmonics, Really?</div>
+            <div class="punchy-headline text-accent">It's Electrical Pollution from Modern Loads!</div>
             <div class="card danger">
-                <div class="card-title text-danger">What Are Harmonics?</div>
-                <div class="card-text">
-                   Non-linear loads create <span class="critical">extra frequencies</span> that cause additional heating in windings and core. Standard transformers aren't designed for this!
+                 <div class="card-text">
+                    VFDs, LEDs, Computers DON'T draw smooth power.<br>
+                    They create <span class="critical">"noise" frequencies</span>.<br>
+                    This noise = <span class="critical">EXTRA HEAT</span> standard transformers HATE!
                 </div>
             </div>`
         },
-        // SCENE 12: K-Factor (12s)
-        { id: 12, duration: 12000, content: `
-            <div class="subtitle text-danger">K-Factor Rated Transformers</div>
-            <div class="punchy-headline text-accent">Designed to Survive Harmonic Hell</div>
+        // SCENE 20: K-Factor (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-danger">K-Factor: Your Harmonic Armor Rating!</div>
+            <div class="punchy-headline text-accent">Match K-Factor to Your Load's "Dirtiness"!</div>
             <div class="card danger">
-                <div class="card-title text-danger">What is K-Factor?</div>
-                <div class="card-text">
-                    Ability to handle harmonic heating.<br>
-                    <strong>K-1:</strong> Standard loads.<br>
-                    <strong>K-4:</strong> PCs, UPS.<br>
-                    <strong>K-13:</strong> Multiple PCs, Welders.<br>
-                    <strong>K-20/K-30:</strong> VFDs, Data Centers.
+                <div class="card-title text-danger">Know Your K-Number!</div>
+                 <div class="card-text formula-font">
+                     <strong>K-1:</strong> Clean Loads (Motors only)<br>
+                     <strong>K-4:</strong> Office Loads (PCs)<br>
+                     <strong>K-13:</strong> Heavy PCs, Welders<br>
+                     <strong>K-20/K-30:</strong> VFD Central! Data Centers!<br><br>
+                     <span class="critical highlight" style="font-size: 1.1em;">Using K-1 for VFDs = GUARANTEED Burnout!</span>
                 </div>
-                 <div class="key-point" style="border-left-color: var(--danger);">
-                    Using a K-1 transformer on a K-13 load = Guaranteed overheating. MUST specify correct K-Factor.
-                 </div>
             </div>`
         },
 
         // --- PILLAR 5 ---
-        // SCENE 13: Efficiency (11s)
-        { id: 13, duration: 11000, content: `
-            <div class="title text-success">PILLAR #5: Efficiency & Total Cost</div>
-            <div class="punchy-headline text-primary">Beyond Purchase Price: The Real Cost Over 30 Years</div>
+        // SCENE 21: Pillar 5 Title (4s)
+        { duration: 4000, content: `
+            <div class="title text-success">PILLAR #5: EFFICIENCY = $$$</div>
+            <div class="punchy-headline text-primary">Think Long Term! Save BIG Money!</div>`
+        },
+        // SCENE 22: Efficiency & TCO (9s)
+        { duration: 9000, content: `
+            <div class="subtitle text-success">TCO: The TRUE Cost of Power</div>
+            <div class="punchy-headline text-primary">Purchase Price is Just the Tip of the Iceberg!</div>
             <div class="card success">
-                <div class="card-title text-success">DOE Efficiency Standards:</div>
-                <div class="card-text">
-                    Mandate minimum efficiency. Higher efficiency = lower operating cost.
-                </div>
-                <div class="card-title text-success" style="margin-top: 1rem;">Total Cost of Ownership (TCO):</div>
-                <div class="card-text">
-                    TCO = Purchase Price + (Cost of Losses × Lifespan)<br>
-                    A <span class="highlight">lower loss</span> transformer often has a lower TCO.
+                 <div class="card-text">
+                    <strong>DOE Standards:</strong> Set the minimum bar (good!).<br><br>
+                    <strong>TCO = Buy Price + (Wasted Energy Cost × 30 Years!)</strong><br>
+                    A <span class="highlight">high-efficiency (low loss)</span> unit might cost more upfront but saves WAY more over its life!
                 </div>
             </div>`
         },
-        // SCENE 14: Loss Evaluation (10s)
-        { id: 14, duration: 10000, content: `
-            <div class="subtitle text-success">Evaluating Losses: A vs. B Factors</div>
-            <div class="punchy-headline text-primary">Quantifying the $ Value of Wasted Energy</div>
-             <div class="formula-box text-white">
-                Loss Cost = (A × No-Load kW) + (B × Load kW)
-             </div>
+         // SCENE 23: Loss Evaluation (9s)
+        { duration: 9000, content: `
+            <div class="subtitle text-success">A vs. B: Decoding Loss Costs</div>
+            <div class="punchy-headline text-primary">Compare Apples-to-Apples with $ per kW</div>
+             <div class="formula-box text-white">Total Loss Cost = (A × No-Load Loss kW) + (B × Load Loss kW)</div>
              <div class="card success">
-                 <div class="card-title text-success">A/B Factors ($/kW):</div>
+                <div class="card-title text-success">Ask Vendors for A/B Factors ($/kW)!</div>
                  <div class="card-text">
-                    Represent capitalized cost of losses. Use to compare bids & select lowest TCO.
-                 </div>
-             </div>`
+                    These put a dollar value on wasted energy. Use them to find the <span class="highlight">actual cheapest long-term option!</span>
+                </div>
+            </div>`
         },
 
         // --- PILLAR 6 ---
-        // SCENE 15: Protection - BIL (10s)
-        { id: 15, duration: 10000, content: `
-            <div class="title text-accent">PILLAR #6: Protection & Safety - BIL</div>
-            <div class="punchy-headline text-danger">Lightning & Surges: Your Transformer's Shield</div>
+        // SCENE 24: Pillar 6 Title (4s)
+        { duration: 4000, content: `
+            <div class="title text-accent">PILLAR #6: PROTECTION!</div>
+            <div class="punchy-headline text-danger">Safety Isn't Optional!</div>`
+        },
+        // SCENE 25: BIL (9s)
+        { duration: 9000, content: `
+            <div class="subtitle text-accent">BIL: Your Surge Bodyguard!</div>
+            <div class="punchy-headline text-danger">Basic Impulse Level - Don't Skimp Here!</div>
             <div class="card accent">
-                <div class="card-title text-accent">BIL (Basic Impulse Level):</div>
-                <div class="card-text">
-                    Ability to withstand voltage surges (kV). Higher system voltage = Higher required BIL.<br>
-                    <span class="critical">Under-specifying BIL = Catastrophic failure during a surge.</span>
+                <div class="card-title text-accent">BIL (kV) = Surge Withstand</div>
+                 <div class="card-text">
+                     How much voltage spike (lightning!) it can take.<br>
+                     Must match or exceed system requirements.<br>
+                     <span class="critical">Too Low BIL = One Surge & It's Toast!</span>
                 </div>
             </div>`
         },
-        // SCENE 16: Protection - Overcurrent & Grounding (11s)
-        { id: 16, duration: 11000, content: `
-            <div class="subtitle text-danger">Overcurrent & Grounding Protection</div>
-            <div class="punchy-headline text-accent">Code Requirements are NON-NEGOTIABLE</div>
+        // SCENE 26: Overcurrent & Grounding (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-danger">Fuses, Breakers & Grounding: MUST HAVES!</div>
              <div class="two-col-grid">
                 <div class="card danger">
-                    <div class="card-title text-danger">Overcurrent Protection</div>
-                    <div class="card-text">
-                        <strong>Primary:</strong> Protects transformer (NEC 450).<br>
-                        <strong>Secondary:</strong> Protects feeders. Coordination is key!
-                    </div>
+                    <div class="card-title text-danger">Overcurrent Gear</div>
+                    <div class="card-text"><strong>Primary:</strong> Protects XFMR.<br><strong>Secondary:</strong> Protects Loads. Coordination is KING!</div>
                 </div>
                 <div class="card accent">
-                    <div class="card-title text-accent">Grounding (Critical!)</div>
-                    <div class="card-text">
-                        <strong>System:</strong> Secondary neutral bonded (creates SDS).<br>
-                        <strong>Equipment:</strong> Case bonded to grid.<br>
-                        <span class="critical">Improper grounding = Hazard!</span>
-                    </div>
+                    <div class="card-title text-accent">Grounding = LIFE SAFETY!</div>
+                    <div class="card-text"><strong>System:</strong> Bond Neutral!<br><strong>Equipment:</strong> Bond Case!<br><span class="critical">MESS THIS UP = LETHAL!</span></div>
                 </div>
             </div>`
         },
 
-        // --- NEW: EXAMPLE CALCULATION START ---
-        // SCENE 17: Case Study Intro (12s)
-        { id: 17, duration: 12000, content: `
-            <div class="title text-success">Real-World Sizing Example</div>
-            <div class="punchy-headline text-primary">Let's Apply the 6 Pillars: New Production Line</div>
+        // --- EXAMPLE CALCULATION START ---
+        // SCENE 27: Case Study Intro (8s)
+        { duration: 8000, content: `
+            <div class="title text-success">EXAMPLE TIME! Size It RIGHT!</div>
+            <div class="punchy-headline text-primary">New Production Line - Let's Engineer It!</div>
             <div class="card success">
-                <div class="card-title text-success">Scenario:</div>
-                <div class="card-text">
-                    Feed a new indoor manufacturing area.<br>
-                    <strong>Primary Supply:</strong> 13.8 kV, 3Ø<br>
-                    <strong>Required Secondary:</strong> 480/277V, 3Ø, 4-Wire<br>
-                    <strong>Location:</strong> Denver, CO (Altitude ~1600m)<br>
-                    <strong>Environment:</strong> Indoor, climate-controlled, max ambient 35°C<br>
-                    <strong>Loads:</strong> Mix of VFDs, CNC machines, lighting, PLCs.
-                </div>
-            </div>`
-        },
-        // SCENE 18: Step 1 - Load Calculation (15s)
-        { id: 18, duration: 15000, content: `
-            <div class="subtitle text-success">Example Step 1: Calculate Total Load kVA</div>
-            <div class="punchy-headline text-primary">Sum Loads + Diversity + Future Growth</div>
-            <div class="card">
-                <div class="card-title text-primary">Load Summary (Connected):</div>
-                <div class="card-text formula-font">
-                    - VFD Motors: 350 kVA<br>
-                    - CNC Machines: 200 kVA<br>
-                    - Lighting (LED): 50 kVA<br>
-                    - Controls/PLC: 25 kVA<br>
-                    - HVAC: 75 kVA<br>
-                    <strong>Total Connected = 700 kVA</strong>
-                </div>
-                 <div class="card-title text-primary" style="margin-top: 1rem;">Apply Factors:</div>
+                <div class="card-title text-success">The Mission:</div>
                  <div class="card-text formula-font">
-                    - Demand Factor (Diversity): 0.85 (Not all loads run simultaneously)<br>
-                    - Future Growth: 1.20 (Allow 20% spare capacity)<br><br>
-                    Calculated Demand = 700 kVA * 0.85 = 595 kVA<br>
-                    Required kVA = 595 kVA * 1.20 = <span class="highlight">714 kVA</span>
-                 </div>
-                 <div class="card-text" style="margin-top:0.5rem"><strong>Decision: Select next standard size up → <span class="text-success">750 kVA</span></strong></div>
+                    Input: 13.8 kV | Output: 480Y/277V<br>
+                    Where: Denver (~1600m), Indoor (Max 35°C)<br>
+                    Loads: VFDs, CNCs, LEDs (Harmonic Heavy!)
+                </div>
             </div>`
         },
-        // SCENE 19: Step 2 - Type & Ratings (12s)
-        { id: 19, duration: 12000, content: `
-            <div class="subtitle text-success">Example Step 2: Basic Ratings & Type</div>
-            <div class="punchy-headline text-primary">Matching Voltages and Choosing Construction</div>
-            <div class="card success">
-                <div class="card-title text-success">Core Specification:</div>
-                <div class="card-text">
-                    <strong>kVA:</strong> 750 kVA (from Step 1)<br>
-                    <strong>Primary Voltage:</strong> 13800V Delta<br>
-                    <strong>Secondary Voltage:</strong> 480Y/277V Wye (for L-N loads)<br>
-                    <strong>Phase:</strong> 3-Phase<br>
-                    <strong>Frequency:</strong> 60 Hz
+        // SCENE 28: Step 1 Load Calc (12s)
+        { duration: 12000, content: `
+            <div class="subtitle text-success">Step 1: How Much kVA?</div>
+            <div class="punchy-headline text-primary">Sum Loads + Wiggle Room!</div>
+             <div class="card">
+                <div class="card-title text-primary">The Math:</div>
+                 <div class="card-text formula-font">
+                    Connected Loads = 700 kVA<br>
+                    Demand Factor = 0.85 (Not all on at once)<br>
+                    Future Growth = 1.20 (Plan ahead!)<br><br>
+                    Demand ≈ 595 kVA<br>
+                    Required ≈ 595 * 1.20 = <span class="highlight">714 kVA</span>
                 </div>
-                 <div class="card-title text-success" style="margin-top: 1rem;">Construction Type:</div>
+                <div class="card-text" style="margin-top:0.5rem"><strong>Pick Standard Size: <span class="text-success">750 kVA</span></strong></div>
+            </div>`
+        },
+        // SCENE 29: Step 2 Ratings & Type (9s)
+        { duration: 9000, content: `
+            <div class="subtitle text-success">Step 2: Basic Specs & Type</div>
+            <div class="card success">
+                <div class="card-text formula-font">
+                    <strong>kVA:</strong> 750 kVA<br>
+                    <strong>Pri/Sec:</strong> 13800D - 480Y/277V<br>
+                    <strong>Phase/Freq:</strong> 3Ø / 60 Hz<br>
+                    <strong>Location:</strong> Indoor → <span class="highlight">Dry-Type</span> Required!
+                </div>
+            </div>`
+        },
+        // SCENE 30: Step 3 Environment (12s)
+        { duration: 12000, content: `
+            <div class="subtitle text-accent">Step 3: De-rate Check!</div>
+            <div class="punchy-headline text-warning">Will Altitude or Heat Shrink Our 750kVA?</div>
+            <div class="card accent">
+                <div class="card-title text-accent">Conditions: 1600m Altitude, Max 35°C Ambient</div>
+                 <div class="card-text formula-font">
+                    Altitude De-rate ≈ <span class="critical">1.8%</span> (Thin air!)<br>
+                    Temp De-rate = <span class="highlight">0%</span> (35°C is below 40°C std)<br><br>
+                    Effective kVA ≈ 750 * 0.982 ≈ 736 kVA<br>
+                    Need 714 kVA... We're good!
+                </div>
+                <div class="card-text" style="margin-top:0.5rem"><strong><span class="text-success">750 kVA is STILL Big Enough!</span></strong></div>
+            </div>`
+        },
+        // SCENE 31: Step 4 Harmonics (11s)
+        { duration: 11000, content: `
+            <div class="subtitle text-danger">Step 4: K-FACTOR TIME!</div>
+            <div class="punchy-headline text-accent">Our Load is DIRTY (VFDs!). Protect the XFMR!</div>
+             <div class="card danger">
+                <div class="card-title text-danger">Load = VFDs + CNCs = High Harmonics!</div>
                  <div class="card-text">
-                    Indoor location, need fire resistance.<br>
-                    <strong>Decision: <span class="highlight">Dry-Type (VPI or Cast Coil)</span></strong>
-                 </div>
+                     K-1? <span class="critical">NO!</span> K-4? <span class="critical">NO!</span><br>
+                     Need AT LEAST K-13.<br>
+                     K-20 is the SAFE, smart choice here.<br><br>
+                    <strong>Decision: Specify <span class="highlight">K-20 Rated Transformer!</span></strong>
+                </div>
             </div>`
         },
-        // SCENE 20: Step 3 - Environment & De-rating (14s)
-        { id: 20, duration: 14000, content: `
-            <div class="subtitle text-accent">Example Step 3: Environment & De-rating</div>
-            <div class="punchy-headline text-warning">Does our 750 kVA need upsizing?</div>
+         // SCENE 32: Step 5 Impedance (11s)
+        { duration: 11000, content: `
+            <div class="subtitle text-accent">Step 5: Impedance (%Z) Check</div>
+            <div class="punchy-headline text-primary">Fault Current vs. Voltage Drop Trade-off</div>
             <div class="card accent">
-                <div class="card-title text-accent">Check Conditions:</div>
-                <div class="card-text">
-                    <strong>Altitude:</strong> 1600m (Denver)<br>
-                    <strong>Ambient Temp:</strong> Max 35°C
+                <div class="card-title text-accent">Using Standard <span class="highlight">5.75%Z</span>:</div>
+                 <div class="card-text formula-font">
+                    Fault Current ≈ <span class="critical">15.7 kA</span><br>
+                    Voltage Drop @ FL ≈ 5.75% (Acceptable)
                 </div>
-                <div class="card-title text-accent" style="margin-top: 1rem;">Calculate De-rating:</div>
-                <div class="card-text formula-font">
-                   <strong>Altitude De-rate (Dry):</strong><br>
-                   (1600m - 1000m) * (0.3% / 100m) = 600m * 0.00003 = 0.018 = <span class="critical">1.8%</span><br><br>
-                   <strong>Temperature De-rate:</strong><br>
-                   Standard Dry rating based on 40°C ambient.<br>
-                   Our max ambient is 35°C (< 40°C).<br>
-                   <span class="highlight">No temperature de-rating needed.</span> <br>(If ambient was 45°C, de-rate = (45-40)*1.5% = 7.5%)
-                </div>
-                 <div class="card-text" style="margin-top:0.5rem">
-                    Total De-rate = 1.8%. Effective Capacity = 750 kVA * (1 - 0.018) = 736.5 kVA.<br>
-                    Required was 714 kVA. <strong>Decision: <span class="text-success">750 kVA is still adequate.</span></strong>
-                 </div>
+                 <div class="card-text" style="margin-top:0.5rem"><strong>Decision: <span class="highlight">5.75%Z is OK.</span> BUT verify panel AIC > 16kA!</strong></div>
             </div>`
         },
-        // SCENE 21: Step 4 - Harmonics (K-Factor) (14s)
-        { id: 21, duration: 14000, content: `
-            <div class="subtitle text-danger">Example Step 4: Harmonic Loading (K-Factor)</div>
-            <div class="punchy-headline text-accent">Assess the Non-Linear Loads</div>
-            <div class="card danger">
-                <div class="card-title text-danger">Load Analysis:</div>
-                <div class="card-text">
-                    Significant portion of load is VFDs and CNC machines (switch-mode power supplies). LED lighting also contributes.<br>
-                    This indicates substantial harmonic currents.
+        // SCENE 33: Step 6 Cooling & Temp (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-success">Step 6: Cooling & Temp Rise</div>
+            <div class="punchy-headline text-primary">Standard Specs Are Good Here</div>
+             <div class="card success">
+                 <div class="card-text formula-font">
+                    <strong>Cooling:</strong> <span class="highlight">AA/FA</span> (Fans give overload boost)<br>
+                    <strong>Temp Rise:</strong> <span class="highlight">150°C</span> (Standard Dry Type)
                 </div>
-                <div class="card-title text-danger" style="margin-top: 1rem;">K-Factor Selection:</div>
-                <div class="card-text">
-                    Based on load mix (VFDs dominant non-linear source):<br>
-                    K-4: Too low.<br>
-                    K-13: Might be sufficient if VFDs have line reactors.<br>
-                    K-20: Safer choice given the high proportion of non-linear load.<br><br>
-                    <strong>Decision: Specify <span class="highlight">K-Factor = K-13 minimum, recommend K-20.</span></strong><br>
-                    (Note: K-rated transformers may need slight kVA oversizing per manufacturer guidance). Let's assume K-13 requires no oversizing here.
-                </div>
+                 <div class="card-text" style="margin-top:0.5rem"><strong>Decision: Specify standard. Include fan package!</strong></div>
             </div>`
         },
-         // SCENE 22: Step 5 - Impedance (13s)
-        { id: 22, duration: 13000, content: `
-            <div class="subtitle text-accent">Example Step 5: Impedance (%Z)</div>
-            <div class="punchy-headline text-primary">Balancing Fault Current & Voltage Drop</div>
-            <div class="card accent">
-                <div class="card-title text-accent">Selection:</div>
-                <div class="card-text">
-                    Standard impedance for 750 kVA Dry Type is often <span class="highlight">5.75%Z</span>.
-                </div>
-                <div class="card-title text-accent" style="margin-top: 1rem;">Calculations:</div>
-                <div class="card-text formula-font">
-                    FLA (750 kVA @ 480V) = 750 / (0.48 * √3) = 902A<br>
-                    Fault Current = 902A / 0.0575 = <span class="critical">15,687A</span><br>
-                    Voltage Drop @ Full Load ≈ 5.75% (Acceptable for most industrial uses).
-                </div>
-                 <div class="card-text" style="margin-top:0.5rem">
-                    <strong>Decision: <span class="highlight">Specify 5.75%Z.</span> Verify downstream panelboard AIC ratings are >= 16kA (e.g., 22kA or higher).</strong>
-                 </div>
-            </div>`
-        },
-        // SCENE 23: Step 6 - Cooling & Temp Rise (12s)
-        { id: 23, duration: 12000, content: `
-            <div class="subtitle text-success">Example Step 6: Cooling & Temp Rise</div>
-            <div class="punchy-headline text-primary">Standard Choices for Dry Type</div>
-            <div class="card success">
-                <div class="card-title text-success">Cooling Class:</div>
-                <div class="card-text">
-                    Standard for Dry Type: <span class="highlight">AN (Air Natural)</span>.<br>
-                    Optional: Add AF (Air Forced) fans for extra capacity (~33%). We sized for AN, so fans provide overload capability.
-                </div>
-                <div class="card-title text-success" style="margin-top: 1rem;">Temperature Rise:</div>
-                <div class="card-text">
-                    Standard for modern Dry Type: <span class="highlight">150°C Rise</span> (over 40°C ambient, using 220°C insulation system).<br>
-                    Options: 115°C or 80°C rise available for longer life/overload, but higher cost.
-                </div>
-                 <div class="card-text" style="margin-top:0.5rem">
-                    <strong>Decision: Specify <span class="highlight">AA / FA (AN/AF) Cooling, 150°C Temperature Rise</span>.</strong> Include fan package & controls.
-                 </div>
-            </div>`
-        },
-         // SCENE 24: Step 7 - Efficiency & Protection (13s)
-        { id: 24, duration: 13000, content: `
-            <div class="subtitle text-primary">Example Step 7: Efficiency & Protection</div>
-            <div class="punchy-headline text-success">Final Checks for Longevity & Safety</div>
-            <div class="two-col-grid">
+         // SCENE 34: Step 7 Efficiency/Protection (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-primary">Step 7: Final Polish</div>
+            <div class="punchy-headline text-success">Efficiency & Safety Specs</div>
+             <div class="two-col-grid">
                 <div class="card success">
                     <div class="card-title text-success">Efficiency</div>
-                    <div class="card-text">
-                        Specify compliance with latest <span class="highlight">DOE 2016 standards</span> minimum.<br>
-                        Consider requesting bids with evaluated losses (A/B factors) if lowest TCO is critical.
-                    </div>
+                    <div class="card-text">Mandate <span class="highlight">DOE 2016</span> compliance minimum!</div>
                 </div>
                 <div class="card accent">
                     <div class="card-title text-accent">Protection</div>
-                    <div class="card-text">
-                        <strong>BIL:</strong> Standard for 15kV class Dry Type is typically <span class="highlight">95kV BIL</span>. Verify this is adequate for system surge protection coordination.<br>
-                        <strong>Overcurrent:</strong> Size primary fuse/breaker per NEC 450 (e.g., 125%-250% of Pri FLA). Coordinate with secondary protection.
-                    </div>
+                    <div class="card-text">BIL: <span class="highlight">95kV</span> (Std). Size Overcurrent per NEC!</div>
                 </div>
             </div>`
         },
-         // SCENE 25: Final Specification Summary (14s)
-        { id: 25, duration: 14000, content: `
-            <div class="title text-success">Example: Final Transformer Specification</div>
-            <div class="punchy-headline text-primary">Bringing It All Together</div>
+         // SCENE 35: Final Spec Summary (12s)
+        { duration: 12000, content: `
+            <div class="title text-success">The Engineered Spec Sheet!</div>
+            <div class="punchy-headline text-primary">From Load Needs to Final Design</div>
             <div class="card success">
-                <div class="card-title text-success">Summary Specification:</div>
-                <div class="card-text formula-font">
-                    <strong>Type:</strong> Dry Type, Ventilated (VPI or Cast Coil)<br>
-                    <strong>kVA Rating:</strong> 750 kVA AA / 1000 kVA FA (with Fans)<br>
-                    <strong>Primary Volts:</strong> 13800V Delta, 95kV BIL<br>
-                    <strong>Secondary Volts:</strong> 480Y/277V Wye<br>
-                    <strong>Phase / Freq:</strong> 3-Phase / 60 Hz<br>
-                    <strong>Impedance:</strong> 5.75 %Z (+/- 7.5% tolerance)<br>
-                    <strong>Temperature Rise:</strong> 150°C (over 40°C ambient)<br>
-                    <strong>K-Factor:</strong> K-13 (Minimum, K-20 Recommended)<br>
-                    <strong>Efficiency:</strong> Meet or exceed DOE 2016<br>
-                    <strong>Enclosure:</strong> NEMA 1 (Indoor)<br>
-                    <strong>Accessories:</strong> Fan Package with Controller, Standard Taps
+                 <div class="card-text formula-font" style="font-size: clamp(0.85rem, 2vw, 1.15rem);">
+                    <strong>Type:</strong> Dry, AA/FA, 750/1000 kVA<br>
+                    <strong>Volts:</strong> 13.8kD - 480Y/277V, 3Ph, 60Hz<br>
+                    <strong>Z:</strong> 5.75% | <strong>Rise/BIL:</strong> 150°C / 95kV<br>
+                    <strong>K-Factor: K-20 Recommended!</strong><br>
+                    <strong>Efficiency:</strong> DOE 2016 | <strong>Features:</strong> Fans, Taps
                 </div>
-                 <div class="card-text" style="margin-top:0.5rem">
-                    This detailed spec, derived from load analysis and environmental factors, ensures a safe and reliable installation.
-                 </div>
+                 <div class="card-text" style="margin-top:0.5rem">THIS spec ensures safety & reliability!</div>
             </div>`
         },
         // --- EXAMPLE CALCULATION END ---
 
-        // --- INSTALLATION (Original Scene 17 becomes 26) ---
-        // SCENE 26: Installation Clearances (10s)
-        { id: 26, duration: 10000, content: `
-            <div class="title text-primary">Installation: Giving it Space to Breathe</div>
-            <div class="punchy-headline text-accent">Clearances are NOT optional.</div>
+        // --- INSTALLATION ---
+        // SCENE 36: Install Clearances (8s)
+        { duration: 8000, content: `
+            <div class="title text-primary">INSTALLATION STEP 1: SPACE!</div>
+            <div class="punchy-headline text-accent">Give it Room to Breathe (and Work Safely!)</div>
             <div class="card primary">
-                <div class="card-title text-primary">Minimum Clearances (NEC/Manufacturer):</div>
-                <div class="card-text">
-                    Allow airflow for cooling and safe access.<br>
-                    <strong>Dry Type (Indoors):</strong> Check specs (e.g., 6" sides, 12" top/bottom). Keep away from combustibles.<br>
-                    <strong>Oil Filled (Outdoors):</strong> Maintain clearances per NEC Art. 450 & local codes. Requires containment.
-                </div>
+                 <div class="card-text">Follow NEC & Maker's drawings! Clearances = COOLING!<br><span class="critical">Keep junk AWAY from transformers!</span></div>
             </div>`
         },
-        // SCENE 27: Installation Connections (11s)
-        { id: 27, duration: 11000, content: `
-            <div class="subtitle text-success">Installation: Making Solid Connections</div>
-            <div class="punchy-headline text-primary">Torque Matters. Phasing Matters.</div>
-            <div class="card success">
-                <div class="card-title text-success">Connection Best Practices:</div>
-                <div class="card-text">
-                    <strong>Torque Specs:</strong> Use a torque wrench! Loose connections = overheating = failure.<br>
-                    <strong>Correct Phasing:</strong> Verify A-B-C rotation. Incorrect = equipment damage.<br>
-                    <strong>Cable Support:</strong> Use proper strain relief.<br>
-                    <strong>Grounding Bond:</strong> Ensure solid case-to-grid connection.
-                </div>
+        // SCENE 37: Install Connections (9s)
+        { duration: 9000, content: `
+            <div class="subtitle text-success">INSTALLATION STEP 2: CONNECT!</div>
+            <div class="punchy-headline text-primary">Torque It! Phase It! Ground It!</div>
+            <div class="card success checklist">
+                <div class="checklist-item"><span class="check-icon">🔧</span> TORQUE WRENCH IS MANDATORY!</div>
+                <div class="checklist-item"><span class="check-icon">🔄</span> CHECK PHASE ROTATION!</div>
+                <div class="checklist-item"><span class="check-icon">🔗</span> SUPPORT YOUR CABLES!</div>
+                <div class="checklist-item"><span class="check-icon">🌍</span> SOLID GROUND BOND!</div>
             </div>`
         },
 
-        // --- TESTING & COMMISSIONING (Original Scene 19 becomes 28) ---
-        // SCENE 28: Testing Overview (10s)
-        { id: 28, duration: 10000, content: `
-            <div class="title text-accent">Testing & Commissioning: Verify Before Energizing</div>
-            <div class="punchy-headline text-danger">"Trust, but Verify." Don't Skip These Tests!</div>
-            <div class="card accent">
-                <div class="card-title text-accent">Why Test?</div>
-                <div class="card-text">
-                   Confirm no shipping damage. Verify nameplate data. Establish baseline. Ensure safety!
-                </div>
-            </div>`
+        // --- TESTING ---
+        // SCENE 38: Testing Intro (6s)
+        { duration: 6000, content: `
+            <div class="title text-accent">TESTING: DON'T SKIP THIS!</div>
+            <div class="punchy-headline text-danger">Verify Before You Energize... Or Else!</div>
+            <div class="content-text">Catch shipping damage & errors BEFORE they cost millions.</div>`
         },
-        // SCENE 29: Key Electrical Tests (12s)
-        { id: 29, duration: 12000, content: `
-            <div class="subtitle text-accent">Key Pre-Energization Electrical Tests</div>
-            <div class="punchy-headline text-primary">Megger, TTR, Winding Resistance</div>
+        // SCENE 39: Electrical Tests (10s)
+        { duration: 10000, content: `
+            <div class="subtitle text-accent">The "Big 3" Electrical Tests</div>
              <div class="three-col-grid">
-                <div class="card">
-                    <div class="card-title text-primary">Insulation Resistance (Megger)</div>
-                    <div class="card-text">Checks insulation integrity (HV-LV, HV-GND, LV-GND).</div>
-                </div>
-                <div class="card">
-                    <div class="card-title text-primary">Turns Ratio (TTR)</div>
-                    <div class="card-text">Verifies voltage ratio matches nameplate (< 0.5% diff).</div>
-                </div>
-                <div class="card">
-                    <div class="card-title text-primary">Winding Resistance</div>
-                    <div class="card-text">Checks for connection issues or damage (low mΩ, balanced).</div>
-                </div>
+                <div class="card accent"><div class="card-title">Megger</div>Checks Insulation Health</div>
+                <div class="card accent"><div class="card-title">TTR</div>Confirms Voltage Ratio</div>
+                <div class="card accent"><div class="card-title">Winding Resistance</div>Finds Bad Connections</div>
             </div>`
         },
-        // SCENE 30: Oil Tests (DGA) (10s)
-        { id: 30, duration: 10000, content: `
-            <div class="subtitle text-accent">Oil Tests (For Oil-Filled Units)</div>
-            <div class="punchy-headline text-primary">The Transformer's "Blood Test"</div>
-            <div class="card accent">
-                <div class="card-title text-accent">Dissolved Gas Analysis (DGA):</div>
-                <div class="card-text">
-                    <span class="highlight">The single most important oil test.</span> Detects internal faults (arcing, overheating) by analyzing gases. Baseline essential.
-                </div>
-                 <div class="card-title text-accent" style="margin-top: 1rem;">Other Oil Tests:</div>
-                 <div class="card-text">Dielectric Strength, Moisture, Acidity.</div>
+        // SCENE 40: Oil Tests (8s)
+        { duration: 8000, content: `
+            <div class="subtitle text-accent">Oil Units: Get a DGA!</div>
+            <div class="punchy-headline text-primary">The Transformer's Critical Health Check</div>
+             <div class="card accent">
+                <div class="card-title text-accent">DGA (Dissolved Gas Analysis):</div>
+                <div class="card-text"><span class="highlight">Finds hidden problems</span> (arcing, overheating) by sniffing the oil! GET A BASELINE TEST!</div>
             </div>`
         },
 
-        // --- MAINTENANCE (Original Scene 22 becomes 31) ---
-        // SCENE 31: Maintenance Strategy (11s)
-        { id: 31, duration: 11000, content: `
-            <div class="title text-success">Maintenance: Protecting Your 30-Year Asset</div>
-            <div class="punchy-headline text-primary">Proactive Care Prevents Catastrophic Failure</div>
-            <div class="card success">
-                <div class="card-title text-success">Key Maintenance Activities:</div>
-                <div class="card-text">
-                    <strong>Routine Inspections:</strong> Visual checks, Thermography.<br>
-                    <strong>Oil Sampling (Annually - Oil):</strong> DGA.<br>
-                    <strong>Electrical Testing (3-5 Years):</strong> Megger, TTR, Winding Res.<br>
-                    <strong>Cleaning (Annually - Dry):</strong> Vacuum ducts.
-                </div>
+        // --- MAINTENANCE ---
+        // SCENE 41: Maintenance (10s)
+        { duration: 10000, content: `
+            <div class="title text-success">MAINTENANCE = LONG LIFE!</div>
+            <div class="punchy-headline text-primary">Protect Your Multi-Decade Investment!</div>
+            <div class="card success checklist" style="font-size: clamp(0.85rem, 2vw, 1.15rem);">
+                <div class="checklist-item"><strong>Monthly:</strong> Look, Listen, Feel (Infrared!)</div>
+                <div class="checklist-item"><strong>Annually (Oil):</strong> DGA!</div>
+                <div class="checklist-item"><strong>Annually (Dry):</strong> CLEAN! Vacuum those vents!</div>
+                <div class="checklist-item"><strong>3-5 Years:</strong> Full Electrical Test Suite!</div>
             </div>`
         },
 
-        // --- FAILURES (Original Scene 23 becomes 32) ---
-        // SCENE 32: Common Failure Modes (12s)
-        { id: 32, duration: 12000, content: `
-            <div class="title text-danger">Common Transformer Failure Modes</div>
-            <div class="punchy-headline text-accent">Why Do These Giants Fail?</div>
+        // --- FAILURES ---
+        // SCENE 42: Failure Modes (10s)
+        { duration: 10000, content: `
+            <div class="title text-danger">Why They Die: Top 3 Killers</div>
              <div class="three-col-grid">
-                <div class="card danger">
-                    <div class="card-title text-danger">Insulation Breakdown</div>
-                    <div class="card-text">Cause: Overheating (harmonics!), moisture, surges, aging.</div>
-                </div>
-                <div class="card danger">
-                    <div class="card-title text-danger">Bushing Failure</div>
-                    <div class="card-text">Cause: Cracks, contamination, loose connections.</div>
-                </div>
-                <div class="card danger">
-                    <div class="card-title text-danger">Tap Changer Failure</div>
-                    <div class="card-text">Cause: Mechanical wear, contact coking (OLTC).</div>
-                </div>
+                <div class="card danger"><div class="card-title">Insulation Failure</div>(Cooked! Zapped! Wet!)</div>
+                <div class="card danger"><div class="card-title">Bushing Failure</div>(Cracked! Dirty!)</div>
+                <div class="card danger"><div class="card-title">Tap Changer Jam</div>(Worn Out! Gunked Up!)</div>
             </div>`
         },
 
-        // --- SUMMARY (Original Scene 24 becomes 33) ---
-        // SCENE 33: Expert Checklist (13s)
-        { id: 33, duration: 13000, content: `
-            <div class="title text-success">Your Expert Transformer Specification Checklist</div>
-            <div class="punchy-headline text-accent">Nail the Spec, Guarantee Reliability.</div>
-            <div class="card success" style="max-width: 1000px; font-size: clamp(0.9rem, 2.1vw, 1.2rem);">
-                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Ratings:</strong> Confirm kVA, Volts, Phase, Cooling match load.</div></div>
-                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Impedance (%Z):</strong> Verify fault duty & voltage drop.</div></div>
-                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Environment:</strong> Apply de-rating (Altitude/Temp).</div></div>
-                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Harmonics:</strong> Specify correct K-Factor.</div></div>
-                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Efficiency:</strong> Evaluate losses & TCO.</div></div>
-                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Protection:</strong> Ensure adequate BIL & Overcurrent.</div></div>
-                <div class="checklist-item"><span class="check-icon">□</span><div><strong>Type:</strong> Choose Oil vs. Dry.</div></div>
+        // --- SUMMARY ---
+        // SCENE 43: Expert Checklist Recap (11s)
+        { duration: 11000, content: `
+            <div class="title text-success">FINAL CHECKLIST: Engineer Like a Pro!</div>
+             <div class="card success checklist" style="max-width: 900px; font-size: clamp(0.9rem, 2.1vw, 1.2rem);">
+                <div><span class="check-icon">✅</span> Ratings/Type MATCH Load?</div>
+                <div><span class="check-icon">✅</span> Impedance RIGHT for Fault/VD?</div>
+                <div><span class="check-icon">✅</span> De-Rated for Site?</div>
+                <div><span class="check-icon">✅</span> K-Factor MATCHES Harmonics?</div>
+                <div><span class="check-icon">✅</span> Efficiency Evaluated (TCO)?</div>
+                <div><span class="check-icon">✅</span> Protection Adequate (BIL/OCP)?</div>
             </div>`
         },
-        // SCENE 34: Final Thoughts (10s)
-        { id: 34, duration: 10000, content: `
-            <div class="title text-success">Mastering Transformers: The Payoff</div>
-            <div class="punchy-headline text-primary">This knowledge prevents disasters & saves millions.</div>
-            <div class="content-text" style="font-size: clamp(1.2rem, 3vw, 1.7rem); line-height: 1.8;">
-                You now understand the critical factors beyond the nameplate.<br><br>
-                Specifying correctly ensures safety, reliability, and protects your facility's most vital asset.
+        // SCENE 44: Final Thoughts (8s)
+        { duration: 8000, content: `
+            <div class="title text-success">You Now Know MORE Than Most!</div>
+            <div class="punchy-headline text-primary">Use this knowledge. Prevent failures. Save money.</div>
+            <div class="content-text" style="font-size: clamp(1.1rem, 3vw, 1.6rem);">
+                Be the engineer who gets it RIGHT.
             </div>`
         },
-        // SCENE 35: Call to Action (10s)
-        { id: 35, duration: 10000, content: `
-            <div class="title text-success">Thank You For Watching This Masterclass</div>
-            <div class="subtitle text-primary">Visit Our Resource Hub</div>
-            <div class="subtitle text-accent" style="animation: pulse 2s infinite; font-size: clamp(1.2rem, 3.5vw, 2rem); margin-top: 1rem;">
-                 <a href="https://designcalculators.co.in" target="_blank" style="color: var(--accent); text-decoration: none;">https://designcalculators.co.in</a>
+        // SCENE 45: Call to Action (9s)
+        { duration: 9000, content: `
+            <div class="title text-success">Need Tools & Calculators?</div>
+            <div class="subtitle text-accent" style="animation: pulse 1.5s infinite ease-in-out; font-size: clamp(1.3rem, 4vw, 2.2rem); margin: 2vh 0;">
+                 Visit: designcalculators.co.in
             </div>
-            <div class="content-text" style="margin-top: 2rem; color: var(--text-dim);">
-                Free transformer calculators, technical articles, and standards guides.
-            </div>`
-        },
-        // SCENE 36: Closing Frame (8s)
-        { id: 36, duration: 8000, content: `
-            <div class="title text-primary" style="animation: glow 2s infinite;">⚡ Industrial Transformer Mastery ⚡</div>
-            <div class="subtitle text-success">Beyond the Nameplate</div>
-            <div class="content-text" style="font-size: clamp(1rem, 2.5vw, 1.5rem); margin-top: 2rem; color: var(--text-dim);">
-                Specify with insight. Install with precision. Maintain with confidence.
+            <div class="content-text" style="color: var(--text-dim);">
+                Free Transformer Sizing, Fault Calc & More!
             </div>
-            <div class="icon-large" style="margin-top: 1.5rem; animation: pulse 1.5s infinite;">💡</div>`
+            <div class="icon-large" style="margin-top: 1.5rem; animation: pulse 1.8s infinite ease-in-out;">💡</div>` // Changed icon
+        },
+        // SCENE 46: End Screen (7s)
+        { duration: 7000, content: `
+            <div class="title text-primary" style="animation: glow 2s infinite;">⚡ Transformer Mastery COMPLETE! ⚡</div>
+            <div class="subtitle text-success">Thanks For Watching! Go Engineer!</div>
+            <div class="icon-large">💯</div>` // Changed icon
         }
-    ]; // Total scenes = 36
+    ]; // Total scenes = 46
 
-    // --- JAVASCRIPT LOGIC (Unchanged from previous version) ---
 
-    function showScene(index) {
-        container.innerHTML = '';
+    // --- JAVASCRIPT LOGIC ---
 
-        if (sceneConfig[index]) {
-            const sceneData = sceneConfig[index];
+     function showScene(index) {
+        container.innerHTML = ''; // Clear previous content
 
-            const sceneElement = document.createElement('div');
-            sceneElement.id = `scene${sceneData.id}`;
-            sceneElement.className = 'scene';
-            sceneElement.innerHTML = sceneData.content;
-            container.appendChild(sceneElement);
-
-            const footerEl = document.createElement('div');
-            footerEl.className = 'footer-wrapper';
-            footerEl.innerHTML = `
-                <hr class="footer-line">
-                <div>prepared by <a href="https://designcalculators.co.in" target="_blank">https://designcalculators.co.in</a></div>
-            `;
-            container.appendChild(footerEl);
-
-            requestAnimationFrame(() => {
-                sceneElement.scrollTop = 0;
-            });
-        } else {
+        const sceneData = scenes[index];
+        if (!sceneData) {
             console.error(`Invalid scene index: ${index}`);
-            currentSceneIndex = 0;
-            showScene(0);
+            currentSceneIndex = 0; // Loop back
+            // Failsafe: Render first scene's content
+            const failsafeContent = document.createElement('div');
+            failsafeContent.className = 'scene-content';
+            failsafeContent.innerHTML = scenes[0].content;
+            container.appendChild(failsafeContent);
+            // Manually add footer
+            const failsafeFooter = document.createElement('div');
+            failsafeFooter.className = 'footer-wrapper';
+            failsafeFooter.innerHTML = `<a href="https://designcalculators.co.in" target="_blank">Prepared by https://designcalculators.co.in</a>`;
+            container.appendChild(failsafeFooter);
+            resetInterval();
+            return;
         }
+
+        // Create scene content container
+        const sceneContentElement = document.createElement('div');
+        sceneContentElement.className = 'scene-content';
+        sceneContentElement.innerHTML = sceneData.content;
+        container.appendChild(sceneContentElement);
+
+        // Create and append the fixed footer
+        const footerElement = document.createElement('div');
+        footerElement.className = 'footer-wrapper';
+        footerElement.innerHTML = `<a href="https://designcalculators.co.in" target="_blank">Prepared by https://designcalculators.co.in</a>`;
+        container.appendChild(footerElement);
+
+        // Reset scroll position
+        requestAnimationFrame(() => {
+           if(sceneContentElement) sceneContentElement.scrollTop = 0;
+        });
     }
 
+
     function nextScene() {
-        currentSceneIndex = (currentSceneIndex + 1) % sceneConfig.length;
+        currentSceneIndex = (currentSceneIndex + 1) % scenes.length;
         showScene(currentSceneIndex);
         resetInterval();
     }
 
     function prevScene() {
-        currentSceneIndex = (currentSceneIndex - 1 + sceneConfig.length) % sceneConfig.length;
+        currentSceneIndex = (currentSceneIndex - 1 + scenes.length) % scenes.length;
         showScene(currentSceneIndex);
         resetInterval();
     }
 
     function resetInterval() {
         clearInterval(sceneInterval);
-
-        let duration = 9000; // Increased default duration slightly for calculations
-        if (sceneConfig[currentSceneIndex] && typeof sceneConfig[currentSceneIndex].duration === 'number') {
-            duration = sceneConfig[currentSceneIndex].duration;
+        let duration = 9000; // Default duration
+        if (scenes[currentSceneIndex] && typeof scenes[currentSceneIndex].duration === 'number') {
+            duration = scenes[currentSceneIndex].duration;
         }
-
         sceneInterval = setInterval(nextScene, duration);
     }
 
-    // Initial setup
-    if (sceneConfig.length > 0) {
+    // Initialize
+    if (scenes.length > 0) {
         showScene(0);
         resetInterval();
     }
@@ -980,74 +913,83 @@
         }
     });
 
-    // Mouse click to advance
+    // Mouse click/Tap to advance
     container.addEventListener('click', (e) => {
         if (e.target.tagName === 'A' || e.target.closest('a')) {
-            return;
+            return; // Allow links
         }
-        nextScene();
+        // Add a small delay to prevent accidental double taps/clicks
+        container.style.pointerEvents = 'none';
+        setTimeout(() => {
+             nextScene();
+             container.style.pointerEvents = 'auto';
+        }, 150); // 150ms delay
     });
 
-    // --- Touch Navigation ---
+
+    // --- Touch Navigation (Swipe) ---
     let touchStartX = 0;
-    let touchEndX = 0;
     let touchStartY = 0;
-    let touchEndY = 0;
     const swipeThreshold = 50;
-    const tapThreshold = 10;
-    let touchStartTime = 0;
-    const tapTimeThreshold = 200;
+    const swipeYThreshold = 70; // Max vertical movement allowed for a horizontal swipe
 
     container.addEventListener('touchstart', (e) => {
-        let target = e.target;
-        while (target && target !== container) {
-            if (target.classList.contains('scene') && target.scrollHeight > target.clientHeight) {
-                return; // Allow vertical scroll within scene
-            }
-            target = target.parentNode;
+        // Only record start if not touching a link
+        if (!(e.target.tagName === 'A' || e.target.closest('a'))) {
+             touchStartX = e.changedTouches[0].screenX;
+             touchStartY = e.changedTouches[0].screenY;
+        } else {
+             touchStartX = 0; // Reset if touching a link
+             touchStartY = 0;
         }
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-        touchStartTime = new Date().getTime();
-    }, { passive: true });
-
+    }, { passive: true }); // Use passive: true for start if not preventing default
 
     container.addEventListener('touchend', (e) => {
-        if (e.target.tagName === 'A' || e.target.closest('a')) {
-            return;
-        }
-        if (touchStartX === 0) { // Touch started on scrollable content
-           touchStartY = 0;
-           touchStartTime = 0;
-           return;
-        }
+         // If touch started on a link or was reset, ignore touchend for swiping
+         if (touchStartX === 0 && touchStartY === 0) {
+             return;
+         }
+         // Prevent advancing if touchend is on a link (even if start wasn't)
+         if (e.target.tagName === 'A' || e.target.closest('a')) {
+             // Reset start points just in case
+             touchStartX = 0;
+             touchStartY = 0;
+             return;
+         }
 
-        touchEndX = e.changedTouches[0].screenX;
-        touchEndY = e.changedTouches[0].screenY;
-        const touchTime = new Date().getTime() - touchStartTime;
+
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
         const diffX = touchEndX - touchStartX;
         const diffY = touchEndY - touchStartY;
-        const absDiffX = Math.abs(diffX);
-        const absDiffY = Math.abs(diffY);
 
-        // Reset start points
+        // Reset start points after calculation
+        const startX = touchStartX;
+        const startY = touchStartY;
         touchStartX = 0;
         touchStartY = 0;
-        touchStartTime = 0;
 
-        if (absDiffX < tapThreshold && absDiffY < tapThreshold && touchTime < tapTimeThreshold) {
-            return; // It was a tap, let click handler manage
-        }
+        // Check if it's a valid horizontal swipe (more horizontal than vertical movement)
+        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffY) < swipeYThreshold) {
+            // It's a swipe, prevent the click event that follows touchend
+            e.preventDefault();
+            e.stopPropagation();
 
-        if (absDiffX > swipeThreshold && absDiffX > absDiffY) {
-            e.stopPropagation(); // Prevent click
-            if (diffX < 0) { // Swipe Left
-                nextScene();
-            } else { // Swipe Right
-                prevScene();
-            }
+            // Add a small delay to prevent processing swipe right after advancing via tap
+            container.style.pointerEvents = 'none';
+            setTimeout(() => {
+                if (diffX < 0) {
+                    nextScene();
+                } else {
+                    prevScene();
+                }
+                 container.style.pointerEvents = 'auto';
+            }, 50); // Shorter delay for swipe
+
         }
-    });
+        // If it wasn't a clear horizontal swipe, the 'click' listener handles the tap-to-advance
+    }, { passive: false }); // Need passive: false to potentially call preventDefault
+
 
 </script>
 
