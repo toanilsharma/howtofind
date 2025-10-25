@@ -21,7 +21,14 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; }
+        
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            max-width: 100%;
+        }
+        
         body {
             background: linear-gradient(135deg, var(--dark-bg) 0%, #050810 50%, var(--dark-bg) 100%);
             display: flex;
@@ -29,6 +36,7 @@
             align-items: center;
             font-family: 'Poppins', sans-serif;
             color: var(--text-main);
+            font-size: 16px; /* Base for rem units */
         }
 
         #container {
@@ -36,66 +44,64 @@
             height: 100vh;
             background: var(--dark-bg);
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* This is key */
             overflow: hidden;
         }
 
-        .scene {
+        /* NEW: This holds the slide content, separate from the footer */
+        .scene-content {
             width: 100%;
-            flex: 1;
+            flex: 1; /* This makes it take all available space */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 3vh 3vw;
+            padding: 1vh 3vw; 
             text-align: center;
-            overflow-y: auto;
+            overflow: hidden; /* No scrolling in the content area */
             opacity: 0;
             animation: fadeInScene 0.5s ease-out forwards;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
         }
-
-        .scene::-webkit-scrollbar { display: none; }
 
         @keyframes fadeInScene { from { opacity: 0; } to { opacity: 1; } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         @keyframes glow { 0%, 100% { text-shadow: 0 0 30px rgba(0, 168, 255, 0.9); } 50% { text-shadow: 0 0 60px rgba(0, 168, 255, 1.2); } }
 
+        /* --- Responsive Font Clamping (Adjusted for safety) --- */
         .title {
-            font-size: 8vw;
+            font-size: clamp(2rem, 7vw, 4rem);
             font-weight: 900;
             margin-bottom: 2vh;
-            line-height: 1;
+            line-height: 1.1;
             letter-spacing: 3px;
             text-transform: uppercase;
             animation: pulse 2s infinite;
         }
 
         .big-text {
-            font-size: 6vw;
+            font-size: clamp(1.6rem, 5.5vw, 3rem);
             font-weight: 800;
             margin: 1.5vh 0;
-            line-height: 1.1;
+            line-height: 1.2;
             letter-spacing: 2px;
         }
 
         .large-text {
-            font-size: 5vw;
+            font-size: clamp(1.4rem, 4.5vw, 2.5rem);
             font-weight: 700;
             margin: 1.5vh 0;
             line-height: 1.2;
         }
 
         .medium-text {
-            font-size: 4vw;
+            font-size: clamp(1.2rem, 4vw, 2.2rem);
             font-weight: 600;
             margin: 1.2vh 0;
             line-height: 1.3;
         }
 
         .normal-text {
-            font-size: 3.5vw;
+            font-size: clamp(1.1rem, 3.8vw, 2rem);
             font-weight: 500;
             margin: 1vh 0;
             line-height: 1.4;
@@ -109,7 +115,7 @@
         .text-white { color: #fff; }
 
         .icon {
-            font-size: 12vw;
+            font-size: clamp(4rem, 12vw, 8rem);
             margin: 2vh 0;
             animation: pulse 1.5s infinite;
         }
@@ -118,8 +124,8 @@
             background: var(--card-bg);
             border-left: 10px solid var(--primary);
             border-radius: 15px;
-            padding: 3vh 3vw;
-            margin: 2vh auto;
+            padding: 2.5vh 3vw;
+            margin: 1.5vh auto;
             width: 95%;
             max-width: 95vw;
             text-align: left;
@@ -134,9 +140,9 @@
         .card.info { border-left-color: var(--primary); background: rgba(0, 168, 255, 0.1); border-color: rgba(0, 168, 255, 0.3); }
 
         .card-item {
-            font-size: 3.5vw;
+            font-size: clamp(1rem, 3.5vw, 1.8rem);
             margin: 1.5vh 0;
-            line-height: 1.5;
+            line-height: 1.4;
             display: flex;
             align-items: center;
         }
@@ -151,8 +157,8 @@
             padding: 3vh 3vw;
             margin: 2vh auto;
             font-family: 'Courier New', monospace;
-            font-size: 4.5vw;
-            line-height: 2;
+            font-size: clamp(1.2rem, 4.5vw, 2.8rem);
+            line-height: 1.5;
             text-align: center;
             color: var(--primary);
             font-weight: 900;
@@ -160,7 +166,10 @@
             box-shadow: 0 0 60px rgba(0, 168, 255, 0.6);
         }
 
-        .formula-box .highlight { color: var(--warning); font-size: 4.5vw; }
+        .formula-box .highlight { 
+            color: var(--warning); 
+            font-size: clamp(1.2rem, 4.5vw, 2.8rem);
+        }
 
         .highlight { color: var(--warning); font-weight: 800; }
         .critical { color: var(--accent); font-weight: 900; text-transform: uppercase; }
@@ -176,14 +185,14 @@
             display: flex;
             align-items: flex-start;
             margin: 1.5vh 0;
-            font-size: 3.5vw;
+            font-size: clamp(1rem, 3.5vw, 1.8rem);
             color: var(--text-dim);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .check-icon {
             color: var(--success);
-            font-size: 5vw;
+            font-size: clamp(1.2rem, 4.5vw, 2.5rem);
             margin-right: 2vw;
             font-weight: 900;
             flex-shrink: 0;
@@ -197,8 +206,8 @@
             margin: 2vh auto;
             width: 95%;
             max-width: 95vw;
-            font-size: 3.5vw;
-            line-height: 1.6;
+            font-size: clamp(1rem, 3.5vw, 1.8rem);
+            line-height: 1.5;
             color: var(--text-main);
             border: 2px solid var(--accent);
         }
@@ -214,21 +223,21 @@
 
         @media (max-width: 900px) {
             .grid-2 { grid-template-columns: 1fr; }
-            .title { font-size: 10vw; }
-            .big-text { font-size: 7vw; }
-            .large-text { font-size: 6vw; }
         }
 
+        /* FIXED FOOTER STYLE */
         .footer {
             width: 100%;
             text-align: center;
-            padding: 1.5vh 0;
+            padding: 1.5vh 0; /* A little padding */
             background: rgba(0, 0, 0, 0.8);
-            font-size: 2.2vw;
+            font-size: clamp(0.75rem, 2.5vw, 1.1rem);
             font-weight: 600;
             color: var(--warning);
             border-top: 2px solid rgba(0, 168, 255, 0.3);
-            flex-shrink: 0;
+            flex-shrink: 0; /* This stops it from shrinking */
+            position: relative; /* Ensures it stays in the flex flow */
+            z-index: 100; /* Keeps it on top */
         }
 
         .footer a { color: var(--warning); text-decoration: none; font-weight: 700; }
@@ -244,487 +253,694 @@
     let currentSceneIndex = 0;
     let sceneInterval;
 
+    // --- SCENES ARRAY (NEW STRUCTURE & PUNCHIER CONTENT) ---
+    // Each scene now renders BOTH the .scene-content and the .footer
+    // This ensures the footer is always at the bottom of the #container
     const scenes = [
         // SCENE 1
         {
             duration: 7000,
             content: `
-                <div class="scene">
+                <div class="scene-content">
                     <div class="title text-primary">⚡ VOLTAGE DROP ⚡</div>
                     <div class="icon">📉</div>
                     <div class="big-text text-warning">The Silent Power Thief</div>
-                    <div class="large-text text-white">Electricity LOST in your wires!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                    <div class="large-text text-white">It's costing you money... right now.</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 2
         {
-            duration: 7000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-primary">WHAT IS IT?</div>
-                    <div class="big-text text-warning">Voltage Drop = Power Lost as HEAT</div>
-                    <div class="large-text text-success">As electricity flows through wires...</div>
-                    <div class="large-text text-accent">Some energy becomes USELESS HEAT!</div>
-                    <div class="medium-text text-dim">Your equipment doesn't get full power</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-primary">So... WHAT IS IT?</div>
+                    <div class="big-text text-warning">It's Power Lost as HEAT.</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 3
         {
-            duration: 8000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-accent">WHY CARE?</div>
-                    <div class="card accent">
-                        <div class="card-item"><span class="check-icon">💥</span><div><strong>Equipment breaks faster</strong></div></div>
-                        <div class="card-item"><span class="check-icon">💰</span><div><strong>Wasting your money</strong></div></div>
-                        <div class="card-item"><span class="check-icon">🔌</span><div><strong>Systems fail randomly</strong></div></div>
-                        <div class="card-item"><span class="check-icon">⚠️</span><div><strong>Safety problems</strong></div></div>
-                    </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-success">As electricity flows through wires...</div>
+                    <div class="large-text text-accent">(even the best ones!)</div>
+                    <div class="large-text text-accent">Some energy becomes USELESS HEAT.</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 4
         {
-            duration: 6000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-info">THE VILLAIN</div>
-                    <div class="big-text text-warning">RESISTANCE!</div>
-                    <div class="large-text text-white">Wires create friction</div>
-                    <div class="large-text text-white">Like a bumpy road for electricity</div>
-                    <div class="medium-text text-success">More friction = More power lost</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-accent">The Result?</div>
+                    <div class="medium-text text-dim">Your equipment doesn't get the full power!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 5
         {
             duration: 8000,
             content: `
-                <div class="scene">
-                    <div class="title text-success">THE FORMULA</div>
-                    <div class="formula-box">V = I × R</div>
-                    <div class="card success">
-                        <div class="card-item"><span class="text-warning">V</span> = Voltage Lost</div>
-                        <div class="card-item"><span class="text-warning">I</span> = Current (Amps)</div>
-                        <div class="card-item"><span class="text-warning">R</span> = Resistance (Ohms)</div>
+                <div class="scene-content">
+                    <div class="title text-accent">WHY SHOULD YOU CARE?</div>
+                    <div class="card accent">
+                        <div class="card-item"><span class="check-icon">💥</span><div><strong>Equipment breaks faster</strong></div></div>
+                        <div class="card-item"><span class="check-icon">💰</span><div><strong>You are wasting money</strong></div></div>
+                        <div class="card-item"><span class="check-icon">🔌</span><div><strong>Systems fail randomly</strong></div></div>
+                        <div class="card-item"><span class="check-icon">⚠️</span><div><strong>It's a huge safety problem!</strong></div></div>
                     </div>
-                    <div class="large-text text-primary">This controls everything!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 6
         {
-            duration: 7000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">LONGER WIRE</div>
-                    <div class="big-text text-warning">= MORE LOSS</div>
-                    <div class="icon">📏</div>
-                    <div class="large-text text-white">100 meters loses WAY MORE</div>
-                    <div class="large-text text-white">than 10 meters</div>
-                    <div class="medium-text text-success">Every extra meter = More resistance!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-info">MEET THE VILLAIN...</div>
+                    <div class="big-text text-warning">RESISTANCE!</div>
+                    <div class="icon">🚧</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 7
         {
-            duration: 7000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">MORE CURRENT</div>
-                    <div class="big-text text-warning">= MORE LOSS</div>
-                    <div class="icon">💪</div>
-                    <div class="large-text text-white">Powerful equipment</div>
-                    <div class="large-text text-white">= HUGE current</div>
-                    <div class="large-text text-accent">= MASSIVE voltage drop!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-white">Every wire creates friction...</div>
+                    <div class="large-text text-white">Like a bumpy road for electricity.</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 8
         {
-            duration: 7000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-success">THE FIX</div>
-                    <div class="big-text text-success">THICKER WIRES!</div>
-                    <div class="icon">⬆️</div>
-                    <div class="large-text text-white">Thicker = Lower resistance</div>
-                    <div class="large-text text-success">Lower resistance = Less loss</div>
-                    <div class="medium-text text-warning">#1 solution to voltage drop</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="big-text text-success">More friction?</div>
+                    <div class="big-text text-accent">More power lost!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 9
         {
             duration: 8000,
             content: `
-                <div class="scene">
-                    <div class="title text-accent">MOTORS HATE LOW VOLTAGE</div>
-                    <div class="icon">🔥</div>
-                    <div class="card accent">
-                        <div class="card-item"><span class="text-warning">1)</span> Low voltage arrives at motor</div>
-                        <div class="card-item"><span class="text-warning">2)</span> Motor pulls MORE current to work</div>
-                        <div class="card-item"><span class="text-warning">3)</span> Extra current = EXTREME HEAT</div>
-                        <div class="card-item"><span class="text-warning">4)</span> Motor dies YEARS early!</div>
+                <div class="scene-content">
+                    <div class="title text-success">THE FORMULA</div>
+                    <div class="formula-box">V = I × R</div>
+                    <div class="card success">
+                        <div class="card-item"><span class="text-warning">V</span> = Voltage Lost (The Problem)</div>
+                        <div class="card-item"><span class="text-warning">I</span> = Current (The Load)</div>
+                        <div class="card-item"><span class="text-warning">R</span> = Resistance (The Villain)</div>
                     </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 10
         {
-            duration: 7000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-accent">LIGHTS GO DIM!</div>
-                    <div class="icon">💡</div>
-                    <div class="big-text text-warning">Most obvious sign</div>
-                    <div class="large-text text-white">Dimmer lights = Problem exists</div>
-                    <div class="large-text text-white">Flickering = Ballasts breaking</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-warning">What makes it worse?</div>
+                    <div class="big-text text-warning">FACTOR #1: LONG WIRES</div>
+                    <div class="icon">📏</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 11
         {
-            duration: 8000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-accent">SENSORS GIVE WRONG DATA</div>
-                    <div class="icon">🔍</div>
-                    <div class="big-text text-accent">DISASTER!</div>
-                    <div class="card accent">
-                        <div class="card-item"><span class="text-warning">❌</span> Temperature reads wrong</div>
-                        <div class="card-item"><span class="text-warning">❌</span> Pressure reads wrong</div>
-                        <div class="card-item"><span class="text-warning">❌</span> Control system makes bad decisions</div>
-                        <div class="card-item"><span class="text-warning">❌</span> System FAILS!</div>
-                    </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-white">100 meters loses WAY MORE...</div>
+                    <div class="large-text text-white">...than 10 meters.</div>
+                    <div class="medium-text text-success">Every extra meter adds more resistance!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 12
         {
-            duration: 7000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-accent">YOU'RE BURNING MONEY!</div>
-                    <div class="icon">💰</div>
-                    <div class="big-text text-accent">EVERY VOLT LOST</div>
-                    <div class="large-text text-warning">= ENERGY WASTED AS HEAT</div>
-                    <div class="large-text text-accent">IN YOUR WIRES!</div>
-                    <div class="medium-text text-dim">You PAID for that electricity</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-warning">FACTOR #2:</div>
+                    <div class="big-text text-warning">HIGH CURRENT</div>
+                    <div class="icon">💪</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 13
         {
-            duration: 8000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-purple">THE SAFE LIMITS</div>
-                    <div class="card purple">
-                        <div class="card-item"><span class="text-warning">⚡</span> <strong>Power circuits:</strong> Keep under 5%</div>
-                        <div class="card-item"><span class="text-warning">💡</span> <strong>Lighting:</strong> Keep under 3%</div>
-                        <div class="card-item"><span class="text-warning">🔌</span> <strong>Control/Sensors:</strong> 1-2%</div>
-                        <div class="card-item"><span class="text-warning">📖</span> Check local electrical code!</div>
-                    </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-white">Powerful equipment...</div>
+                    <div class="large-text text-white">...pulls HUGE current.</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 14
         {
-            duration: 8000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">HEAT MAKES IT WORSE!</div>
-                    <div class="icon">🌡️</div>
-                    <div class="big-text text-accent">ENEMY: TEMPERATURE</div>
-                    <div class="card warning">
-                        <div class="card-item"><span class="text-warning">🔥</span> Hot weather = Higher resistance</div>
-                        <div class="card-item"><span class="text-warning">🔥</span> Wire gets hot = Higher resistance</div>
-                        <div class="card-item"><span class="text-warning">🔥</span> Result = EXTRA voltage loss!</div>
-                    </div>
-                    <div class="medium-text text-success">Use 70°C or 90°C rated values!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-accent">HUGE Current × Resistance =</div>
+                    <div class="big-text text-accent">MASSIVE VOLTAGE DROP!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 15
         {
-            duration: 7000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-info">AC vs DC</div>
-                    <div class="big-text text-warning">TWO TYPES OF LOSS</div>
-                    <div class="card info">
-                        <div class="card-item"><span class="text-primary">AC Power:</span> Has R + X (Resistance + Reactance)</div>
-                        <div class="card-item"><span class="text-primary">DC Power:</span> Has only R (Resistance)</div>
-                    </div>
-                    <div class="large-text text-success">Different formulas needed!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-success">SO HOW DO WE FIX IT?</div>
+                    <div class="big-text text-success">USE THICKER WIRES!</div>
+                    <div class="icon">⬆️</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 16
         {
-            duration: 8000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">3-PHASE AC FORMULA</div>
-                    <div class="formula-box">VD = (1.732 × L × I × Z) / 1000</div>
-                    <div class="card success">
-                        <div class="card-item"><span class="text-warning">L</span> = Distance (meters)</div>
-                        <div class="card-item"><span class="text-warning">I</span> = Current (amps)</div>
-                        <div class="card-item"><span class="text-warning">Z</span> = Impedance (hot temperature!)</div>
-                        <div class="card-item"><span class="text-warning">1.732</span> = √3 (magic number)</div>
-                    </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-white">Thicker Wires =</div>
+                    <div class="large-text text-success">Lower Resistance!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 17
         {
-            duration: 8000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">DC FORMULA (SIMPLE)</div>
-                    <div class="formula-box">VD = (2 × L × I × R) / 1000</div>
-                    <div class="card success">
-                        <div class="card-item"><span class="text-warning">L</span> = Distance (meters)</div>
-                        <div class="card-item"><span class="text-warning">I</span> = Current (amps)</div>
-                        <div class="card-item"><span class="text-warning">R</span> = Resistance (hot temp)</div>
-                        <div class="card-item"><span class="text-warning">2</span> = Round trip (go & return)</div>
-                    </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-success">Lower Resistance = Less Loss!</div>
+                    <div class="medium-text text-warning">This is the #1 solution!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 18
         {
-            duration: 7000,
+            duration: 10000,
             content: `
-                <div class="scene">
-                    <div class="title text-purple">GET YOUR DATA!</div>
-                    <div class="big-text text-warning">THREE SOURCES FOR R & Z</div>
-                    <div class="card purple">
-                        <div class="card-item"><span class="text-success">✓</span> <strong>Cable Datasheets</strong> - Most accurate!</div>
-                        <div class="card-item"><span class="text-success">✓</span> <strong>Electrical Codes</strong> - Standard values</div>
-                        <div class="card-item"><span class="text-success">✓</span> <strong>Online Calculators</strong> - Quick reference</div>
+                <div class="scene-content">
+                    <div class="title text-accent">MOTORS HATE LOW VOLTAGE!</div>
+                    <div class="icon">🔥</div>
+                    <div class="card accent">
+                        <div class="card-item"><span class="text-warning">1)</span> Low voltage arrives at motor...</div>
+                        <div class="card-item"><span class="text-warning">2)</span> Motor pulls MORE current to work...</div>
+                        <div class="card-item"><span class="text-warning">3)</span> Extra current = EXTREME HEAT...</div>
+                        <div class="card-item"><span class="text-warning">4)</span> Motor DIES years early!</div>
                     </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 19
         {
-            duration: 10000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-success">REAL EXAMPLE #1</div>
-                    <div class="big-text text-warning">45 kW MOTOR</div>
-                    <div class="card info">
-                        <div class="card-item"><span class="text-warning">Distance:</span> 95 meters</div>
-                        <div class="card-item"><span class="text-warning">Current:</span> 78 amps</div>
-                        <div class="card-item"><span class="text-warning">Impedance:</span> 0.45 Ω/km</div>
-                    </div>
-                    <div class="formula-box">VD = (1.732 × 95 × 78 × 0.45) / 1000 = 5.6 Volts</div>
-                    <div class="large-text text-success">% Drop = 1.4% ✓ PASS!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-accent">SEEING DIM LIGHTS?</div>
+                    <div class="icon">💡</div>
+                    <div class="big-text text-warning">That's the most obvious sign!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 20
         {
-            duration: 10000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-success">REAL EXAMPLE #2</div>
-                    <div class="big-text text-warning">SENSOR 250m AWAY</div>
-                    <div class="card info">
-                        <div class="card-item"><span class="text-warning">Supply:</span> 24V</div>
-                        <div class="card-item"><span class="text-warning">Sensor needs:</span> Minimum 12V</div>
-                        <div class="card-item"><span class="text-warning">Current:</span> 0.02A</div>
-                        <div class="card-item"><span class="text-warning">Resistance:</span> 12.1 Ω/km</div>
-                    </div>
-                    <div class="formula-box">VD = (2 × 250 × 0.02 × 12.1) / 1000 = 0.12V</div>
-                    <div class="large-text text-success">Sensor gets: 23.88V ✓ PASS!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-white">Dimmer lights = You have a problem.</div>
+                    <div class="large-text text-white">Flickering? Your ballasts are breaking!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 21
         {
-            duration: 8000,
+            duration: 10000,
             content: `
-                <div class="scene">
-                    <div class="title text-accent">WRONG CABLE SIZE!</div>
-                    <div class="big-text text-accent">DISASTER EXAMPLE</div>
+                <div class="scene-content">
+                    <div class="title text-accent">SENSORS GIVING WRONG DATA?</div>
+                    <div class="icon">🔍</div>
+                    <div class="big-text text-accent">THIS IS A DISASTER!</div>
                     <div class="card accent">
-                        <div class="card-item"><span class="text-warning">Same motor but...</span></div>
-                        <div class="card-item"><span class="text-warning">Thin 16mm² cable instead of 50mm²</span></div>
-                        <div class="card-item"><span class="text-warning">Resistance: 1.4 Ω/km (much higher!)</span></div>
+                        <div class="card-item"><span class="text-warning">❌</span> Temperature reads wrong...</div>
+                        <div class="card-item"><span class="text-warning">❌</span> Pressure reads wrong...</div>
+                        <div class="card-item"><span class="text-warning">❌</span> Control system makes bad decisions...</div>
+                        <div class="card-item"><span class="text-warning">❌</span> ...and the whole system FAILS!</div>
                     </div>
-                    <div class="formula-box" style="border-color: var(--accent); color: var(--accent);">17.5 Volts Lost!</div>
-                    <div class="large-text text-accent">% Drop = 4.4% ❌ DANGEROUS!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 22
         {
-            duration: 8000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-accent">MOTOR STARTING SHOCK</div>
-                    <div class="icon">⚡⚡⚡</div>
-                    <div class="big-text text-warning">BIGGEST VOLTAGE DIP!</div>
-                    <div class="card accent">
-                        <div class="card-item"><span class="text-warning">Motor starts:</span> Pulls 5-8× normal current!</div>
-                        <div class="card-item"><span class="text-warning">Result:</span> MASSIVE voltage dip everywhere!</div>
-                        <div class="card-item"><span class="text-warning">Happens:</span> Lights flicker HARD, controls reset!</div>
-                    </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-accent">YOU ARE BURNING MONEY!</div>
+                    <div class="icon">💰</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 23
         {
-            duration: 6000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">FIX #1</div>
-                    <div class="big-text text-success">USE THICKER CABLE</div>
-                    <div class="icon">⬆️</div>
-                    <div class="large-text text-primary">#1 Most Effective!</div>
-                    <div class="medium-text text-dim">Lower resistance = Lower loss</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="big-text text-accent">EVERY VOLT LOST</div>
+                    <div class="large-text text-warning">= ENERGY WASTED AS HEAT</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 24
         {
-            duration: 6000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">FIX #2</div>
-                    <div class="big-text text-success">USE HIGHER VOLTAGE</div>
-                    <div class="icon">📊</div>
-                    <div class="large-text text-white">Higher voltage = Lower current needed</div>
-                    <div class="large-text text-success">Lower current = Less loss!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="large-text text-accent">...HEAT in *your* wires!</div>
+                    <div class="medium-text text-dim">You PAID for that electricity!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 25
         {
-            duration: 6000,
+            duration: 8000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">FIX #3</div>
-                    <div class="big-text text-success">SHORTER CABLE RUN</div>
-                    <div class="icon">📍</div>
-                    <div class="large-text text-white">Less distance = Less resistance</div>
-                    <div class="large-text text-success">Plan installation wisely!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-purple">What's a "SAFE" LIMIT?</div>
+                    <div class="card purple">
+                        <div class="card-item"><span class="text-warning">⚡</span> <strong>Power circuits:</strong> Keep under 5%</div>
+                        <div class="card-item"><span class="text-warning">💡</span> <strong>Lighting:</strong> Keep under 3%</div>
+                        <div class="card-item"><span class="text-warning">🔌</span> <strong>Control/Sensors:</strong> 1-2% is best!</div>
+                        <div class="card-item"><span class="text-warning">📖</span> (Always check local electrical code!)</div>
+                    </div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 26
         {
-            duration: 6000,
+            duration: 5000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">FIX #4</div>
-                    <div class="big-text text-success">PARALLEL CABLES</div>
-                    <div class="icon">🔗</div>
-                    <div class="large-text text-white">Run TWO cables instead of one</div>
-                    <div class="large-text text-success">Current splits = Resistance halved!</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-warning">AND IT GETS WORSE...</div>
+                    <div class="icon">🌡️</div>
+                    <div class="big-text text-accent">HEAT IS THE ENEMY!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 27
         {
-            duration: 8000,
+            duration: 6000,
             content: `
-                <div class="scene">
-                    <div class="title text-info">PROTECT SENSOR WIRES</div>
-                    <div class="big-text text-warning">STOP ELECTRICAL NOISE!</div>
-                    <div class="card info">
-                        <div class="card-item"><span class="check-icon">✓</span> Use twisted pair cables</div>
-                        <div class="card-item"><span class="check-icon">✓</span> Use shielded cables (STP)</div>
-                        <div class="card-item"><span class="check-icon">✓</span> Keep away from power cables</div>
-                        <div class="card-item"><span class="check-icon">✓</span> Ground shield at ONE end only</div>
+                <div class="scene-content">
+                    <div class="card warning">
+                        <div class="card-item"><span class="text-warning">🔥</span> Hot weather = Higher resistance</div>
+                        <div class="card-item"><span class="text-warning">🔥</span> Wire gets hot = Higher resistance</div>
+                        <div class="card-item"><span class="text-warning">🔥</span> Result = EVEN MORE voltage loss!</div>
                     </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 28
         {
-            duration: 10000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-warning">BEFORE YOU INSTALL</div>
-                    <div class="checklist">
-                        <div class="check-item">
-                            <span class="check-icon">1</span>
-                            <div><strong>Find device current rating</strong> (on nameplate)</div>
-                        </div>
-                        <div class="check-item">
-                            <span class="check-icon">2</span>
-                            <div><strong>Measure cable distance</strong> (one way)</div>
-                        </div>
-                        <div class="check-item">
-                            <span class="check-icon">3</span>
-                            <div><strong>Get cable R & X values</strong> (at HOT temperature!)</div>
-                        </div>
-                        <div class="check-item">
-                            <span class="check-icon">4</span>
-                            <div><strong>Calculate voltage drop</strong></div>
-                        </div>
-                        <div class="check-item">
-                            <span class="check-icon">5</span>
-                            <div><strong>Check if below limits</strong> (5% or 3%)</div>
-                        </div>
-                    </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="medium-text text-success">This is why we calculate at 70°C or 90°C!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 29
         {
-            duration: 7000,
+            duration: 4000,
             content: `
-                <div class="scene">
-                    <div class="title text-success">USE ONLINE TOOLS</div>
-                    <div class="icon">🛠️</div>
-                    <div class="big-text text-warning">FREE CALCULATOR</div>
-                    <div class="large-text text-primary">designcalculators.co.in</div>
-                    <div class="medium-text text-dim">Quick accurate calculations</div>
-                    <div class="medium-text text-dim">Saves design time</div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
+                <div class="scene-content">
+                    <div class="title text-info">Is AC different from DC?</div>
+                    <div class="big-text text-warning">YES! TWO TYPES OF LOSS!</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
         // SCENE 30
         {
+            duration: 5000,
+            content: `
+                <div class="scene-content">
+                    <div class="card info">
+                        <div class="card-item"><span class="text-primary">AC Power:</span> Has R + X (Resistance + Reactance)</div>
+                        <div class="card-item"><span class="text-primary">DC Power:</span> Has only R (Resistance)</div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 31
+        {
+            duration: 4000,
+            content: `
+                <div class="scene-content">
+                    <div class="large-text text-success">You MUST use different formulas!</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 32
+        {
             duration: 10000,
             content: `
-                <div class="scene">
+                <div class="scene-content">
+                    <div class="title text-warning">3-PHASE AC FORMULA</div>
+                    <div class="formula-box" style="font-size: clamp(1.1rem, 4vw, 2.4rem);">VD = (1.732 × L × I × Z) / 1000</div>
+                    <div class="card success">
+                        <div class="card-item"><span class="text-warning">L</span> = Distance (meters)</div>
+                        <div class="card-item"><span class="text-warning">I</span> = Current (amps)</div>
+                        <div class="card-item"><span class="text-warning">Z</span> = Impedance (at hot temp!)</div>
+                        <div class="card-item"><span class="text-warning">1.732</span> = The 3-Phase "magic number" (√3)</div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 33
+        {
+            duration: 10000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-warning">DC FORMULA (SIMPLE)</div>
+                    <div class="formula-box" style="font-size: clamp(1.1rem, 4vw, 2.4rem);">VD = (2 × L × I × R) / 1000</div>
+                    <div class="card success">
+                        <div class="card-item"><span class="text-warning">L</span> = Distance (meters)</div>
+                        <div class="card-item"><span class="text-warning">I</span> = Current (amps)</div>
+                        <div class="card-item"><span class="text-warning">R</span> = Resistance (at hot temp!)</div>
+                        <div class="card-item"><span class="text-warning">2</span> = For the round trip (go & return)</div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 34
+        {
+            duration: 7000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-purple">Where do I get R & Z?</div>
+                    <div class="big-text text-warning">YOUR 3 BEST SOURCES:</div>
+                    <div class="card purple">
+                        <div class="card-item"><span class="text-success">✓</span> <strong>Cable Datasheets</strong> (Most accurate!)</div>
+                        <div class="card-item"><span class="text-success">✓</span> <strong>Electrical Codes</strong> (Standard values)</div>
+                        <div class="card-item"><span class="text-success">✓</span> <strong>Online Calculators</strong> (Quick check)</div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 35
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-success">REAL EXAMPLE #1</div>
+                    <div class="big-text text-warning">A 45 kW MOTOR</div>
+                    <div class="card info">
+                        <div class="card-item"><span class="text-warning">Distance:</span> 95 meters</div>
+                        <div class="card-item"><span class="text-warning">Current:</span> 78 amps</div>
+                        <div class="card-item"><span class="text-warning">Impedance (Z):</span> 0.45 Ω/km</div>
+                    </div>
+                     <div class="medium-text text-dim">Let's plug it in...</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 36
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-success">EXAMPLE #1: RESULT</div>
+                    <div class="formula-box" style="font-size: clamp(0.9rem, 3.2vw, 2rem);">VD = (1.732 × 95 × 78 × 0.45) / 1000 = 5.6 Volts</div>
+                    <div class="large-text text-success">% Drop = 1.4% ... ✓ PASS!</div>
+                    <div class="medium-text text-dim">(Easy! Well below the 5% limit.)</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 37
+        {
+            duration: 9000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-success">REAL EXAMPLE #2</div>
+                    <div class="big-text text-warning">A SENSOR 250m AWAY</div>
+                    <div class="card info">
+                        <div class="card-item"><span class="text-warning">Supply:</span> 24V DC</div>
+                        <div class="card-item"><span class="text-warning">Sensor needs:</span> Minimum 12V</div>
+                        <div class="card-item"><span class="text-warning">Current (I):</span> 0.02A (tiny!)</div>
+                        <div class="card-item"><span class="text-warning">Resistance (R):</span> 12.1 Ω/km</div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 38
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-success">EXAMPLE #2: RESULT</div>
+                    <div class="formula-box" style="font-size: clamp(0.9rem, 3.2vw, 2rem);">VD = (2 × 250 × 0.02 × 12.1) / 1000 = 0.12V</div>
+                    <div class="large-text text-success">Sensor gets: 23.88V ✓ PASS!</div>
+                    <div class="medium-text text-dim">(Almost no drop at all!)</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 39
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-accent">DISASTER EXAMPLE</div>
+                    <div class="big-text text-accent">What if we use the WRONG CABLE?</div>
+                    <div class="card accent">
+                        <div class="card-item"><span class="text-warning">Same 45kW motor...</span></div>
+                        <div class="card-item"><span class="text-warning">But a thin 16mm² cable (Z = 1.4)</span></div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 40
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-accent">DISASTER: RESULT</div>
+                    <div class="formula-box" style="border-color: var(--accent); color: var(--accent);">VD = 17.5 Volts Lost!</div>
+                    <div class="large-text text-accent">% Drop = 4.4% ❌ DANGEROUS!</div>
+                    <div class="medium-text text-dim">(This motor WILL overheat and fail!)</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 41
+        {
+            duration: 10000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-accent">What about MOTOR STARTING?</div>
+                    <div class="icon">⚡⚡⚡</div>
+                    <div class="big-text text-warning">This is the BIGGEST DIP!</div>
+                    <div class="card accent">
+                        <div class="card-item"><span class="text-warning">Motor starts:</span> Pulls 5-8× normal current!</div>
+                        <div class="card-item"><span class="text-warning">Result:</span> A MASSIVE voltage dip for *everyone*!</div>
+                        <div class="card-item"><span class="text-warning">Causes:</span> Lights flicker, controls reset!</div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 42
+        {
+            duration: 6000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-warning">REVIEW: HOW TO FIX IT?</div>
+                    <div class="big-text text-success">FIX #1: USE THICKER CABLE</div>
+                    <div class="icon">⬆️</div>
+                    <div class="large-text text-primary">#1 Most Effective!</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 43
+        {
+            duration: 6000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-warning">FIX #2</div>
+                    <div class="big-text text-success">USE HIGHER VOLTAGE</div>
+                    <div class="icon">📊</div>
+                    <div class="large-text text-white">Higher Voltage = Lower Current</div>
+                    <div class="large-text text-success">Lower Current = Less Loss!</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 44
+        {
+            duration: 6000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-warning">FIX #3</div>
+                    <div class="big-text text-success">SHORTER CABLE RUN</div>
+                    <div class="icon">📍</div>
+                    <div class="large-text text-white">Less Distance = Less Resistance</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 45
+        {
+            duration: 6000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-warning">FIX #4</div>
+                    <div class="big-text text-success">PARALLEL CABLES</div>
+                    <div class="icon">🔗</div>
+                    <div class="large-text text-white">Two cables = Half the resistance!</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 46
+        {
+            duration: 10000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-info">BONUS: Protect Sensor Wires!</div>
+                    <div class="big-text text-warning">STOP ELECTRICAL NOISE!</div>
+                    <div class="card info">
+                        <div class="card-item"><span class="check-icon">✓</span> Use twisted pair cables</div>
+                        <div class="card-item"><span class="check-icon">✓</span> Use SHIELDED cables (STP)</div>
+                        <div class="card-item"><span class="check-icon">✓</span> Keep them FAR from power cables</div>
+                        <div class="card-item"><span class="check-icon">✓</span> Ground shield at ONE end only</div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 47
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-warning">YOUR CHECKLIST:</div>
+                    <div class="checklist">
+                        <div class="check-item">
+                            <span class="check-icon">1</span>
+                            <div><strong>Find device current rating</strong> (Amps)</div>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">2</span>
+                            <div><strong>Measure cable distance</strong> (Meters)</div>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">3</span>
+                            <div><strong>Get cable R & Z values</strong> (at HOT temp!)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 48
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-warning">YOUR CHECKLIST:</div>
+                    <div class="checklist">
+                        <div class="check-item">
+                            <span class="check-icon">4</span>
+                            <div><strong>CALCULATE the voltage drop</strong></div>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-icon">5</span>
+                            <div><strong>Is it below the limit?</strong> (5% or 3%)</div>
+                        </div>
+                         <div class="check-item">
+                            <span class="check-icon">✅</span>
+                            <div><strong>If it fails, use a thicker cable!</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 49
+        {
+            duration: 4000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-success">Want an easier way?</div>
+                    <div class="icon">🛠️</div>
+                    <div class="big-text text-warning">USE A FREE CALCULATOR</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 50
+        {
+            duration: 5000,
+            content: `
+                <div class="scene-content">
+                    <div class="large-text text-primary">designcalculators.co.in</div>
+                    <div class="medium-text text-dim">For quick, accurate calculations</div>
+                    <div class="medium-text text-dim">It saves design time!</div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 51
+        {
+            duration: 9000,
+            content: `
+                <div class="scene-content">
                     <div class="title text-success">KEY TAKEAWAYS</div>
                     <div class="checklist">
                         <div class="check-item">
@@ -733,75 +949,98 @@
                         </div>
                         <div class="check-item">
                             <span class="check-icon">💥</span>
-                            <div><strong>Damages equipment</strong> and causes failures</div>
+                            <div>It <strong>damages equipment</strong> and causes failures</div>
                         </div>
                         <div class="check-item">
                             <span class="check-icon">📊</span>
-                            <div><strong>Keep under 5%</strong> (power) or 3% (lighting)</div>
+                            <div><strong>Keep it under 5%</strong> (power) or 3% (lighting)</div>
                         </div>
+                    </div>
+                </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
+            `
+        },
+        // SCENE 52
+        {
+            duration: 8000,
+            content: `
+                <div class="scene-content">
+                    <div class="title text-success">KEY TAKEAWAYS</div>
+                    <div class="checklist">
                         <div class="check-item">
                             <span class="check-icon">🧮</span>
-                            <div><strong>Always calculate</strong> before installation</div>
+                            <div><strong>ALWAYS calculate</strong> before you install</div>
                         </div>
                         <div class="check-item">
                             <span class="check-icon">⬆️</span>
-                            <div><strong>Thicker cables</strong> are best solution</div>
+                            <div><strong>Thicker cables</strong> are the #1 best solution!</div>
                         </div>
                     </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
-        // SCENE 31
+        // SCENE 53
         {
             duration: 9000,
             content: `
-                <div class="scene">
+                <div class="scene-content">
                     <div class="title text-success">FINAL MESSAGE</div>
-                    <div class="big-text text-primary">Master Voltage Drop</div>
-                    <div class="big-text text-success">Master Electrical Design</div>
+                    <div class="big-text text-primary">Master Voltage Drop...</div>
+                    <div class="big-text text-success">...Master Electrical Design!</div>
                     <div class="icon">⭐</div>
                     <div class="card success">
-                        <div class="card-item" style="font-size: 4vw; text-align: center; margin: 2vh 0;">
+                        <div class="card-item" style="font-size: clamp(1.1rem, 3.5vw, 2rem); text-align: center; margin: 2vh 0; display: block;">
                             <strong class="text-warning">Save Money • Protect Equipment • Build Reliable Systems</strong>
                         </div>
                     </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         },
-        // SCENE 32 - FINAL THANK YOU
+        // SCENE 54
         {
             duration: 10000,
             content: `
-                <div class="scene">
+                <div class="scene-content">
                     <div class="title text-primary">🎉 THANK YOU! 🎉</div>
                     <div class="big-text text-warning">Thanks for Watching!</div>
                     <div class="icon">👏</div>
                     <div class="large-text text-success">Ready to calculate voltage drop?</div>
                     <div class="card success">
-                        <div class="card-item" style="font-size: 5vw; text-align: center; font-weight: 900;">
+                        <div class="card-item" style="font-size: clamp(1.8rem, 4.5vw, 3rem); text-align: center; font-weight: 900; display: block;">
                             <span class="text-warning">Visit:</span>
                         </div>
-                        <div class="card-item" style="font-size: 4.5vw; text-align: center; font-weight: 900;">
+                        <div class="card-item" style="font-size: clamp(1.6rem, 4vw, 3rem); text-align: center; font-weight: 900; display: block;">
                             <span class="text-primary">designcalculators.co.in</span>
                         </div>
-                        <div class="card-item" style="font-size: 3.5vw; text-align: center; margin-top: 2vh;">
+                        <div class="card-item" style="font-size: clamp(1.1rem, 3.2vw, 2rem); text-align: center; margin-top: 2vh; display: block;">
                             For EXACT calculations & more tools!
                         </div>
                     </div>
-                    <div class="footer">Prepared by https://designcalculators.co.in</div>
                 </div>
+                <div class="footer">Prepared by https://designcalculators.co.in</div>
             `
         }
     ];
+    // --- END OF SCENES ARRAY ---
+
 
     function showScene(index) {
-        container.innerHTML = scenes[index]?.content || '';
-        if (!scenes[index]) {
+        // Clear the container
+        container.innerHTML = '';
+        
+        const sceneData = scenes[index];
+        if (!sceneData) {
+            // Failsafe: loop back to start
             currentSceneIndex = 0;
             container.innerHTML = scenes[0].content;
+            resetInterval();
+            return;
         }
+
+        // Set the new content
+        container.innerHTML = sceneData.content;
     }
 
     function nextScene() {
@@ -841,17 +1080,17 @@
 
     // Mouse/Touch controls
     container.addEventListener('click', (e) => {
+        // Do not advance scene if a link is clicked
         if (e.target.tagName === 'A' || e.target.closest('a')) return;
         nextScene();
     });
 
-    let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
-    const swipeThreshold = 50;
+    let touchStartX = 0, touchStartY = 0;
+    const swipeThreshold = 50; // Minimum distance for a swipe
 
     container.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
-        touchStartTime = Date.now();
     }, { passive: true });
 
     container.addEventListener('touchend', (e) => {
@@ -862,9 +1101,15 @@
         const diffX = touchEndX - touchStartX;
         const diffY = touchEndY - touchStartY;
         
+        // Check for horizontal swipe primarily
         if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY)) {
-            if (diffX < 0) nextScene();
-            else prevScene();
+            if (diffX < 0) {
+                // Swiped left
+                nextScene();
+            } else {
+                // Swiped right
+                prevScene();
+            }
         }
     }, { passive: true });
 </script>
